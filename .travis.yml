@@ -3,7 +3,7 @@ jdk:
   - oraclejdk8
 script:
   # This command generates a release.zip file.
-  - make dist
+  - make zip
 deploy:
   provider: releases
   api_key:
