@@ -1,3 +1,14 @@
 language: java
 jdk:
   - oraclejdk8
+script:
+  # This command generates a release.zip file.
+  - make dist
+deploy:
+  provider: releases
+    api_key:
+      secure: "tsi8xJvHeBY/ti2rr8icYeIKnvuk55AqV71w24S0SMI3yaxgsRwH/lgDWxbxcJArNPM4TEjP/dAPF5ccrgW2o6Ht9ElWaK45o+BkNGsE4pymIIhKLI1FbGcF7jy4NEBCL6kcdWNjKqOzcFlFSPdfjomSjum4fn4vpYVaJOHiMoFzNehzkrT8K1P3H5GmcIterNznMlwlcFzbAa+gUgN1+XSzbYdk29cTGsYlR12BlkTChbQJcH9E99QPd/n0CquS0nduVQWhSufT4yr5JNOclsLuIIb3kP8tQcRraSR4xAAnJ2YpyFfOwpXb1eITA3txGVIH3pdQITPXLLgbUSV/WZuymd0/2zRrwGY5XKTDpyMefrFEFi373i6ZBo0fatf2qFPbzc+I2H5ih+z2lXcGzQlPrzA7sTx2YWlANHwnAK92/Zat9K6Fm3vnP2rDzWWr8jjStNP9akn5tUSevtP1VZp32oD0qvANq/wRFCYK6ZuqL3dOPGievILiecT+fHe9gUqX0j9I/0H3HRSjY8z7xus6JnTaj5dzzT4l/q79FNeTj4wRCDd0QtB8lf7/iQmBJ5ssvT/4iDCwbY1CFUBj2b6LpZOekEh2Jfftvj7/vHPd/wO6+5zn2T84sYnoG8nmBL1AeB5qdS/YPQKUZpJjxE0qO0Kbxm6I4AM+5LdL9UA="
+  file: 'release.zip'
+  skip_cleanup: true
+  on:
+    tags
