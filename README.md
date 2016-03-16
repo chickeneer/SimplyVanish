@@ -1,3 +1,6 @@
 SimplyVanish
 ============
-License: GLPL v 3.0 (unless i am mistaken right now).
+
+This is a fork of probably abandoned SimplyVanish plugin by asofold, currently maintained by jeikobu__.
+
+License: LGPL 3.0
