@@ -88,7 +88,7 @@ public class Utils {
 	public static String withChatColors(String input) {
         char[] chars = input.toCharArray();
         for (int i = 0; i < chars.length - 1; i++) {
-            if ((chars[i] == '&' || chars[i]=='�') && ("0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(chars[i+1]) >= 0)) {
+			if ((chars[i] == '&' || chars[i]=='§') && ("0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(chars[i+1]) >= 0)) {
                 chars[i] = ChatColor.COLOR_CHAR;
                 chars[i+1] = Character.toLowerCase(chars[i+1]);
             }
