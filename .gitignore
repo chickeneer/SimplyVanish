@@ -3,3 +3,6 @@
 /.project
 /bin
 /.settings
+out/
+.idea/
+SimplyVanish.iml

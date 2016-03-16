@@ -88,7 +88,7 @@ public class Utils {
 	public static String withChatColors(String input) {
         char[] chars = input.toCharArray();
         for (int i = 0; i < chars.length - 1; i++) {
-            if ((chars[i] == '&' || chars[i]=='§') && ("0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(chars[i+1]) >= 0)) {
+            if ((chars[i] == '&' || chars[i]=='ï¿½') && ("0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(chars[i+1]) >= 0)) {
                 chars[i] = ChatColor.COLOR_CHAR;
                 chars[i+1] = Character.toLowerCase(chars[i+1]);
             }
@@ -155,7 +155,7 @@ public class Utils {
 			String targetSpec) {
 		// check targets:
 		List<Player> players = new LinkedList<Player>();
-		Player[] online = Bukkit.getServer().getOnlinePlayers();
+		Collection<? extends Player> online = Bukkit.getServer().getOnlinePlayers();
 		for ( String x : targetSpec.split(",")){
 			String targets = x.trim();
 			if ( targets.equalsIgnoreCase("ops") || targets.equalsIgnoreCase("operators")){
@@ -181,14 +181,14 @@ public class Utils {
 	}
 
 	public static void dropItemInHand(Player player) {
-		ItemStack stack = player.getItemInHand();
+		ItemStack stack = player.getInventory().getItemInMainHand();
 		if ( stack == null) return;
 		if(stack.getType() == Material.AIR) return;
 		ItemStack newStack = stack.clone();
 		Item item = player.getWorld().dropItem(player.getLocation().add(new Vector(0.0, 1.0, 0.0)), newStack);
 		if ( item != null && !item.isDead()){
 			item.setVelocity(player.getLocation().getDirection().normalize().multiply(0.05));
-			player.setItemInHand(null);
+			player.getInventory().setItemInMainHand(null);
 		}
 	}
 
@@ -196,9 +196,9 @@ public class Utils {
 		if (sender instanceof Player) sender.sendMessage(message);
 		else sender.sendMessage(ChatColor.stripColor(message));
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param parts
 	 * @param link can be null
 	 * @return
@@ -217,7 +217,8 @@ public class Utils {
 
 	public static final void sendBlock(final Player player, final Block block) {
 		if (block == null) return;
-		player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
+		block.getState().update();
+		// player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
 	}
 
 	public static void tryMessage(String name, String msg) {
@@ -244,11 +245,7 @@ public class Utils {
 		Object entity = null;
 		try {
 			entity = object.getClass().getMethod("getShooter").invoke(object);
-		} catch (IllegalArgumentException e) {
-		} catch (SecurityException e) {
-		} catch (IllegalAccessException e) {
-		} catch (InvocationTargetException e) {
-		} catch (NoSuchMethodException e) {
+		} catch (IllegalArgumentException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
 		}
 		if (entity instanceof Entity) {
 			return (Entity) entity;

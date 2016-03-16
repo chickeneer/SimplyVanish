@@ -442,7 +442,7 @@ public class SimplyVanishCore{
 	public boolean updateVanishState(final Player player, final boolean message, int hookId){
 		final long ns = System.nanoTime();
 		final String playerName = player.getName();
-		if (!hookUtil.allowUpdateVanishState(player, hookId)){
+		if (!hookUtil.allowUpdateVanishState(player, hookId)) {
 			// TODO: either just return or still do messaging ?
 			if (isVanished(playerName)) addVanishedName(playerName);
 			else removeVanishedName(playerName);
@@ -450,7 +450,7 @@ public class SimplyVanishCore{
 			return false;
 		}
 		final Server server = Bukkit.getServer();
-		final Player[] players = server.getOnlinePlayers();
+		final Collection<? extends Player> players = server.getOnlinePlayers();
 		final boolean shouldSee = shouldSeeVanished(player);
 		final boolean was = isVanished(playerName);
 		// Show or hide other players to player:

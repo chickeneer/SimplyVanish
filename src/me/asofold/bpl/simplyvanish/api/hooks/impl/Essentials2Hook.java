@@ -40,15 +40,11 @@ public class Essentials2Hook extends AbstractHook{
 	}
 
 	private final void setHidden(final String playerName, final boolean hidden) {
-		final Player player = Bukkit.getPlayerExact(playerName);
-		final Object obj;
-		if (player != null) obj = player;
-		else obj = playerName;
-		try{
-			final User user = getter.getPlugin().getUser(obj);
+		try {
+			final User user = getter.getPlugin().getUser(playerName);
 			if (user != null) user.setHidden(hidden);
 		}
-		catch(Throwable t){
+		catch(Throwable t) {
 			// TODO: organize the source code by grace of devs.
 		}
 	}
