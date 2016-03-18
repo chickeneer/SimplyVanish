@@ -1,0 +1,51 @@
+name: SimplyVanish
+main: me.asofold.bpl.simplyvanish.SimplyVanish
+version: 1.3.1
+authors: asofold, jeikobu__
+softdepend:
+- DisguiseCraft
+- dynmap
+- Essentials
+- ProtocolLib
+commands:
+  vanish: 
+     description: 'Ensure you or another player is vanished (/vanish | /vanish <player>), optional: flags.'
+     aliases:
+     - van
+  reappear:
+     description: 'Ensure you or another player is visible (/reappear | /vanish <player>), optional: flags'
+     aliases:
+     - rea
+  tvanish: 
+     description: 'Toggle your or another players visibility state (/tvanish | /tvanish <player>), optional: flags.'
+     aliases:
+     - vanisht
+     - tvan
+     - vant
+  vanished:
+     description: 'Show a list of vanished players.'
+     aliases:
+     - vand
+  simplyvanish:
+     description: '/simplyvanish ... for: reload | save | stats [reset] | flags | Otherwise same as vanflag.'
+     aliases:
+     - simvan
+  vanflag:
+     description: 'Set or display flags for yourself or others. *clear to restore default flags, to see all possible flags use: /simvan flags'
+     aliases:
+     - flagvan
+  vantell:
+     description: 'Whisper to other players, respects see state, tell flag, special permissions.'
+     usage: 'Specify a player whom to tell a message.'
+     aliases:
+     - tellvan
+  vangod:
+    description: 'Enable god mode.'
+    usage: '/vangod | /vangod <other>'
+  vanungod:
+    description: 'Enable god mode.'
+    usage: '/vanungod | /vanungod <other>'
+  vanpeek:
+    description: 'Peek into other players inventories.'
+    usage: '/vanpeek <player>'
+    

@@ -19,13 +19,10 @@ import pgDev.bukkit.DisguiseCraft.api.DisguiseCraftAPI;
 import pgDev.bukkit.DisguiseCraft.api.PlayerDisguiseEvent;
 import pgDev.bukkit.DisguiseCraft.api.PlayerUndisguiseEvent;
 
-public class DisguiseCraftHook  extends AbstractHook {
-	
+public class DisguiseCraftHook extends AbstractHook {
 	
 //	boolean blocked = false; // TODO: consider this.
-	
-	private final HookListener listener = new HookListener(){
-		
+	private final HookListener listener = new HookListener() {
 		@Override
 		public boolean unregisterEvents() {
 			// TODO: wait for Bukkit ?
@@ -118,8 +115,6 @@ public class DisguiseCraftHook  extends AbstractHook {
 			return !api.isDisguised(player);
 		}
 	}
-	
-	
 
 	@Override
 	public boolean allowShow(Player player, Player canSee, boolean isAllowed) {
