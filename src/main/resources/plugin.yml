@@ -1,7 +1,7 @@
 name: SimplyVanish
 main: me.asofold.bpl.simplyvanish.SimplyVanish
 version: 1.3.1
-authors: asofold, jeikobu__
+authors: [asofold, jeikobu__]
 softdepend:
 - DisguiseCraft
 - dynmap
