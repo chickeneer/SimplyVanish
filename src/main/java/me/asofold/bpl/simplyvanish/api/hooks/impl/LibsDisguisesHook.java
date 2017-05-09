@@ -7,19 +7,19 @@ import me.asofold.bpl.simplyvanish.api.hooks.AbstractHook;
 import me.asofold.bpl.simplyvanish.api.hooks.HookListener;
 import me.asofold.bpl.simplyvanish.api.hooks.HookPurpose;
 import me.asofold.bpl.simplyvanish.config.VanishConfig;
+import me.libraryaddict.disguise.DisguiseAPI;
+import me.libraryaddict.disguise.LibsDisguises;
+import me.libraryaddict.disguise.events.DisguiseEvent;
+import me.libraryaddict.disguise.events.UndisguiseEvent;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
-import pgDev.bukkit.DisguiseCraft.DisguiseCraft;
-import pgDev.bukkit.DisguiseCraft.api.DisguiseCraftAPI;
-import pgDev.bukkit.DisguiseCraft.api.PlayerDisguiseEvent;
-import pgDev.bukkit.DisguiseCraft.api.PlayerUndisguiseEvent;
-
-public class DisguiseCraftHook extends AbstractHook {
+public class LibsDisguisesHook extends AbstractHook {
 	
 //	boolean blocked = false; // TODO: consider this.
 	private final HookListener listener = new HookListener() {
@@ -39,7 +39,7 @@ public class DisguiseCraftHook extends AbstractHook {
 			} 
 			else{
 				Player player = Bukkit.getServer().getPlayerExact(event.getPlayerName());
-				if (player !=null && DisguiseCraft.getAPI().isDisguised(player)){
+				if (player !=null && DisguiseAPI.isDisguised(player)){
 					event.setCancelled(true);
 					// TODO: Consider suppressing if notify=false.
 					if (shouldNotify(player)) {
@@ -50,9 +50,10 @@ public class DisguiseCraftHook extends AbstractHook {
 		}
 		
 		@EventHandler(priority=EventPriority.MONITOR)
-		void onDisguise(PlayerDisguiseEvent event){
+		void onDisguise(DisguiseEvent event){
 			if (event.isCancelled()) return;
-			Player player = event.getPlayer();
+			if (!event.getEntity().getType().equals(EntityType.PLAYER)) return;
+			Player player = (Player)event.getEntity();
 			String name = player.getName();
 			if (SimplyVanish.isVanished(name)){
 				if (!SimplyVanish.setVanished(player, false)){
@@ -76,9 +77,10 @@ public class DisguiseCraftHook extends AbstractHook {
 		
 		@SuppressWarnings("unused")
 		@EventHandler(priority=EventPriority.MONITOR)
-		void onUndisguise(PlayerUndisguiseEvent event){
+		void onUndisguise(UndisguiseEvent event){
 			if (event.isCancelled()) return;
-			final Player player = event.getPlayer();
+			if (!event.getEntity().getType().equals(EntityType.PLAYER)) return;
+			final Player player = (Player)event.getEntity();
 			String name = player.getName();
 			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SimplyVanish.getPluginInstance(), new Runnable(){
 				@Override
@@ -98,10 +100,9 @@ public class DisguiseCraftHook extends AbstractHook {
 	public void onInvisible(String playerName, boolean keepDisguise) {
 		Player player = Bukkit.getServer().getPlayerExact(playerName);
 		if (player == null) return;
-		DisguiseCraftAPI api = DisguiseCraft.getAPI();
-		if (api.isDisguised(player)){
+		if (DisguiseAPI.isDisguised(player)){
 			// Disguise and remember disguise.
-			api.undisguisePlayer(player); // TODO: change priorities and check result, act accordingly.
+			DisguiseAPI.undisguiseToAll(player); // TODO: change priorities and check result, act accordingly.
 		}
 		return;
 	}
@@ -111,15 +112,13 @@ public class DisguiseCraftHook extends AbstractHook {
 		if (!isAllowed) return false;
 		if (hookId == this.hookId) return true;
 		else {
-			DisguiseCraftAPI api = DisguiseCraft.getAPI();
-			return !api.isDisguised(player);
+			return !DisguiseAPI.isDisguised(player);
 		}
 	}
 
 	@Override
 	public boolean allowShow(Player player, Player canSee, boolean isAllowed) {
-		DisguiseCraftAPI api = DisguiseCraft.getAPI();
-		return !api.isDisguised(player);
+		return !DisguiseAPI.isDisguised(player);
 	}
 	
 	@Override
@@ -137,8 +136,8 @@ public class DisguiseCraftHook extends AbstractHook {
 		return listener;
 	}
 	
-	public DisguiseCraftHook(){
-		DisguiseCraft.getAPI(); // to fail in case.
+	public LibsDisguisesHook(){
+		LibsDisguises.getInstance().isEnabled(); // to fail in case.
 	}
 
 }

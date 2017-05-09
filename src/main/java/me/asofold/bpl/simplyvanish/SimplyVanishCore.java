@@ -18,9 +18,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import me.asofold.bpl.simplyvanish.api.events.SimplyVanishStateEvent;
-import me.asofold.bpl.simplyvanish.api.hooks.impl.DisguiseCraftHook;
 import me.asofold.bpl.simplyvanish.api.hooks.impl.DynmapHook;
 import me.asofold.bpl.simplyvanish.api.hooks.impl.Essentials2Hook;
+import me.asofold.bpl.simplyvanish.api.hooks.impl.LibsDisguisesHook;
 import me.asofold.bpl.simplyvanish.config.Settings;
 import me.asofold.bpl.simplyvanish.config.VanishConfig;
 import me.asofold.bpl.simplyvanish.util.HookUtil;
@@ -789,7 +789,7 @@ public class SimplyVanishCore{
 	void addStandardHooks(){
 		hookUtil.registerOnLoadHooks();
 		try{
-			hookUtil.addHook(new DisguiseCraftHook());
+			hookUtil.addHook(new LibsDisguisesHook());
 		} catch(Throwable t){
 		}
 		try{
