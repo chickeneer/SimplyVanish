@@ -8,14 +8,15 @@ import me.asofold.bpl.simplyvanish.api.hooks.util.HookPluginGetter;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.dynmap.bukkit.DynmapPlugin;
+import org.bukkit.plugin.Plugin;
+import org.dynmap.DynmapAPI;
 
 public class DynmapHook extends AbstractHook {
 	
-	private final HookPluginGetter<DynmapPlugin> getter;
+	private final HookPluginGetter<Plugin> getter;
 	
 	public DynmapHook(){
-		getter = new HookPluginGetter<DynmapPlugin>("dynmap");
+		getter = new HookPluginGetter<>("dynmap");
 		if (getter.getPlugin() == null) throw new RuntimeException("Dynmap not found."); // To let it fail.
 	}
 	
@@ -48,7 +49,7 @@ public class DynmapHook extends AbstractHook {
 		Player player = Bukkit.getPlayer(playerName);
 		if (player != null) playerName = player.getName(); // TODO... 
 		boolean vanished = SimplyVanish.isVanished(playerName);
-		DynmapPlugin plg = getter.getPlugin();
+		DynmapAPI plg = (DynmapAPI) getter.getPlugin();
 		plg.assertPlayerInvisibility(playerName, vanished, "SimplyVanish");
 		//plg.setPlayerVisiblity(playerName, vanished);
 	}

@@ -1,7 +1,7 @@
 SimplyVanish
 ============
 
-This is a fork of probably abandoned SimplyVanish plugin by asofold, currently maintained by jeikobu__.
+This is a fork of probably abandoned SimplyVanish plugin by asofold, currently maintained by chickeneer.
 
 Compiling:
 

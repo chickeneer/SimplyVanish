@@ -79,7 +79,7 @@ public class Utils {
 		}
 		return changed;
 	}
-	
+	private static final char COLOR_CHAR = "§".toCharArray()[0];
 	/**
 	 * Compatibility method.
 	 * @param input
@@ -88,7 +88,7 @@ public class Utils {
 	public static String withChatColors(String input) {
         char[] chars = input.toCharArray();
         for (int i = 0; i < chars.length - 1; i++) {
-			if ((chars[i] == '&' || chars[i]=='§') && ("0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(chars[i+1]) >= 0)) {
+			if ((chars[i] == '&' || chars[i] == COLOR_CHAR) && ("0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(chars[i+1]) >= 0)) {
                 chars[i] = ChatColor.COLOR_CHAR;
                 chars[i+1] = Character.toLowerCase(chars[i+1]);
             }
@@ -238,7 +238,7 @@ public class Utils {
 	
 	/**
 	 * Get an entity by reflection from a method without arguments (fail-safe).
-	 * @param projectile
+	 * @param object
 	 * @return
 	 */
 	public static Entity getEntity(Object object, String methodName) {

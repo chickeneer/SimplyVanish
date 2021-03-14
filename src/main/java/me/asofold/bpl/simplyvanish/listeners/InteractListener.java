@@ -73,7 +73,7 @@ public final class InteractListener implements Listener {
 		final Player player = event.getPlayer();
 		if (shouldCancel(player.getName())){
 			final Block block = event.getClickedBlock();
-			if (block != null && hasBypass(player, block.getTypeId())) return;
+			//TODO: if (block != null && hasBypass(player, block.getTypeId())) return;
 			event.setCancelled(true);
 			Utils.sendBlock(event.getPlayer(), block);
 		}

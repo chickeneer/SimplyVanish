@@ -60,7 +60,7 @@ public class InventoryUtil {
 			}
 			StringBuilder b = new StringBuilder();
 			b.append("Inventory(" + other.getName() + "): ");
-			addItemDescr(items, b);
+			//TODO: addItemDescr(items, b);
 			viewer.sendMessage(b.toString());
 		}
 	}
@@ -84,7 +84,7 @@ public class InventoryUtil {
 	 */
 	public static String getItemDescr(Collection<ItemStack> items){
 		StringBuilder builder = new StringBuilder();
-		addItemDescr(items, builder);
+		//TODO addItemDescr(items, builder);
 		return builder.toString();
 	}
 	
@@ -93,13 +93,14 @@ public class InventoryUtil {
 	 * @param items
 	 * @param builder
 	 */
+	/* TODO:
 	public static void addItemDescr(Collection<ItemStack> items, StringBuilder builder) {
 		if (items.isEmpty()) return;
 		List<String> keys = new ArrayList<String>(items.size()); // will rather be shorter.
 		Map<String, Integer>  dropList = new HashMap<String, Integer>();
 		for ( ItemStack stack:items){
 			if (stack == null) continue;
-			if (stack.getTypeId() == 0) continue;
+			if (stack.getType() == Material.AIR) continue;
 			int d ;
 			if ( stack.getType().isBlock()) d = stack.getData().getData();
 			else d = stack.getDurability();
@@ -147,6 +148,6 @@ public class InventoryUtil {
 			if (data == 0) return "" + id;
 			else return "" + id + ":" + data;
 		}
-	}
+	}*/
 	
 }

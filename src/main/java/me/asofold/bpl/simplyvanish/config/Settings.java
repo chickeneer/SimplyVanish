@@ -309,7 +309,7 @@ public class Settings {
 				continue;
 			}
 			try{
-				mat = Material.getMaterial(Integer.parseInt(entry.trim()));
+				mat = null; //TODO: Material.getMaterial(Integer.parseInt(entry.trim()));
 			}
 			catch (Throwable t){	
 			}
