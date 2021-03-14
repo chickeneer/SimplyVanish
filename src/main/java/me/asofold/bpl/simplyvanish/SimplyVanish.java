@@ -1,6 +1,5 @@
 package me.asofold.bpl.simplyvanish;
 
-import me.asofold.bpl.simplyvanish.api.events.GetVanishConfigEvent;
 import me.asofold.bpl.simplyvanish.api.hooks.Hook;
 import me.asofold.bpl.simplyvanish.command.SimplyVanishCommand;
 import me.asofold.bpl.simplyvanish.config.Path;
@@ -11,7 +10,6 @@ import me.asofold.bpl.simplyvanish.config.compatlayer.CompatConfigFactory;
 import me.asofold.bpl.simplyvanish.listeners.*;
 import me.asofold.bpl.simplyvanish.stats.Stats;
 import me.asofold.bpl.simplyvanish.util.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
@@ -215,6 +213,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param playerName
      * @param vanished
      */
+    @Deprecated
     public static boolean setVanished(String playerName, boolean vanished) {
         if (!core.isEnabled()) {
             return false;
@@ -228,6 +227,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param playerName Exact player name.
      * @return
      */
+    @Deprecated
     public static boolean isVanished(String playerName) {
         if (!core.isEnabled()) {
             return false;
@@ -284,6 +284,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param create
      * @return A clone of the VanishConfig.
      */
+    @Deprecated
     public static VanishConfig getVanishConfig(String playerName, boolean create) {
         VanishConfig cfg = core.getVanishConfig(playerName, false);
         if (cfg == null) {
@@ -306,6 +307,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param cfg
      * @param update
      */
+    @Deprecated
     public static void setVanishConfig(String playerName, VanishConfig cfg, boolean update) {
         core.setVanishConfig(playerName, cfg, update, false);
     }
@@ -320,6 +322,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param update
      * @param message
      */
+    @Deprecated
     public static void setVanishConfig(String playerName, VanishConfig cfg, boolean update, boolean message) {
         core.setVanishConfig(playerName, cfg, update, message);
     }
@@ -394,6 +397,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param name
      * @return Hook or null, if not registered.
      */
+    @Deprecated
     public static Hook getRegisteredHook(String name) {
         return core.getHookUtil().getHook(name);
     }
@@ -446,25 +450,6 @@ public class SimplyVanish extends JavaPlugin {
      */
     public static SimplyVanish getPluginInstance() {
         return core.getPlugin();
-    }
-
-    /**
-     * Get a thread safe copy of the VanishConfig for a player.<br>
-     * This method will synchronize into the main server thread with an event,
-     * this take up to 50 milliseconds for processing, but it will return a copy
-     * of the VanishConfig instance for the player, exactly at a certain moment of time.<br>
-     * <p>
-     * NOTE: This probably mostly obsolete and will likely be removed for the use of synchronized maps, but it is interesting to see (once) to use events to get some object in a thread safe way.
-     *
-     * @param playerName
-     * @param create
-     * @return
-     */
-    public static VanishConfig getVanishConfigThreadSafe(String playerName, boolean create) {
-        // bit hacky:
-        GetVanishConfigEvent event = new GetVanishConfigEvent(playerName, create);
-        Bukkit.getPluginManager().callEvent(event);
-        return event.getVanishConfig();
     }
 
 }

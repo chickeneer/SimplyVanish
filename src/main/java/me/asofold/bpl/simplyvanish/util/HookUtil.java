@@ -13,10 +13,8 @@ import java.util.*;
 
 /**
  * Auxiliary methods for hooks.
- *
- * @author mc_dev
  */
-public class HookUtil {
+public final class HookUtil {
     /**
      * Hooks by purpose.
      */
@@ -202,7 +200,7 @@ public class HookUtil {
         }
     }
 
-    public final void callBeforeSetFlags(final String playerName, final VanishConfig oldCfg, final VanishConfig newCfg) {
+    public void callBeforeSetFlags(final String playerName, final VanishConfig oldCfg, final VanishConfig newCfg) {
         final HookPurpose sup = HookPurpose.BEFORE_SETFLAGS;
         for (final Hook hook : getUsedHooks(sup)) {
             try {
@@ -213,7 +211,7 @@ public class HookUtil {
         }
     }
 
-    public final void callAfterSetFlags(final String playerName) {
+    public void callAfterSetFlags(final String playerName) {
         final HookPurpose sup = HookPurpose.AFTER_SETFLAGS;
         for (final Hook hook : getUsedHooks(sup)) {
             try {
@@ -224,7 +222,7 @@ public class HookUtil {
         }
     }
 
-    public final void callBeforeReappear(final String playerName) {
+    public void callBeforeReappear(final String playerName) {
         final HookPurpose sup = HookPurpose.BEFORE_REAPPEAR;
         for (final Hook hook : getUsedHooks(sup)) {
             try {
@@ -235,7 +233,7 @@ public class HookUtil {
         }
     }
 
-    public final void callAfterReappear(final String playerName) {
+    public void callAfterReappear(final String playerName) {
         final HookPurpose sup = HookPurpose.AFTER_REAPPEAR;
         for (final Hook hook : getUsedHooks(sup)) {
             try {
@@ -246,7 +244,7 @@ public class HookUtil {
         }
     }
 
-    public final boolean allowUpdateVanishState(final Player player, final int hookId) {
+    public boolean allowUpdateVanishState(final Player player, final int hookId) {
         final HookPurpose sup = HookPurpose.ALLOW_UPDATE;
         boolean allow = true;
         for (final Hook hook : getUsedHooks(sup)) {
@@ -259,7 +257,7 @@ public class HookUtil {
         return allow;
     }
 
-    public final boolean allowShow(final Player player, final Player canSee) {
+    public  boolean allowShow(final Player player, final Player canSee) {
         final HookPurpose sup = HookPurpose.ALLOW_SHOW;
         boolean allow = true;
         for (final Hook hook : getUsedHooks(sup)) {
@@ -272,7 +270,7 @@ public class HookUtil {
         return allow;
     }
 
-    public final boolean allowHide(final Player player, final Player canNotSee) {
+    public boolean allowHide(final Player player, final Player canNotSee) {
         final HookPurpose sup = HookPurpose.ALLOW_HIDE;
         boolean allow = true;
         for (final Hook hook : getUsedHooks(sup)) {

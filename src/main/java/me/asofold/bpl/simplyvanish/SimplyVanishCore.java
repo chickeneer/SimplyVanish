@@ -2,7 +2,6 @@ package me.asofold.bpl.simplyvanish;
 
 import me.asofold.bpl.simplyvanish.api.events.SimplyVanishStateEvent;
 import me.asofold.bpl.simplyvanish.api.hooks.impl.DynmapHook;
-import me.asofold.bpl.simplyvanish.api.hooks.impl.Essentials2Hook;
 import me.asofold.bpl.simplyvanish.api.hooks.impl.LibsDisguisesHook;
 import me.asofold.bpl.simplyvanish.config.Settings;
 import me.asofold.bpl.simplyvanish.config.VanishConfig;
@@ -20,17 +19,15 @@ import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
 
-
 /**
  * Core methods for vanish/reappear.
- *
- * @author mc_dev
  */
 public class SimplyVanishCore {
 
     /**
      * Vanished players.
      */
+    @Deprecated
     private final Map<String, VanishConfig> vanishConfigs = Collections.synchronizedMap(new HashMap<>(20, 0.5f));
 
     private final HookUtil hookUtil = new HookUtil();
@@ -269,7 +266,7 @@ public class SimplyVanishCore {
         }
         final String msgNotify = SimplyVanish.msgLabel + ChatColor.GREEN + name + ChatColor.GRAY + " vanished.";
         for (final Player other : Bukkit.getServer().getOnlinePlayers()) {
-            if (other.getName().equals(name)) {
+            if (other.equals(player)) {
                 continue;
             }
             final boolean shouldSee = shouldSeeVanished(other);
@@ -324,7 +321,7 @@ public class SimplyVanishCore {
         }
         final String msgNotify = SimplyVanish.msgLabel + ChatColor.RED + name + ChatColor.GRAY + " reappeared.";
         for (final Player other : Bukkit.getServer().getOnlinePlayers()) {
-            if (other.getName().equals(name)) {
+            if (other.equals(player)) {
                 continue;
             }
             boolean notify = settings.notifyState && hasPermission(other, settings.notifyStatePerm);
@@ -365,6 +362,7 @@ public class SimplyVanishCore {
      * @param vanished
      * @return
      */
+    @Deprecated
     public boolean setVanished(String playerName, boolean vanished) {
         playerName = playerName.toLowerCase();
         boolean was = isVanished(playerName);
@@ -490,6 +488,7 @@ public class SimplyVanishCore {
      * @param other      If is sender is other than name
      * @param save       If to save state.
      */
+    @Deprecated
     public void setFlags(String playerName, String[] args, int startIndex, CommandSender sender, boolean hasBypass, boolean other, boolean save) {
         long ns = System.nanoTime();
         playerName = playerName.trim().toLowerCase();
@@ -597,6 +596,7 @@ public class SimplyVanishCore {
      * @param sender
      * @param name
      */
+    @Deprecated
     public void onShowFlags(CommandSender sender, String name) {
         if (name == null) {
             name = sender.getName();
@@ -660,6 +660,7 @@ public class SimplyVanishCore {
         }
     }
 
+    @Deprecated
     public boolean addVanishedName(String name) {
         VanishConfig cfg = getVanishConfig(name, true);
         boolean res = false;
@@ -677,6 +678,7 @@ public class SimplyVanishCore {
      * @param name
      * @return If the player was vanished.
      */
+    @Deprecated
     public boolean removeVanishedName(String name) {
         VanishConfig cfg = getVanishConfig(name, false);
         if (cfg == null) {
@@ -712,6 +714,7 @@ public class SimplyVanishCore {
         return hasPermission(player, "simplyvanish.see-all");
     }
 
+    @Deprecated
     public final boolean isVanished(final String playerName) {
         final VanishConfig cfg = getVanishConfig(playerName, false);
         if (cfg == null) {
@@ -821,6 +824,7 @@ public class SimplyVanishCore {
      * @param create
      * @return
      */
+    @Deprecated
     public final VanishConfig getVanishConfig(final String name, final boolean create) {
         final String lcName = name.toLowerCase();
         final VanishConfig cfg = vanishConfigs.get(lcName);
@@ -835,10 +839,12 @@ public class SimplyVanishCore {
         }
     }
 
+    @Deprecated
     private final void putVanishConfig(final String name, final VanishConfig cfg) {
         vanishConfigs.put(name.toLowerCase(), cfg);
     }
 
+    @Deprecated
     private final void removeVanishConfig(final String name) {
         vanishConfigs.remove(name.toLowerCase());
     }
@@ -851,6 +857,7 @@ public class SimplyVanishCore {
      * @param update
      * @param message
      */
+    @Deprecated
     public void setVanishConfig(String playerName, VanishConfig cfg,
                                 boolean update, boolean message) {
         VanishConfig newCfg = new VanishConfig();
@@ -872,15 +879,11 @@ public class SimplyVanishCore {
         hookUtil.registerOnLoadHooks();
         try {
             hookUtil.addHook(new LibsDisguisesHook());
-        } catch (Exception t) {
+        } catch (Exception ignored) {
         }
         try {
             hookUtil.addHook(new DynmapHook());
-        } catch (Exception t) {
-        }
-        try {
-            hookUtil.addHook(new Essentials2Hook());
-        } catch (Exception t) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -919,6 +922,7 @@ public class SimplyVanishCore {
         return hookUtil.getNewHookId();
     }
 
+    @Deprecated
     public void setGod(String name, boolean god, CommandSender notify) {
         VanishConfig cfg = getVanishConfig(name, true);
         if (god == cfg.god.state) {

@@ -1,11 +1,11 @@
 name: SimplyVanish
 main: me.asofold.bpl.simplyvanish.SimplyVanish
-version: 1.3.2
+version: 2.0.0
+api-version: 1.16
 authors: [ asofold, jeikobu__ ]
 softdepend:
-  - DisguiseCraft
+  - LibsDisguises
   - dynmap
-  - Essentials
   - ProtocolLib
 commands:
   vanish:

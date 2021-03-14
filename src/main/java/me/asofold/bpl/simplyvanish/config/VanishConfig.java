@@ -10,8 +10,6 @@ import java.util.Map.Entry;
  * TODO: ?: use PriorityValue for this.
  * <p>
  * to add (5 places) : member, readFromArray, toLine, needsSave, getChanges
- *
- * @author mc_dev
  */
 public class VanishConfig implements Cloneable {
 
