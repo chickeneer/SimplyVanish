@@ -7,17 +7,17 @@ import me.asofold.bpl.simplyvanish.api.hooks.HookPurpose;
 
 public class ProtocolLibHook extends AbstractHook {
 
-	private static final HookPurpose[] purpose = new HookPurpose[]{
+    private static final HookPurpose[] purpose = new HookPurpose[]{
 //		HookPurpose.LISTENER,
 //		HookPurpose.AFTER_VANISH, HookPurpose.AFTER_REAPPEAR,
 //		HookPurpose.AFTER_SETFLAGS,
-	};
-	
+    };
+
 //	private final ProtocolManager protocolManager;
-	
-	public ProtocolLibHook(SimplyVanish plugin){
+
+    public ProtocolLibHook(SimplyVanish plugin) {
 //		protocolManager = ProtocolLibrary.getProtocolManager();
-		throw new RuntimeException("not intended for use :)");
+        throw new RuntimeException("not intended for use :)");
 //		protocolManager.addPacketListener(new PacketAdapter(plugin, ConnectionSide.SERVER_SIDE, ListenerPriority.NORMAL, 0x1F, 0x22) {
 //			@Override
 //			public void onPacketSending(PacketEvent event) {
@@ -44,42 +44,42 @@ public class ProtocolLibHook extends AbstractHook {
 //				}
 //			}
 //		});
-	}
+    }
 
-	@Override
-	public String getHookName() {
-		return "ProtocolLib";
-	}
+    @Override
+    public String getHookName() {
+        return "ProtocolLib";
+    }
 
-	@Override
-	public HookPurpose[] getSupportedMethods() {
-		return purpose;
-	}
+    @Override
+    public HookPurpose[] getSupportedMethods() {
+        return purpose;
+    }
 
-	@Override
-	public HookListener getListener() {
-		return new HookListener() {
-			@Override
-			public boolean unregisterEvents() {
-				return false;
-			}
-			// TODO
-		};
-	}
+    @Override
+    public HookListener getListener() {
+        return new HookListener() {
+            @Override
+            public boolean unregisterEvents() {
+                return false;
+            }
+            // TODO
+        };
+    }
 
-	@Override
-	public void afterVanish(String playerName) {
-		// TODO
-	}
+    @Override
+    public void afterVanish(String playerName) {
+        // TODO
+    }
 
-	@Override
-	public void afterReappear(String playerName) {
-		// TODO
-	}
+    @Override
+    public void afterReappear(String playerName) {
+        // TODO
+    }
 
-	@Override
-	public void afterSetFlags(String playerName) {
-		// TODO
-	}
+    @Override
+    public void afterSetFlags(String playerName) {
+        // TODO
+    }
 
 }
