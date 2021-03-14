@@ -17,11 +17,19 @@ public final class PickupListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     final void onItemPickUp(final PlayerPickupItemEvent event) {
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            return;
+        }
         final Player player = event.getPlayer();
         final VanishConfig cfg = core.getVanishConfig(player.getName(), false);
-        if (cfg == null) return;
-        if (!cfg.vanished.state) return;
-        if (!cfg.pickup.state) event.setCancelled(true);
+        if (cfg == null) {
+            return;
+        }
+        if (!cfg.vanished.state) {
+            return;
+        }
+        if (!cfg.pickup.state) {
+            event.setCancelled(true);
+        }
     }
 }

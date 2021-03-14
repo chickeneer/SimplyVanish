@@ -34,7 +34,9 @@ public class InventoryUtil {
                         Utils.send(viewer, SimplyVanish.msgLabel + ChatColor.RED + "Not available: " + playerName);
                         return;
                     }
-                    if (player.getOpenInventory() != null) player.closeInventory();
+                    if (player.getOpenInventory() != null) {
+                        player.closeInventory();
+                    }
                     final Inventory inv = other.getInventory();
                     prepareInventoryOpen(player, inv, cfg); // TODO
                     // TODO: trigger OpenInv if modifiable !
@@ -49,7 +51,9 @@ public class InventoryUtil {
             }
             List<ItemStack> items = new LinkedList<ItemStack>();
             for (ItemStack stack : other.getInventory().getContents()) {
-                if (stack != null) items.add(stack);
+                if (stack != null) {
+                    items.add(stack);
+                }
             }
             StringBuilder b = new StringBuilder();
             b.append("Inventory(" + other.getName() + "): ");
@@ -66,10 +70,13 @@ public class InventoryUtil {
      * @param cfg
      */
     public static void prepareInventoryOpen(Player player, Inventory inventory, VanishConfig cfg) {
-        if (SimplyVanish.hasPermission(player, "simplyvanish.inventories.manipulate"))
+        if (SimplyVanish.hasPermission(player, "simplyvanish.inventories.manipulate")) {
             cfg.preventInventoryAction = false;
-        else if (inventory == player.getInventory()) cfg.preventInventoryAction = false;
-        else cfg.preventInventoryAction = true;
+        } else if (inventory == player.getInventory()) {
+            cfg.preventInventoryAction = false;
+        } else {
+            cfg.preventInventoryAction = true;
+        }
     }
 
     /**

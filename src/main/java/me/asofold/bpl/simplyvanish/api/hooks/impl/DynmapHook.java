@@ -16,7 +16,9 @@ public class DynmapHook extends AbstractHook {
 
     public DynmapHook() {
         getter = new HookPluginGetter<>("dynmap");
-        if (getter.getPlugin() == null) throw new RuntimeException("Dynmap not found."); // To let it fail.
+		if (getter.getPlugin() == null) {
+			throw new RuntimeException("Dynmap not found."); // To let it fail.
+		}
     }
 
     @Override
@@ -46,7 +48,9 @@ public class DynmapHook extends AbstractHook {
 
     private void adjust(String playerName) {
         Player player = Bukkit.getPlayer(playerName);
-        if (player != null) playerName = player.getName(); // TODO...
+		if (player != null) {
+			playerName = player.getName(); // TODO...
+		}
         boolean vanished = SimplyVanish.isVanished(playerName);
         DynmapAPI plg = (DynmapAPI) getter.getPlugin();
         plg.assertPlayerInvisibility(playerName, vanished, "SimplyVanish");

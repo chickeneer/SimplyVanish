@@ -32,7 +32,9 @@ public class PluginGetter<T extends Plugin> implements Listener {
     @SuppressWarnings("unchecked")
     final void onPluginEnable(final PluginEnableEvent event) {
         final Plugin ref = event.getPlugin();
-        if (plugin.getName().equals(pluginName)) plugin = (T) ref;
+        if (plugin.getName().equals(pluginName)) {
+            plugin = (T) ref;
+        }
     }
 
     /**

@@ -20,8 +20,12 @@ public class Panic {
      */
     public static boolean checkInvolved(Player player1, Player player2, String tag, boolean noAbort) {
         boolean inconsistent = false;
-        if (!Utils.checkOnline(player1, tag)) inconsistent = true;
-        if (!Utils.checkOnline(player2, tag)) inconsistent = true;
+        if (!Utils.checkOnline(player1, tag)) {
+            inconsistent = true;
+        }
+        if (!Utils.checkOnline(player2, tag)) {
+            inconsistent = true;
+        }
         if (noAbort) {
             return true;
         } else if (inconsistent) {

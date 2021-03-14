@@ -149,8 +149,11 @@ public class VanishConfig implements Cloneable {
 
 
     protected Flag addFlag(String name, boolean preset) {
-        if (flags.containsKey(name)) throw new IllegalArgumentException("Flags must be unique, got: " + name);
-        else if (name == null) throw new IllegalArgumentException("Flag is null: " + name);
+        if (flags.containsKey(name)) {
+            throw new IllegalArgumentException("Flags must be unique, got: " + name);
+        } else if (name == null) {
+            throw new IllegalArgumentException("Flag is null: " + name);
+        }
         Flag flag = new Flag(name, preset);
         flags.put(name, flag);
         return flag;
@@ -167,7 +170,9 @@ public class VanishConfig implements Cloneable {
         for (int i = startIndex; i < parts.length; i++) {
             String part = parts[i];
             String s = part.trim().toLowerCase();
-            if (s.isEmpty() || s.length() < 2) continue;
+            if (s.isEmpty() || s.length() < 2) {
+                continue;
+            }
             boolean state = false;
             if (s.startsWith("+")) {
                 state = true;
@@ -178,13 +183,19 @@ public class VanishConfig implements Cloneable {
             } else if (s.startsWith("*")) {
                 // (ignore these)
                 continue;
-            } else state = true;
+            } else {
+                state = true;
+            }
 
             s = getMappedFlagName(s);
-            if (!allowAll && (s.equals("vanished") || s.equals("god"))) continue;
+            if (!allowAll && (s.equals("vanished") || s.equals("god"))) {
+                continue;
+            }
 
             Flag flag = flags.get(s);
-            if (flag == null) continue; // should not happen by contract.
+            if (flag == null) {
+                continue; // should not happen by contract.
+            }
             if (state != flag.state) {
                 flag.state = state;
                 changed = true;
@@ -201,7 +212,9 @@ public class VanishConfig implements Cloneable {
     public String toLine() {
         StringBuilder out = new StringBuilder();
         for (Flag flag : flags.values()) {
-            if (flag.state == flag.preset) continue;
+            if (flag.state == flag.preset) {
+                continue;
+            }
             out.append(" ");
             out.append(flag.toLine());
         }
@@ -216,7 +229,9 @@ public class VanishConfig implements Cloneable {
      */
     public boolean needsSave() {
         for (Flag flag : flags.values()) {
-            if (flag.preset != flag.state) return true;
+            if (flag.preset != flag.state) {
+                return true;
+            }
         }
         return false;
     }
@@ -229,12 +244,19 @@ public class VanishConfig implements Cloneable {
      * @return
      */
     public static String getMappedFlagName(String input) {
-        if (input.isEmpty()) return input;
+        if (input.isEmpty()) {
+            return input;
+        }
         char c = input.charAt(0);
-        if (input.length() > 1 && (c == '+' || c == '-' || c == '*')) input = input.substring(1);
+        if (input.length() > 1 && (c == '+' || c == '-' || c == '*')) {
+            input = input.substring(1);
+        }
         String mapped = mappedFlags.get(input);
-        if (mapped == null) return input;
-        else return mapped;
+        if (mapped == null) {
+            return input;
+        } else {
+            return mapped;
+        }
     }
 
     /**
@@ -255,10 +277,14 @@ public class VanishConfig implements Cloneable {
                 out.add("-" + name);
                 continue;
             }
-            if (fromFlag.state != toFlag.state) out.add(toFlag.toLine());
+            if (fromFlag.state != toFlag.state) {
+                out.add(toFlag.toLine());
+            }
         }
         for (String name : to.flags.keySet()) {
-            if (!from.flags.containsKey(name)) out.add(to.flags.get(name).toLine());
+            if (!from.flags.containsKey(name)) {
+                out.add(to.flags.get(name).toLine());
+            }
         }
         return out;
     }
@@ -305,8 +331,11 @@ public class VanishConfig implements Cloneable {
         for (Entry<String, Flag> entry : other.flags.entrySet()) {
             String n = entry.getKey();
             Flag flag = entry.getValue();
-            if (has(n)) set(n, flag.state);
-            else flags.put(n, flag.clone());
+            if (has(n)) {
+                set(n, flag.state);
+            } else {
+                flags.put(n, flag.clone());
+            }
         }
     }
 

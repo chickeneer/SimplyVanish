@@ -82,18 +82,18 @@ public class SimplyVanishCore {
     }
 
 
-//	/**
-//	 * TODO: Unused ?
-//	 * @return
-//	 */
-//	public boolean shouldSave(){
-//		synchronized(vanishConfigs){
-//			for (VanishConfig cfg : vanishConfigs.values()){
-//				if (cfg.changed) return true;
-//			}
-//		}
-//		return false;
-//	}
+    //	/**
+    //	 * TODO: Unused ?
+    //	 * @return
+    //	 */
+    //	public boolean shouldSave(){
+    //		synchronized(vanishConfigs){
+    //			for (VanishConfig cfg : vanishConfigs.values()){
+    //				if (cfg.changed) return true;
+    //			}
+    //		}
+    //		return false;
+    //	}
 
     /**
      * Might save vanished names to file, checks timestamp, does NOT update states (!).
@@ -102,21 +102,29 @@ public class SimplyVanishCore {
         if (settings.saveVanishedDelay >= 0) {
             if (System.currentTimeMillis() - tsSave > settings.saveVanishedDelay) {
                 // Delay has expired.
-                if (saveTaskId != -1) saveTaskId = -1; // Do not cancel anything, presumably that is done.
+                if (saveTaskId != -1) {
+                    saveTaskId = -1; // Do not cancel anything, presumably that is done.
+                }
                 doSaveVanished();
             } else {
                 // Within delay time frame, schedule new task (unless already done):
                 BukkitScheduler sched = Bukkit.getServer().getScheduler();
-                if (saveTaskId != -1 && sched.isQueued(saveTaskId)) return;
+                if (saveTaskId != -1 && sched.isQueued(saveTaskId)) {
+                    return;
+                }
                 saveTaskId = sched.scheduleSyncDelayedTask(plugin, new Runnable() {
                     @Override
                     public void run() {
                         onSaveVanished(); // Check if save is necessary.
                     }
                 }, 1 + (settings.saveVanishedDelay / 50));
-                if (saveTaskId == -1) doSaveVanished(); // force save if scheduling failed.
+                if (saveTaskId == -1) {
+                    doSaveVanished(); // force save if scheduling failed.
+                }
             }
-        } else doSaveVanished(); // Delay is not used.
+        } else {
+            doSaveVanished(); // Delay is not used.
+        }
     }
 
     /**
@@ -130,7 +138,9 @@ public class SimplyVanishCore {
             Utils.warn("Can not save vanished players: File is not set.");
             return;
         }
-        if (!createFile(file, "vanished players")) return;
+        if (!createFile(file, "vanished players")) {
+            return;
+        }
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter(new FileWriter(file));
@@ -154,11 +164,12 @@ public class SimplyVanishCore {
         } catch (IOException e) {
             Utils.warn("Can not save vanished players: " + e.getMessage());
         } finally {
-            if (writer != null)
+            if (writer != null) {
                 try {
                     writer.close();
                 } catch (IOException e) {
                 }
+            }
         }
         SimplyVanish.stats.addStats(SimplyVanish.statsSave, System.nanoTime() - ns);
     }
@@ -180,7 +191,9 @@ public class SimplyVanishCore {
             Utils.warn("Can not load vanished players: File is not set.");
             return;
         }
-        if (!createFile(file, "vanished players")) return;
+        if (!createFile(file, "vanished players")) {
+            return;
+        }
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader(file));
@@ -191,13 +204,17 @@ public class SimplyVanishCore {
                     if (n.startsWith("nosee:") && n.length() > 6) {
                         // kept for compatibility:
                         n = n.substring(7).trim();
-                        if (n.isEmpty()) continue;
+                        if (n.isEmpty()) {
+                            continue;
+                        }
                         VanishConfig cfg = getVanishConfig(n, true);
                         cfg.set(cfg.see, false);
                     } else {
                         String[] split = n.split(" ");
                         n = split[0].trim().toLowerCase();
-                        if (n.isEmpty()) continue;
+                        if (n.isEmpty()) {
+                            continue;
+                        }
                         VanishConfig cfg = getVanishConfig(n, true);
                         cfg.readFromArray(split, 1, true);
                     }
@@ -207,11 +224,12 @@ public class SimplyVanishCore {
         } catch (IOException e) {
             Utils.warn("Can not load vanished players: " + e.getMessage());
         } finally {
-            if (reader != null)
+            if (reader != null) {
                 try {
                     reader.close();
                 } catch (IOException e) {
                 }
+            }
         }
     }
 
@@ -225,8 +243,9 @@ public class SimplyVanishCore {
     public boolean createFile(File file, String tag) {
         if (!file.exists()) {
             try {
-                if (file.createNewFile()) return true;
-                else {
+                if (file.createNewFile()) {
+                    return true;
+                } else {
                     Utils.warn("Could not create " + tag + " file.");
                 }
             } catch (IOException e) {
@@ -272,7 +291,9 @@ public class SimplyVanishCore {
         }
         final String msgNotify = SimplyVanish.msgLabel + ChatColor.GREEN + name + ChatColor.GRAY + " vanished.";
         for (final Player other : Bukkit.getServer().getOnlinePlayers()) {
-            if (other.getName().equals(name)) continue;
+            if (other.getName().equals(name)) {
+                continue;
+            }
             final boolean shouldSee = shouldSeeVanished(other);
             final boolean notify = settings.notifyState && hasPermission(other, settings.notifyStatePerm);
             if (other.canSee(player)) {
@@ -350,7 +371,9 @@ public class SimplyVanishCore {
             }
         }
         if (message && vcfg.notify.state) {
-            player.sendMessage(SimplyVanish.msgLabel + ChatColor.GRAY + "You are " + (was ? "now" : "still") + " " + ChatColor.RED + "visible" + ChatColor.GRAY + " to everyone!");
+            player.sendMessage(
+                    SimplyVanish.msgLabel + ChatColor.GRAY + "You are " + (was ? "now" : "still") + " " + ChatColor.RED + "visible" + ChatColor.GRAY +
+                    " to everyone!");
         }
         SimplyVanish.stats.addStats(SimplyVanish.statsReappear, System.nanoTime() - ns);
     }
@@ -377,23 +400,35 @@ public class SimplyVanishCore {
         vanished = svEvent.getVisibleAfter();
         // TODO
         // call hooks
-        if (vanished) hookUtil.callBeforeVanish(playerName);
-        else hookUtil.callBeforeReappear(playerName);
+        if (vanished) {
+            hookUtil.callBeforeVanish(playerName);
+        } else {
+            hookUtil.callBeforeReappear(playerName);
+        }
 
         // Do vanish or reappear:
         Player player = Bukkit.getServer().getPlayerExact(playerName);
         if (player != null) {
             // The simple but costly part.
-            if (vanished) doVanish(player, true);
-            else doReappear(player, true);
+            if (vanished) {
+                doVanish(player, true);
+            } else {
+                doReappear(player, true);
+            }
         } else {
             // Now very simple (lower-case names).
-            if (vanished) addVanishedName(playerName);
-            else removeVanishedName(playerName);
+            if (vanished) {
+                addVanishedName(playerName);
+            } else {
+                removeVanishedName(playerName);
+            }
         }
         // call further hooks:
-        if (vanished) hookUtil.callAfterVanish(playerName);
-        else hookUtil.callAfterReappear(playerName);
+        if (vanished) {
+            hookUtil.callAfterVanish(playerName);
+        } else {
+            hookUtil.callAfterReappear(playerName);
+        }
         return true;
     }
 
@@ -431,8 +466,11 @@ public class SimplyVanishCore {
         final String playerName = player.getName();
         if (!hookUtil.allowUpdateVanishState(player, hookId)) {
             // TODO: either just return or still do messaging ?
-            if (isVanished(playerName)) addVanishedName(playerName);
-            else removeVanishedName(playerName);
+            if (isVanished(playerName)) {
+                addVanishedName(playerName);
+            } else {
+                removeVanishedName(playerName);
+            }
             SimplyVanish.stats.addStats(SimplyVanish.statsUpdateVanishState, System.nanoTime() - ns);
             return false;
         }
@@ -443,12 +481,21 @@ public class SimplyVanishCore {
         // Show or hide other players to player:
         for (final Player other : players) {
             if (shouldSee || !isVanished(other.getName())) {
-                if (!player.canSee(other)) showPlayer(other, player);
-            } else if (player.canSee(other)) hidePlayer(other, player);
-            if (!was && !other.canSee(player)) showPlayer(player, other);
+                if (!player.canSee(other)) {
+                    showPlayer(other, player);
+                }
+            } else if (player.canSee(other)) {
+                hidePlayer(other, player);
+            }
+            if (!was && !other.canSee(player)) {
+                showPlayer(player, other);
+            }
         }
-        if (was) doVanish(player, message); // remove: a) do not save 2x b) people will get notified.
-        else removeVanishedName(playerName);
+        if (was) {
+            doVanish(player, message); // remove: a) do not save 2x b) people will get notified.
+        } else {
+            removeVanishedName(playerName);
+        }
         SimplyVanish.stats.addStats(SimplyVanish.statsUpdateVanishState, System.nanoTime() - ns);
         return true;
     }
@@ -468,17 +515,25 @@ public class SimplyVanishCore {
     public void setFlags(String playerName, String[] args, int startIndex, CommandSender sender, boolean hasBypass, boolean other, boolean save) {
         long ns = System.nanoTime();
         playerName = playerName.trim().toLowerCase();
-        if (playerName.isEmpty()) return;
+        if (playerName.isEmpty()) {
+            return;
+        }
         final String permBase = "simplyvanish.flags.set." + (other ? "other" : "self"); // bypass permission
-        if (!hasBypass) hasBypass = hasPermission(sender, permBase);
+        if (!hasBypass) {
+            hasBypass = hasPermission(sender, permBase);
+        }
         VanishConfig cfg = getVanishConfig(playerName, false);
         boolean hasSomePerm = hasBypass; // indicates that the player has any permission at all.
-        if (cfg == null) cfg = new VanishConfig();
+        if (cfg == null) {
+            cfg = new VanishConfig();
+        }
         boolean hasClearFlag = false;
         List<String[]> applySets = new LinkedList<String[]>();
         for (int i = startIndex; i < args.length; i++) {
             final String arg = args[i].trim().toLowerCase();
-            if (arg.isEmpty()) continue;
+            if (arg.isEmpty()) {
+                continue;
+            }
             if (arg.charAt(0) == '*') {
                 String name = VanishConfig.getMappedFlagName(arg);
                 if (name.equals("clear")) {
@@ -487,7 +542,9 @@ public class SimplyVanishCore {
                     String[] set = settings.flagSets.get(name);
                     applySets.add(set);
                     for (String x : set) {
-                        if (VanishConfig.getMappedFlagName(x).equals("clear")) hasClearFlag = true;
+                        if (VanishConfig.getMappedFlagName(x).equals("clear")) {
+                            hasClearFlag = true;
+                        }
                     }
                 }
             }
@@ -496,7 +553,9 @@ public class SimplyVanishCore {
         if (hasClearFlag) {
             newCfg = new VanishConfig();
             newCfg.set("vanished", cfg.get("vanished"));
-        } else newCfg = cfg.clone();
+        } else {
+            newCfg = cfg.clone();
+        }
         // flag sets:
         for (String[] temp : applySets) {
             newCfg.readFromArray(temp, 0, false);
@@ -511,15 +570,17 @@ public class SimplyVanishCore {
         Set<String> ok = new HashSet<String>();
         for (String fn : changes) {
             String name = fn.substring(1);
-            if (!hasBypass && !hasPermission(sender, permBase + "." + name)) missing.add(name);
-            else {
+            if (!hasBypass && !hasPermission(sender, permBase + "." + name)) {
+                missing.add(name);
+            } else {
                 hasSomePerm = true;
                 ok.add(name);
             }
         }
 
-        if (!missing.isEmpty())
+        if (!missing.isEmpty()) {
             Utils.send(sender, SimplyVanish.msgLabel + ChatColor.RED + "Missing permission for flags: " + Utils.join(missing, ", "));
+        }
         if (!hasSomePerm) {
             // Difficult: might be a player without ANY permission.
             // TODO: maybe check permissions for all flags
@@ -537,13 +598,17 @@ public class SimplyVanishCore {
         for (String name : ok) {
             cfg.set(name, newCfg.get(name));
         }
-        if (save && cfg.changed && settings.saveVanishedAlways) onSaveVanished();
+        if (save && cfg.changed && settings.saveVanishedAlways) {
+            onSaveVanished();
+        }
         Player player = Bukkit.getServer().getPlayerExact(playerName);
         if (player != null) {
             updateVanishState(player, false);
             // TODO: what if returns false
         }
-        if (!cfg.needsSave()) removeVanishedName(playerName);
+        if (!cfg.needsSave()) {
+            removeVanishedName(playerName);
+        }
         hookUtil.callAfterSetFlags(playerName);
         SimplyVanish.stats.addStats(SimplyVanish.statsSetFlags, System.nanoTime() - ns);
     }
@@ -555,7 +620,9 @@ public class SimplyVanishCore {
      * @param name
      */
     public void onShowFlags(CommandSender sender, String name) {
-        if (name == null) name = sender.getName();
+        if (name == null) {
+            name = sender.getName();
+        }
         name = name.toLowerCase();
         VanishConfig cfg = getVanishConfig(name, false);
         if (cfg != null) {
@@ -577,8 +644,12 @@ public class SimplyVanishCore {
      * @param canSee
      */
     void showPlayer(Player player, Player canSee) {
-        if (!Panic.checkInvolved(player, canSee, "showPlayer", settings.noAbort)) return;
-        if (!hookUtil.allowShow(player, canSee)) return;
+        if (!Panic.checkInvolved(player, canSee, "showPlayer", settings.noAbort)) {
+            return;
+        }
+        if (!hookUtil.allowShow(player, canSee)) {
+            return;
+        }
         try {
             canSee.showPlayer(player);
         } catch (Throwable t) {
@@ -596,8 +667,12 @@ public class SimplyVanishCore {
      * @param canNotSee
      */
     void hidePlayer(Player player, Player canNotSee) {
-        if (!Panic.checkInvolved(player, canNotSee, "hidePlayer", settings.noAbort)) return;
-        if (!hookUtil.allowHide(player, canNotSee)) return;
+        if (!Panic.checkInvolved(player, canNotSee, "hidePlayer", settings.noAbort)) {
+            return;
+        }
+        if (!hookUtil.allowHide(player, canNotSee)) {
+            return;
+        }
         try {
             canNotSee.hidePlayer(player);
         } catch (Throwable t) {
@@ -614,7 +689,9 @@ public class SimplyVanishCore {
             cfg.set(cfg.vanished, true);
             res = true;
         }
-        if (cfg.changed && settings.saveVanishedAlways) onSaveVanished();
+        if (cfg.changed && settings.saveVanishedAlways) {
+            onSaveVanished();
+        }
         return res;
     }
 
@@ -624,14 +701,20 @@ public class SimplyVanishCore {
      */
     public boolean removeVanishedName(String name) {
         VanishConfig cfg = getVanishConfig(name, false);
-        if (cfg == null) return false;
+        if (cfg == null) {
+            return false;
+        }
         boolean res = false;
         if (cfg.vanished.state) {
             cfg.set(cfg.vanished, false);
-            if (!cfg.needsSave()) removeVanishConfig(name);
+            if (!cfg.needsSave()) {
+                removeVanishConfig(name);
+            }
             res = true;
         }
-        if (cfg.changed && settings.saveVanishedAlways) onSaveVanished();
+        if (cfg.changed && settings.saveVanishedAlways) {
+            onSaveVanished();
+        }
         return res;
     }
 
@@ -644,15 +727,20 @@ public class SimplyVanishCore {
     public final boolean shouldSeeVanished(final Player player) {
         final VanishConfig cfg = getVanishConfig(player.getName(), false);
         if (cfg != null) {
-            if (!cfg.see.state) return false;
+            if (!cfg.see.state) {
+                return false;
+            }
         }
         return hasPermission(player, "simplyvanish.see-all");
     }
 
     public final boolean isVanished(final String playerName) {
         final VanishConfig cfg = getVanishConfig(playerName, false);
-        if (cfg == null) return false;
-        else return cfg.vanished.state;
+        if (cfg == null) {
+            return false;
+        } else {
+            return cfg.vanished.state;
+        }
     }
 
     /**
@@ -665,7 +753,9 @@ public class SimplyVanishCore {
         Set<String> out = new HashSet<String>();
         synchronized (vanishConfigs) {
             for (Entry<String, VanishConfig> entry : vanishConfigs.entrySet()) {
-                if (entry.getValue().vanished.state) out.add(entry.getKey());
+                if (entry.getValue().vanished.state) {
+                    out.add(entry.getKey());
+                }
             }
         }
         return out;
@@ -680,19 +770,28 @@ public class SimplyVanishCore {
         for (String n : sorted) {
             Player player = server.getPlayerExact(n);
             VanishConfig cfg = vanishConfigs.get(n);
-            if (!cfg.vanished.state) continue;
+            if (!cfg.vanished.state) {
+                continue;
+            }
             found = true;
             boolean isNosee = !cfg.see.state; // is lower case
             if (player == null) {
                 builder.append(" " + ChatColor.GRAY + "(" + n + ")");
-                if (isNosee) builder.append(ChatColor.DARK_RED + "[NOSEE]");
+                if (isNosee) {
+                    builder.append(ChatColor.DARK_RED + "[NOSEE]");
+                }
             } else {
                 builder.append(" " + ChatColor.GREEN + player.getName());
-                if (!hasPermission(player, "simplyvanish.see-all")) builder.append(ChatColor.DARK_RED + "[CANTSEE]");
-                else if (isNosee) builder.append(ChatColor.RED + "[NOSEE]");
+                if (!hasPermission(player, "simplyvanish.see-all")) {
+                    builder.append(ChatColor.DARK_RED + "[CANTSEE]");
+                } else if (isNosee) {
+                    builder.append(ChatColor.RED + "[NOSEE]");
+                }
             }
         }
-        if (!found) builder.append(" " + ChatColor.DARK_GRAY + "<none>");
+        if (!found) {
+            builder.append(" " + ChatColor.DARK_GRAY + "<none>");
+        }
         return builder.toString();
     }
 
@@ -710,18 +809,28 @@ public class SimplyVanishCore {
     }
 
     public void onNotifyPing() {
-        if (!settings.pingEnabled) return;
+        if (!settings.pingEnabled) {
+            return;
+        }
         Set<String> keys = new HashSet<String>();
         synchronized (vanishConfigs) {
             keys.addAll(vanishConfigs.keySet());
         }
         for (final String name : keys) {
             final VanishConfig cfg = vanishConfigs.get(name);
-            if (cfg == null) continue;
+            if (cfg == null) {
+                continue;
+            }
             final Player player = Bukkit.getPlayerExact(name);
-            if (player == null) continue;
-            if (!cfg.vanished.state) continue;
-            if (!cfg.ping.state || !cfg.notify.state) continue;
+            if (player == null) {
+                continue;
+            }
+            if (!cfg.vanished.state) {
+                continue;
+            }
+            if (!cfg.ping.state || !cfg.notify.state) {
+                continue;
+            }
             player.sendMessage(SimplyVanish.msgNotifyPing);
         }
     }
@@ -737,9 +846,11 @@ public class SimplyVanishCore {
     public final VanishConfig getVanishConfig(final String name, final boolean create) {
         final String lcName = name.toLowerCase();
         final VanishConfig cfg = vanishConfigs.get(lcName);
-        if (cfg != null) return cfg;
-        else if (!create) return null;
-        else {
+        if (cfg != null) {
+            return cfg;
+        } else if (!create) {
+            return null;
+        } else {
             final VanishConfig newCfg = new VanishConfig();
             vanishConfigs.put(lcName, newCfg);
             return newCfg;
@@ -774,7 +885,9 @@ public class SimplyVanishCore {
                 // TODO: what if returns false ?
             }
         }
-        if (settings.saveVanishedAlways) onSaveVanished();
+        if (settings.saveVanishedAlways) {
+            onSaveVanished();
+        }
     }
 
     void addStandardHooks() {
@@ -794,16 +907,26 @@ public class SimplyVanishCore {
     }
 
     public final boolean hasPermission(final CommandSender sender, final String perm) {
-        if (!(sender instanceof Player)) return sender.isOp();
-        if (settings.allowOps && sender.isOp()) return true;
-        else if (settings.superperms) {
-            if (sender.hasPermission(perm)) return true;
-            else if (sender.hasPermission("simplyvanish.all")) return true;
+        if (!(sender instanceof Player)) {
+            return sender.isOp();
+        }
+        if (settings.allowOps && sender.isOp()) {
+            return true;
+        } else if (settings.superperms) {
+            if (sender.hasPermission(perm)) {
+                return true;
+            } else if (sender.hasPermission("simplyvanish.all")) {
+                return true;
+            }
         }
         final Set<String> perms = settings.fakePermissions.get(((Player) sender).getName().toLowerCase());
-        if (perms == null) return false;
-        else if (perms.contains("simplyvanish.all")) return true;
-        else return perms.contains(perm.toLowerCase());
+        if (perms == null) {
+            return false;
+        } else if (perms.contains("simplyvanish.all")) {
+            return true;
+        } else {
+            return perms.contains(perm.toLowerCase());
+        }
     }
 
     public Settings getSettings() {
@@ -821,16 +944,26 @@ public class SimplyVanishCore {
     public void setGod(String name, boolean god, CommandSender notify) {
         VanishConfig cfg = getVanishConfig(name, true);
         if (god == cfg.god.state) {
-            if (notify != null)
-                Utils.send(notify, SimplyVanish.msgLabel + ChatColor.GRAY + (name.equalsIgnoreCase(notify.getName()) ? " You were " : (name + " was ")) + (god ? "already" : "not") + " in " + (god ? ChatColor.GREEN : ChatColor.RED) + "god-mode.");
+            if (notify != null) {
+                Utils.send(notify, SimplyVanish.msgLabel + ChatColor.GRAY + (name.equalsIgnoreCase(notify.getName()) ? " You were " : (name + " was ")) +
+                                   (god ? "already" : "not") + " in " + (god ? ChatColor.GREEN : ChatColor.RED) + "god-mode.");
+            }
         } else {
             cfg.set("god", god);
-            if (settings.saveVanishedAlways) onSaveVanished();
-            Utils.tryMessage(name, SimplyVanish.msgLabel + ChatColor.GRAY + "You are " + (god ? "now" : "no longer") + " in " + (god ? ChatColor.GREEN : ChatColor.RED) + "god-mode.");
-            if (notify != null && !name.equalsIgnoreCase(notify.getName()))
-                Utils.send(notify, SimplyVanish.msgLabel + ChatColor.GRAY + name + " is " + (god ? "now" : "no longer") + " in " + (god ? ChatColor.GREEN : ChatColor.RED) + "god-mode.");
+            if (settings.saveVanishedAlways) {
+                onSaveVanished();
+            }
+            Utils.tryMessage(name,
+                    SimplyVanish.msgLabel + ChatColor.GRAY + "You are " + (god ? "now" : "no longer") + " in " + (god ? ChatColor.GREEN : ChatColor.RED) +
+                    "god-mode.");
+            if (notify != null && !name.equalsIgnoreCase(notify.getName())) {
+                Utils.send(notify, SimplyVanish.msgLabel + ChatColor.GRAY + name + " is " + (god ? "now" : "no longer") + " in " +
+                                   (god ? ChatColor.GREEN : ChatColor.RED) + "god-mode.");
+            }
         }
-        if (!cfg.needsSave()) removeVanishConfig(name);
+        if (!cfg.needsSave()) {
+            removeVanishConfig(name);
+        }
     }
 
 }

@@ -53,16 +53,22 @@ public class ConfigUtil {
         String useSep = (sep == '.') ? "\\." : "" + sep;
         String[] split = path.split(useSep);
         String res;
-        if (cfg.hasEntry(split[0])) res = split[0];
-        else {
+        if (cfg.hasEntry(split[0])) {
+            res = split[0];
+        } else {
             res = stringPart(split[0]);
-            if (!cfg.hasEntry(res)) return path;
+            if (!cfg.hasEntry(res)) {
+                return path;
+            }
         }
         for (int i = 1; i < split.length; i++) {
-            if (cfg.hasEntry(res + sep + split[i])) res += sep + split[i];
-            else {
+            if (cfg.hasEntry(res + sep + split[i])) {
+                res += sep + split[i];
+            } else {
                 res += sep + stringPart(split[i]);
-                if (!cfg.hasEntry(res)) return path;
+                if (!cfg.hasEntry(res)) {
+                    return path;
+                }
             }
         }
         return res;
@@ -110,12 +116,18 @@ public class ConfigUtil {
      * @param lowerCase
      */
     public static void readStringSetFromList(CompatConfig cfg, String path, Set<String> set, boolean clear, boolean trim, boolean lowerCase) {
-        if (clear) set.clear();
+        if (clear) {
+            set.clear();
+        }
         List<String> tempList = cfg.getStringList(path, null);
         if (tempList != null) {
             for (String entry : tempList) {
-                if (trim) entry = entry.trim();
-                if (lowerCase) entry = entry.toLowerCase();
+                if (trim) {
+                    entry = entry.trim();
+                }
+                if (lowerCase) {
+                    entry = entry.toLowerCase();
+                }
                 set.add(entry);
             }
         }
@@ -206,7 +218,9 @@ public class ConfigUtil {
     }
 
     public static final String[] toArray(final Collection<String> collection) {
-        if (collection == null) return null;
+        if (collection == null) {
+            return null;
+        }
         final String[] a = new String[collection.size()];
         collection.toArray(a);
         return a;
@@ -228,7 +242,9 @@ public class ConfigUtil {
         LinkedHashMap<String, String> ordered = new LinkedHashMap<String, String>();
 
         List<String> keys = cfg.getStringKeys(path); // node names
-        if (keys.isEmpty()) return ordered;
+        if (keys.isEmpty()) {
+            return ordered;
+        }
 
         Set<String> done = new HashSet<String>();
         Map<String, String> inheritance = new HashMap<String, String>();
@@ -238,7 +254,9 @@ public class ConfigUtil {
             if (parent == null) {
                 done.add(key);
                 ordered.put(key, key);
-            } else inheritance.put(key, parent);
+            } else {
+                inheritance.put(key, parent);
+            }
         }
         // Now attempt to resolve parents:
         List<String> rem = new LinkedList<String>();
@@ -258,7 +276,9 @@ public class ConfigUtil {
             for (String key : rem) {
                 inheritance.remove(key);
             }
-            if (found == 0) break;
+            if (found == 0) {
+                break;
+            }
         }
         if (!inheritance.isEmpty()) {
             StringBuilder b = new StringBuilder();
@@ -281,7 +301,9 @@ public class ConfigUtil {
     public static String fetchResource(Class<?> clazz, String path) {
         String className = clazz.getSimpleName() + ".class";
         String classPath = clazz.getResource(className).toString();
-        if (!classPath.startsWith("jar")) return null;
+        if (!classPath.startsWith("jar")) {
+            return null;
+        }
         String absPath = classPath.substring(0, classPath.lastIndexOf("!") + 1) + "/" + path;
         try {
             URL url = new URL(absPath);
@@ -297,7 +319,9 @@ public class ConfigUtil {
                         last = r.readLine();
                     }
                     return builder.toString();
-                } else return null;
+                } else {
+                    return null;
+                }
             } catch (IOException e) {
                 return null;
             }

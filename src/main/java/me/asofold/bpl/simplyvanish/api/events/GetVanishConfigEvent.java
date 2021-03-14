@@ -17,7 +17,7 @@ public class GetVanishConfigEvent extends Event {
 
     private final String playerName;
 
-    private boolean create;
+    private final boolean create;
 
     private VanishConfig cfg = null;
 
@@ -55,8 +55,11 @@ public class GetVanishConfigEvent extends Event {
      * @param cfg
      */
     public void setVanishConfig(VanishConfig cfg) {
-        if (cfg == null) this.cfg = null;
-        else this.cfg = cfg.clone();
+        if (cfg == null) {
+            this.cfg = null;
+        } else {
+            this.cfg = cfg.clone();
+        }
     }
 
     public VanishConfig getVanishConfig() {

@@ -27,50 +27,50 @@ public interface CompatConfig {
      * @param defaultValue
      * @return
      */
-    public Boolean getBoolean(String path, Boolean defaultValue);
+    Boolean getBoolean(String path, Boolean defaultValue);
 
-    public Boolean getBoolean(String path);
+    Boolean getBoolean(String path);
 
     // Long
-    public Long getLong(String path);
+    Long getLong(String path);
 
-    public Long getLong(String path, Long defaultValue);
+    Long getLong(String path, Long defaultValue);
 
     // Double
-    public Double getDouble(String path);
+    Double getDouble(String path);
 
-    public Double getDouble(String path, Double defaultValue);
+    Double getDouble(String path, Double defaultValue);
 
-    public List<Double> getDoubleList(String path);
+    List<Double> getDoubleList(String path);
 
-    public List<Double> getDoubleList(String path, List<Double> defaultValue);
+    List<Double> getDoubleList(String path, List<Double> defaultValue);
 
     // Integer (abbreviation)
-    public Integer getInt(String path);
+    Integer getInt(String path);
 
-    public Integer getInt(String path, Integer defaultValue);
+    Integer getInt(String path, Integer defaultValue);
 
-    public List<Integer> getIntList(String path);
+    List<Integer> getIntList(String path);
 
-    public List<Integer> getIntList(String path, List<Integer> defaultValue);
+    List<Integer> getIntList(String path, List<Integer> defaultValue);
 
     // Integer (full name)
-    public Integer getInteger(String path);
+    Integer getInteger(String path);
 
-    public Integer getInteger(String path, Integer defaultValue);
+    Integer getInteger(String path, Integer defaultValue);
 
-    public List<Integer> getIntegerList(String path);
+    List<Integer> getIntegerList(String path);
 
-    public List<Integer> getIntegerList(String path, List<Integer> defaultValue);
+    List<Integer> getIntegerList(String path, List<Integer> defaultValue);
 
     // String
-    public String getString(String path);
+    String getString(String path);
 
-    public String getString(String path, String defaultValue);
+    String getString(String path, String defaultValue);
 
-    public List<String> getStringList(String path);
+    List<String> getStringList(String path);
 
-    public List<String> getStringList(String path, List<String> defaultValue);
+    List<String> getStringList(String path, List<String> defaultValue);
 
     /**
      * Get a HashSet from a list.
@@ -78,7 +78,7 @@ public interface CompatConfig {
      * @param path
      * @return
      */
-    public Set<String> getSetFromStringList(String path);
+    Set<String> getSetFromStringList(String path);
 
     /**
      * Get a HashSet from a list.
@@ -87,7 +87,7 @@ public interface CompatConfig {
      * @param defaultValue
      * @return
      */
-    public Set<String> getSetFromStringList(String path, Set<String> defaultValue);
+    Set<String> getSetFromStringList(String path, Set<String> defaultValue);
 
     /**
      * Get a HashSet from a list, with string options which are applied if a list was read.
@@ -98,20 +98,20 @@ public interface CompatConfig {
      * @param lowerCase    If to add entries as lower-case.
      * @return
      */
-    public Set<String> getSetFromStringList(String path, Set<String> defaultValue, boolean trim, boolean lowerCase);
+    Set<String> getSetFromStringList(String path, Set<String> defaultValue, boolean trim, boolean lowerCase);
 
     // Generic methods:
-    public Object get(String path);
+    Object get(String path);
 
-    public Object get(String path, Object defaultValue);
+    Object get(String path, Object defaultValue);
 
-    public Object getProperty(String path);
+    Object getProperty(String path);
 
-    public Object getProperty(String path, Object defaultValue);
+    Object getProperty(String path, Object defaultValue);
 
-    public void set(String path, Object value);
+    void set(String path, Object value);
 
-    public void setProperty(String path, Object value);
+    void setProperty(String path, Object value);
 
     /**
      * Add entry in form of a list.
@@ -119,7 +119,7 @@ public interface CompatConfig {
      * @param path
      * @param set
      */
-    public <T> void setAsList(String path, Set<T> set);
+    <T> void setAsList(String path, Set<T> set);
 
     /**
      * Add map entries as section entries at path - meant for simple keys.
@@ -127,26 +127,26 @@ public interface CompatConfig {
      * @param path
      * @param map
      */
-    public void setAsSection(String path, Map<String, ?> map);
+    void setAsSection(String path, Map<String, ?> map);
 
     /**
      * Remove a path (would also remove sub sections, unless for path naming problems).
      *
      * @param path
      */
-    public void remove(String path);
+    void remove(String path);
 
     /**
      * Works same as remove(path): removes properties and sections alike.
      *
      * @param path
      */
-    public void removeProperty(String path);
+    void removeProperty(String path);
 
     // Contains/has
-    public boolean hasEntry(String path);
+    boolean hasEntry(String path);
 
-    public boolean contains(String path);
+    boolean contains(String path);
 
     // Keys (Object): [possibly deprecated]
 
@@ -155,22 +155,22 @@ public interface CompatConfig {
      * @return
      * @deprecated Seems not to be supported anymore by new configuration, use getStringKeys(String path);
      */
-    public List<Object> getKeys(String path);
+    List<Object> getKeys(String path);
 
     /**
      * @return
      * @deprecated Seems not to be supported anymore by new configuration, use getStringKeys();
      */
-    public List<Object> getKeys();
+    List<Object> getKeys();
 
     // Keys (String):
 
     /**
      * @return never null
      */
-    public List<String> getStringKeys();
+    List<String> getStringKeys();
 
-    public List<String> getStringKeys(String path);
+    List<String> getStringKeys(String path);
 
     /**
      * Get all keys from the section (deep or shallow).
@@ -179,7 +179,7 @@ public interface CompatConfig {
      * @param deep
      * @return Never null.
      */
-    public Set<String> getStringKeys(String path, boolean deep);
+    Set<String> getStringKeys(String path, boolean deep);
 
     /**
      * convenience method.
@@ -187,7 +187,7 @@ public interface CompatConfig {
      * @param path
      * @return never null
      */
-    public Set<String> getStringKeysDeep(String path);
+    Set<String> getStringKeysDeep(String path);
 
     // Values:
 
@@ -196,7 +196,7 @@ public interface CompatConfig {
      *
      * @return
      */
-    public Map<String, Object> getValuesDeep();
+    Map<String, Object> getValuesDeep();
 
     // Technical / IO:
 
@@ -206,30 +206,30 @@ public interface CompatConfig {
      * @param sep
      * @return
      */
-    public boolean setPathSeparatorChar(char sep);
+    boolean setPathSeparatorChar(char sep);
 
-    public void load();
+    void load();
 
-    public boolean save();
+    boolean save();
 
     /**
      * Clear all contents.
      */
-    public void clear();
+    void clear();
 
     /**
      * Return a YAML-String representation of the contents, null if not supported.
      *
      * @return null if not supported.
      */
-    public String getYAMLString();
+    String getYAMLString();
 
     /**
      * Add all entries from the YAML-String representation to the configuration, forget or clear all previous entries.
      *
      * @return
      */
-    public boolean fromYamlString(String input);
+    boolean fromYamlString(String input);
 
 
 }

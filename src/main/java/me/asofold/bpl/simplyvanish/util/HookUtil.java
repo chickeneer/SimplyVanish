@@ -73,11 +73,15 @@ public class HookUtil {
             // add hook !
             registeredHooks.put(hookName, hook);
             HookPurpose[] supported = hook.getSupportedMethods();
-            if (supported == null) supported = HookPurpose.values();
+            if (supported == null) {
+                supported = HookPurpose.values();
+            }
             boolean hasListener = false;
             for (HookPurpose sup : supported) {
                 getUsedHooks(sup).add(hook);
-                if (sup == HookPurpose.LISTENER) hasListener = true;
+                if (sup == HookPurpose.LISTENER) {
+                    hasListener = true;
+                }
             }
             if (hasListener) {
                 HookListener listener = hook.getListener();
@@ -103,12 +107,15 @@ public class HookUtil {
 
     public boolean removeHook(String hookName) {
         Hook hook = registeredHooks.remove(hookName);
-        if (hook == null) return false;
+        if (hook == null) {
+            return false;
+        }
         HookListener listener = usedHookListeners.remove(hookName);
         if (listener != null) {
             try {
-                if (!listener.unregisterEvents())
+                if (!listener.unregisterEvents()) {
                     Utils.warn("HookListener (" + hookName + ") returns failure on unregister.");
+                }
             } catch (Throwable t) {
                 Utils.warn("Failed to unregister HookListener (" + hookName + "): " + t.getMessage());
                 t.printStackTrace();
@@ -118,7 +125,9 @@ public class HookUtil {
             List<Hook> rem = new LinkedList<Hook>();
             List<Hook> present = getUsedHooks(sup);
             for (Hook ref : present) {
-                if (ref == hook || ref.getHookName().equals(hookName)) rem.add(ref); // equals unnecessary ?
+                if (ref == hook || ref.getHookName().equals(hookName)) {
+                    rem.add(ref); // equals unnecessary ?
+                }
             }
             present.removeAll(rem);
         }
@@ -133,8 +142,12 @@ public class HookUtil {
      */
     public final List<Hook> getUsedHooks(final HookPurpose purpose) {
         List<Hook> hooks = null;
-        if (purpose != null) hooks = usedHooks.get(purpose);
-        if (hooks == null) return new LinkedList<Hook>();
+        if (purpose != null) {
+            hooks = usedHooks.get(purpose);
+        }
+        if (hooks == null) {
+            return new LinkedList<Hook>();
+        }
         return hooks;
     }
 
@@ -157,10 +170,15 @@ public class HookUtil {
 
     public void onHookCallError(HookPurpose sup, Hook hook, String playerName, Throwable t) {
         String msg;
-        if (t == null) msg = "<unknown>";
-        else msg = t.getMessage();
+        if (t == null) {
+            msg = "<unknown>";
+        } else {
+            msg = t.getMessage();
+        }
         Utils.warn("Error on calling " + sup + " on hook(" + hook.getHookName() + ") for player " + playerName + ": " + msg);
-        if (t != null) t.printStackTrace();
+        if (t != null) {
+            t.printStackTrace();
+        }
     }
 
     public final void callBeforeVanish(final String playerName) {

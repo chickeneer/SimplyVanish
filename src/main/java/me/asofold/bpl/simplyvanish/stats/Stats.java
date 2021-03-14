@@ -16,8 +16,8 @@ public class Stats {
     }
 
     private long tsStats = 0;
-    private long periodStats = 12345;
-    private long nVerbose = 500;
+    private final long periodStats = 12345;
+    private final long nVerbose = 500;
     private long nDone = 0;
     private boolean logStats = true;
     private boolean showRange = true;
@@ -46,13 +46,18 @@ public class Stats {
     int maxId = 0;
 
     public final void addStats(Integer key, long dur) {
-        if (dur < 0) dur = 0;
+        if (dur < 0) {
+            dur = 0;
+        }
         Entry entry = entries.get(key);
         if (entry != null) {
             entry.n += 1;
             entry.dur += dur;
-            if (dur < entry.min) entry.min = dur;
-            else if (dur > entry.max) entry.max = dur;
+            if (dur < entry.min) {
+                entry.min = dur;
+            } else if (dur > entry.max) {
+                entry.max = dur;
+            }
         } else {
             entry = new Entry();
             entry.dur = dur;
@@ -61,7 +66,9 @@ public class Stats {
             entry.min = dur;
             entry.max = dur;
         }
-        if (!logStats) return;
+        if (!logStats) {
+            return;
+        }
         nDone++;
         if (nDone > nVerbose) {
             nDone = 0;
@@ -83,7 +90,9 @@ public class Stats {
         b.append(label + " ");
         boolean first = true;
         for (Integer id : entries.keySet()) {
-            if (!first) b.append(" | ");
+            if (!first) {
+                b.append(" | ");
+            }
             Entry entry = entries.get(id);
             String av = f.format(entry.dur / entry.n);
             String key = getKey(id);
@@ -94,7 +103,9 @@ public class Stats {
                 av = ChatColor.YELLOW + av + ChatColor.WHITE;
             }
             b.append(key + " av=" + av + " n=" + n);
-            if (showRange) b.append(" rg=" + f.format(entry.min) + "..." + f.format(entry.max));
+            if (showRange) {
+                b.append(" rg=" + f.format(entry.min) + "..." + f.format(entry.max));
+            }
             first = false;
         }
         return b.toString();
@@ -129,7 +140,9 @@ public class Stats {
      */
     public final Integer getId(String key) {
         for (Integer id : idKeyMap.keySet()) {
-            if (key.equals(idKeyMap.get(id))) return id;
+            if (key.equals(idKeyMap.get(id))) {
+                return id;
+            }
         }
         return null;
     }

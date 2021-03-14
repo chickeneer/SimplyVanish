@@ -87,7 +87,9 @@ public class SimplyVanishStateEvent extends Event implements SimplyVanishEvent {
 
     public boolean isPlayerOnline() {
         final Player player = getPlayer();
-        if (player == null) return false;
+        if (player == null) {
+            return false;
+        }
         return player.isOnline();
     }
 

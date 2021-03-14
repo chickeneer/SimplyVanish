@@ -175,7 +175,9 @@ public class Settings {
         // notify ping
         pingEnabled = config.getBoolean(path.pingEnabled, ref.pingEnabled);
         pingPeriod = config.getLong(path.pingPeriod, ref.pingPeriod / 1000) * 1000; // in seconds
-        if (pingPeriod <= 0) pingEnabled = false;
+        if (pingPeriod <= 0) {
+            pingEnabled = false;
+        }
         // command aliases: see SimplyVanish plugin.
         saveVanished = config.getBoolean(path.saveVanishedEnabled, ref.saveVanished);
         saveVanishedAlways = config.getBoolean(path.saveVanishedAlways, ref.saveVanishedAlways);
@@ -223,8 +225,11 @@ public class Settings {
         if (cmds != null) {
             for (String cmd : cmds) {
                 cmd = cmd.trim().toLowerCase();
-                if (cmd.isEmpty()) continue;
-                else cmdCommands.add(cmd);
+                if (cmd.isEmpty()) {
+                    continue;
+                } else {
+                    cmdCommands.add(cmd);
+                }
             }
         }
 
@@ -232,7 +237,9 @@ public class Settings {
         flagSets.clear();
         for (String key : flagSetNames) {
             String flags = config.getString(path.flagSets + "." + key);
-            if (flags == null) continue;
+            if (flags == null) {
+                continue;
+            }
             String lcKey = key.trim().toLowerCase();
             flagSets.put(lcKey, flags.split(" "));
         }
@@ -252,7 +259,9 @@ public class Settings {
                     Utils.warn("Missing entries in fake permissions set: " + setName);
                     continue;
                 }
-                if (players.isEmpty()) continue; // just skip;
+                if (players.isEmpty()) {
+                    continue; // just skip;
+                }
                 for (String n : players) {
                     inUse += " " + n;
                     String lcn = n.trim().toLowerCase();
@@ -263,33 +272,45 @@ public class Settings {
                     }
                     for (String p : perms) {
                         String part = p.trim().toLowerCase();
-                        if (part.startsWith("simplyvanish.")) permSet.add(part);
-                        else permSet.add("simplyvanish." + part);
+                        if (part.startsWith("simplyvanish.")) {
+                            permSet.add(part);
+                        } else {
+                            permSet.add("simplyvanish." + part);
+                        }
                     }
                 }
             }
         }
-        if (!inUse.isEmpty()) Utils.warn("Fake permissions in use for: " + inUse);
+        if (!inUse.isEmpty()) {
+            Utils.warn("Fake permissions in use for: " + inUse);
+        }
     }
 
     private List<EntityType> getEntityList(List<String> entries) {
         List<EntityType> out = new LinkedList<EntityType>();
-        if (entries == null) return out;
+        if (entries == null) {
+            return out;
+        }
         for (String entry : entries) {
             EntityType type = null;
             try {
                 type = EntityType.valueOf(entry.trim().toUpperCase().replace(" ", "_"));
             } catch (Throwable t) {
             }
-            if (type != null) out.add(type);
-            else Utils.warn("Unrecognized entity definition: " + entry);
+            if (type != null) {
+                out.add(type);
+            } else {
+                Utils.warn("Unrecognized entity definition: " + entry);
+            }
         }
         return out;
     }
 
     private List<Integer> getIdList(List<String> blocks) {
         List<Integer> out = new LinkedList<Integer>();
-        if (blocks == null) return out;
+        if (blocks == null) {
+            return out;
+        }
         for (String entry : blocks) {
             Material mat = null;
             try {
@@ -297,7 +318,7 @@ public class Settings {
             } catch (Throwable t) {
             }
             if (mat != null) {
-                out.add(mat.getId());
+                //TODO: out.add(mat.getId());
                 continue;
             }
             try {
@@ -305,7 +326,7 @@ public class Settings {
             } catch (Throwable t) {
             }
             if (mat != null) {
-                out.add(mat.getId());
+                //TODO: out.add(mat.getId());
                 continue;
             }
             Utils.warn("Unrecognized block definition: " + entry);
@@ -340,7 +361,7 @@ public class Settings {
         defaults.set(path.notifyStatePerm, ref.notifyStatePerm);
         defaults.set(path.pingEnabled, ref.pingEnabled);
         defaults.set(path.pingPeriod, ref.pingPeriod / 1000); // seconds
-//		defaults.set("server-ping.subtract-vanished", false); // TODO: Feature request pending ...
+        //		defaults.set("server-ping.subtract-vanished", false); // TODO: Feature request pending ...
         defaults.set(path.saveVanishedEnabled, ref.saveVanished); // TODO: load/save vanished players.
         defaults.set(path.saveVanishedAlways, ref.saveVanishedAlways); // TODO: load/save vanished players.
         defaults.set(path.saveVanishedInterval, ref.saveVanishedInterval / 60000); // minutes
@@ -400,11 +421,17 @@ public class Settings {
         // Add simple default entries:
         changed |= ConfigUtil.forceDefaults(getSimpleDefaultConfig(path), config);
         // Add more complex defaults:
-        if (!config.contains(path.flagsBypassBlocks)) config.set(path.flagsBypassBlocks, new LinkedList<String>());
-        if (!config.contains(path.flagsBypassEntities)) config.set(path.flagsBypassEntities, new LinkedList<String>());
+        if (!config.contains(path.flagsBypassBlocks)) {
+            config.set(path.flagsBypassBlocks, new LinkedList<String>());
+        }
+        if (!config.contains(path.flagsBypassEntities)) {
+            config.set(path.flagsBypassEntities, new LinkedList<String>());
+        }
 
         // Return if no extended entries desired:
-        if (!config.getBoolean(path.addExtended, true)) return changed;
+        if (!config.getBoolean(path.addExtended, true)) {
+            return changed;
+        }
         // Fake permissions example entries:
         if (!config.contains(path.permSets)) {
             final String base = path.permSets + path.sep + "set";

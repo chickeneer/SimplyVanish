@@ -33,7 +33,9 @@ public abstract class AbstractNewConfig extends AbstractConfig {
 
     @Override
     public String getString(String path, String defaultValue) {
-        if (!hasEntry(path)) return defaultValue;
+        if (!hasEntry(path)) {
+            return defaultValue;
+        }
         return config.getString(path, defaultValue);
     }
 
@@ -43,10 +45,13 @@ public abstract class AbstractNewConfig extends AbstractConfig {
         // TODO policy: only strings or all keys as strings ?
         List<String> out = new LinkedList<String>();
         List<Object> keys = getKeys(path);
-        if (keys == null) return out;
+        if (keys == null) {
+            return out;
+        }
         for (Object obj : keys) {
-            if (obj instanceof String) out.add((String) obj);
-            else {
+            if (obj instanceof String) {
+                out.add((String) obj);
+            } else {
                 try {
                     out.add(obj.toString());
                 } catch (Throwable t) {
@@ -61,13 +66,18 @@ public abstract class AbstractNewConfig extends AbstractConfig {
     public List<Object> getKeys(String path) {
         List<Object> out = new LinkedList<Object>();
         Set<String> keys;
-        if (path == null) keys = config.getKeys(false);
-        else {
+        if (path == null) {
+            keys = config.getKeys(false);
+        } else {
             ConfigurationSection sec = config.getConfigurationSection(path);
-            if (sec == null) return out;
+            if (sec == null) {
+                return out;
+            }
             keys = sec.getKeys(false);
         }
-        if (keys == null) return out;
+        if (keys == null) {
+            return out;
+        }
         out.addAll(keys);
         return out;
     }
@@ -80,8 +90,11 @@ public abstract class AbstractNewConfig extends AbstractConfig {
     @Override
     public Object getProperty(String path, Object defaultValue) {
         Object obj = config.get(path);
-        if (obj == null) return defaultValue;
-        else return obj;
+        if (obj == null) {
+            return defaultValue;
+        } else {
+            return obj;
+        }
     }
 
     @Override
@@ -96,13 +109,18 @@ public abstract class AbstractNewConfig extends AbstractConfig {
 
     @Override
     public List<String> getStringList(String path, List<String> defaultValue) {
-        if (!hasEntry(path)) return defaultValue;
+        if (!hasEntry(path)) {
+            return defaultValue;
+        }
         List<String> out = new LinkedList<String>();
         List<String> entries = config.getStringList(path);
-        if (entries == null) return defaultValue;
+        if (entries == null) {
+            return defaultValue;
+        }
         for (String entry : entries) {
-            if (entry instanceof String) out.add(entry);
-            else {
+            if (entry instanceof String) {
+                out.add(entry);
+            } else {
                 try {
                     out.add(entry.toString());
                 } catch (Throwable t) {
@@ -115,24 +133,37 @@ public abstract class AbstractNewConfig extends AbstractConfig {
 
     @Override
     public void removeProperty(String path) {
-        if (path.startsWith(".")) path = path.substring(1);
+        if (path.startsWith(".")) {
+            path = path.substring(1);
+        }
         // VERY EXPENSIVE
         MemoryConfiguration temp = new MemoryConfiguration();
         setOptions(temp);
         Map<String, Object> values = config.getValues(true);
-        if (values.containsKey(path)) values.remove(path);
-        else {
+        if (values.containsKey(path)) {
+            values.remove(path);
+        } else {
             final String altPath = "." + path;
-            if (values.containsKey(altPath)) values.remove(altPath);
+            if (values.containsKey(altPath)) {
+                values.remove(altPath);
+            }
         }
         for (String _p : values.keySet()) {
             Object v = values.get(_p);
-            if (v == null) continue;
-            else if (v instanceof ConfigurationSection) continue;
+            if (v == null) {
+                continue;
+            } else if (v instanceof ConfigurationSection) {
+                continue;
+            }
             String p;
-            if (_p.startsWith(".")) p = _p.substring(1);
-            else p = _p;
-            if (p.startsWith(path)) continue;
+            if (_p.startsWith(".")) {
+                p = _p.substring(1);
+            } else {
+                p = _p;
+            }
+            if (p.startsWith(path)) {
+                continue;
+            }
             temp.set(p, v);
         }
         config = temp;
@@ -141,16 +172,24 @@ public abstract class AbstractNewConfig extends AbstractConfig {
 
     @Override
     public Boolean getBoolean(String path, Boolean defaultValue) {
-        if (!config.contains(path)) return defaultValue;
+        if (!config.contains(path)) {
+            return defaultValue;
+        }
         String val = config.getString(path, null);
         if (val != null) {
-            if (val.equalsIgnoreCase("true")) return true;
-            else if (val.equalsIgnoreCase("false")) return false;
-            else return defaultValue;
+            if (val.equalsIgnoreCase("true")) {
+                return true;
+            } else if (val.equalsIgnoreCase("false")) {
+                return false;
+            } else {
+                return defaultValue;
+            }
         }
         Boolean res = defaultValue;
         if (val == null) {
-            if (defaultValue == null) defaultValue = false;
+            if (defaultValue == null) {
+                defaultValue = false;
+            }
             res = config.getBoolean(path, defaultValue);
         }
         return res;
@@ -159,30 +198,48 @@ public abstract class AbstractNewConfig extends AbstractConfig {
 
     @Override
     public Double getDouble(String path, Double defaultValue) {
-        if (!config.contains(path)) return defaultValue;
+        if (!config.contains(path)) {
+            return defaultValue;
+        }
         Double res = super.getDouble(path, null);
-        if (res == null) res = config.getDouble(path, ConfigUtil.canaryDouble);
-        if (res == ConfigUtil.canaryDouble) return defaultValue;
+        if (res == null) {
+            res = config.getDouble(path, ConfigUtil.canaryDouble);
+        }
+        if (res == ConfigUtil.canaryDouble) {
+            return defaultValue;
+        }
         return res;
     }
 
 
     @Override
     public Long getLong(String path, Long defaultValue) {
-        if (!config.contains(path)) return defaultValue;
+        if (!config.contains(path)) {
+            return defaultValue;
+        }
         Long res = super.getLong(path, null);
-        if (res == null) res = config.getLong(path, ConfigUtil.canaryLong);
-        if (res == ConfigUtil.canaryLong) return defaultValue;
+        if (res == null) {
+            res = config.getLong(path, ConfigUtil.canaryLong);
+        }
+        if (res == ConfigUtil.canaryLong) {
+            return defaultValue;
+        }
         return res;
     }
 
 
     @Override
     public Integer getInt(String path, Integer defaultValue) {
-        if (!config.contains(path)) return defaultValue;
+        if (!config.contains(path)) {
+            return defaultValue;
+        }
         Integer res = super.getInt(path, null);
-        if (res == null) res = config.getInt(path, ConfigUtil.canaryInt);
-        if (res == ConfigUtil.canaryInt) return defaultValue;
+        if (res == null) {
+            res = config.getInt(path, ConfigUtil.canaryInt);
+        }
+        if (res == ConfigUtil.canaryInt) {
+            return defaultValue;
+        }
         return res;
     }
 

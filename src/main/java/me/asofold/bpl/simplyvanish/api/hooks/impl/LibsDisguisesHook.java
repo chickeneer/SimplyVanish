@@ -30,10 +30,14 @@ public class LibsDisguisesHook extends AbstractHook {
 
         @EventHandler(priority = EventPriority.MONITOR)
         void onVisibility(SimplyVanishStateEvent event) {
-            if (event.isCancelled()) return;
+            if (event.isCancelled()) {
+                return;
+            }
             if (event.getVisibleAfter()) {
                 boolean keep = false;
-                if (event instanceof SimplyVanishAtLoginEvent) keep = true;
+                if (event instanceof SimplyVanishAtLoginEvent) {
+                    keep = true;
+                }
                 onInvisible(event.getPlayerName(), keep);
             } else {
                 Player player = Bukkit.getServer().getPlayerExact(event.getPlayerName());
@@ -49,8 +53,12 @@ public class LibsDisguisesHook extends AbstractHook {
 
         @EventHandler(priority = EventPriority.MONITOR)
         void onDisguise(DisguiseEvent event) {
-            if (event.isCancelled()) return;
-            if (!event.getEntity().getType().equals(EntityType.PLAYER)) return;
+            if (event.isCancelled()) {
+                return;
+            }
+            if (!event.getEntity().getType().equals(EntityType.PLAYER)) {
+                return;
+            }
             Player player = (Player) event.getEntity();
             String name = player.getName();
             if (SimplyVanish.isVanished(name)) {
@@ -76,15 +84,21 @@ public class LibsDisguisesHook extends AbstractHook {
         @SuppressWarnings("unused")
         @EventHandler(priority = EventPriority.MONITOR)
         void onUndisguise(UndisguiseEvent event) {
-            if (event.isCancelled()) return;
-            if (!event.getEntity().getType().equals(EntityType.PLAYER)) return;
+            if (event.isCancelled()) {
+                return;
+            }
+            if (!event.getEntity().getType().equals(EntityType.PLAYER)) {
+                return;
+            }
             final Player player = (Player) event.getEntity();
             String name = player.getName();
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SimplyVanish.getPluginInstance(), new Runnable() {
                 @Override
                 public void run() {
                     Player dummy = Bukkit.getServer().getPlayerExact(player.getName());
-                    if (dummy != null) SimplyVanish.updateVanishState(dummy, false, hookId);
+                    if (dummy != null) {
+                        SimplyVanish.updateVanishState(dummy, false, hookId);
+                    }
                 }
             });
         }
@@ -97,7 +111,9 @@ public class LibsDisguisesHook extends AbstractHook {
      */
     public void onInvisible(String playerName, boolean keepDisguise) {
         Player player = Bukkit.getServer().getPlayerExact(playerName);
-        if (player == null) return;
+        if (player == null) {
+            return;
+        }
         if (DisguiseAPI.isDisguised(player)) {
             // Disguise and remember disguise.
             DisguiseAPI.undisguiseToAll(player); // TODO: change priorities and check result, act accordingly.
@@ -107,9 +123,12 @@ public class LibsDisguisesHook extends AbstractHook {
 
     @Override
     public final boolean allowUpdateVanishState(final Player player, final int hookId, boolean isAllowed) {
-        if (!isAllowed) return false;
-        if (hookId == this.hookId) return true;
-        else {
+        if (!isAllowed) {
+            return false;
+        }
+        if (hookId == this.hookId) {
+            return true;
+        } else {
             return !DisguiseAPI.isDisguised(player);
         }
     }

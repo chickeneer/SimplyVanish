@@ -65,7 +65,9 @@ public class Utils {
      * @return
      */
     public static boolean checkPlayer(CommandSender sender) {
-        if (sender instanceof Player) return true;
+        if (sender instanceof Player) {
+            return true;
+        }
         sender.sendMessage("[SimplyVanish] This is only available for players!");
         return false;
     }
@@ -117,8 +119,9 @@ public class Utils {
      */
     public static final boolean checkOnline(final Player player, final String tag) {
         final boolean res = checkOnline(player);
-        if (!res)
+        if (!res) {
             warn("[" + tag + "] Inconsistent online state (flag=" + player.isOnline() + ") Server returns null for: " + player.getName());
+        }
         return res;
     }
 
@@ -165,7 +168,9 @@ public class Utils {
             String targets = x.trim();
             if (targets.equalsIgnoreCase("ops") || targets.equalsIgnoreCase("operators")) {
                 for (Player player : online) {
-                    if (player.isOp()) players.add(player);
+                    if (player.isOp()) {
+                        players.add(player);
+                    }
                 }
             } else if (targets.equalsIgnoreCase("all") || targets.equalsIgnoreCase("everyone") || (targets.equalsIgnoreCase("everybody"))) {
                 for (Player player : online) {
@@ -174,7 +179,9 @@ public class Utils {
             } else if (targets.toLowerCase().startsWith("permission:") && targets.length() > 11) {
                 String perm = targets.substring(11).trim();
                 for (Player player : online) {
-                    if (SimplyVanish.hasPermission(player, perm)) players.add(player);
+                    if (SimplyVanish.hasPermission(player, perm)) {
+                        players.add(player);
+                    }
                 }
             }
         }
@@ -185,8 +192,12 @@ public class Utils {
 
     public static void dropItemInHand(Player player) {
         ItemStack stack = player.getInventory().getItemInMainHand();
-        if (stack == null) return;
-        if (stack.getType() == Material.AIR) return;
+        if (stack == null) {
+            return;
+        }
+        if (stack.getType() == Material.AIR) {
+            return;
+        }
         ItemStack newStack = stack.clone();
         Item item = player.getWorld().dropItem(player.getLocation().add(new Vector(0.0, 1.0, 0.0)), newStack);
         if (item != null && !item.isDead()) {
@@ -196,8 +207,11 @@ public class Utils {
     }
 
     public static void send(CommandSender sender, String message) {
-        if (sender instanceof Player) sender.sendMessage(message);
-        else sender.sendMessage(ChatColor.stripColor(message));
+        if (sender instanceof Player) {
+            sender.sendMessage(message);
+        } else {
+            sender.sendMessage(ChatColor.stripColor(message));
+        }
     }
 
     /**
@@ -212,21 +226,28 @@ public class Utils {
         for (String part : parts) {
             builder.append(part);
             i++;
-            if (i < max && link != null) builder.append(link);
+            if (i < max && link != null) {
+                builder.append(link);
+            }
         }
         return builder.toString();
     }
 
     public static final void sendBlock(final Player player, final Block block) {
-        if (block == null) return;
+        if (block == null) {
+            return;
+        }
         block.getState().update();
         // player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
     }
 
     public static void tryMessage(String name, String msg) {
         Player player = Bukkit.getPlayerExact(name);
-        if (player == null) return;
-        else player.sendMessage(msg);
+        if (player == null) {
+            return;
+        } else {
+            player.sendMessage(msg);
+        }
     }
 
     /**

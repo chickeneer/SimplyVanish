@@ -38,7 +38,9 @@ public class Essentials2Hook extends AbstractHook {
     private final void setHidden(final String playerName, final boolean hidden) {
         try {
             final User user = getter.getPlugin().getUser(playerName);
-            if (user != null) user.setHidden(hidden);
+            if (user != null) {
+                user.setHidden(hidden);
+            }
         } catch (Throwable t) {
             // TODO: organize the source code by grace of devs.
         }

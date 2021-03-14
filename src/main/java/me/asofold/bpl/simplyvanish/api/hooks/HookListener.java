@@ -7,5 +7,5 @@ public interface HookListener extends Listener {
     /**
      * @return If successful - false if impossible or not supported. May throw exceptions to indicate the same.
      */
-    public boolean unregisterEvents();
+    boolean unregisterEvents();
 }

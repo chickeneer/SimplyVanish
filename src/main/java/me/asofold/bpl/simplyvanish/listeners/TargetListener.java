@@ -23,30 +23,36 @@ public final class TargetListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     final void onEntityTarget(final EntityTargetEvent event) {
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            return;
+        }
         final Entity entity = event.getEntity();
-//		if (entity instanceof Tameable){
-//			System.out.println("Target: "  +entity);
-//			// TODO: put some of this into a method.
-//			final Tameable tam = (Tameable) entity;
-//			final AnimalTamer tamer = tam.getOwner();
-//			if (tam.isTamed() && tamer != null && (tamer instanceof OfflinePlayer)){
-//				// TODO: add heuristic to allow self defense for tameables !
-//				final OfflinePlayer player = (OfflinePlayer) tamer;
-//				final String playerName = player.getName();
-//				System.out.println("Target "+playerName + " <- "+tam);
-//				final VanishConfig cfg = core.getVanishConfig(playerName, false);
-//				if (cfg.vanished.state || cfg.god.state){
-//					event.setTarget(null);
-//					return;
-//				}
-//			}
-//		}
+        //		if (entity instanceof Tameable){
+        //			System.out.println("Target: "  +entity);
+        //			// TODO: put some of this into a method.
+        //			final Tameable tam = (Tameable) entity;
+        //			final AnimalTamer tamer = tam.getOwner();
+        //			if (tam.isTamed() && tamer != null && (tamer instanceof OfflinePlayer)){
+        //				// TODO: add heuristic to allow self defense for tameables !
+        //				final OfflinePlayer player = (OfflinePlayer) tamer;
+        //				final String playerName = player.getName();
+        //				System.out.println("Target "+playerName + " <- "+tam);
+        //				final VanishConfig cfg = core.getVanishConfig(playerName, false);
+        //				if (cfg.vanished.state || cfg.god.state){
+        //					event.setTarget(null);
+        //					return;
+        //				}
+        //			}
+        //		}
         final Entity target = event.getTarget();
-        if (!(target instanceof Player)) return;
+        if (!(target instanceof Player)) {
+            return;
+        }
         final String playerName = ((Player) target).getName();
         final VanishConfig cfg = core.getVanishConfig(playerName, false);
-        if (cfg == null) return;
+        if (cfg == null) {
+            return;
+        }
         if (cfg.vanished.state || cfg.god.state) {
             final Settings settings = core.getSettings();
             if (settings.expEnabled && (!cfg.pickup.state || cfg.god.state)) {
@@ -57,34 +63,36 @@ public final class TargetListener implements Listener {
                     return;
                 }
             }
-            if (!cfg.target.state || cfg.god.state) event.setTarget(null);
+            if (!cfg.target.state || cfg.god.state) {
+                event.setTarget(null);
+            }
         }
     }
 
-//	@EventHandler(priority = EventPriority.LOW)
-//	final void onEntityTeleport(final EntityTeleportEvent event){
-//		final Entity entity = event.getEntity();
-//		System.out.println("Teleport: " + entity);
-//		if (entity instanceof Tameable){
-//			final Tameable tam = (Tameable) entity;
-//			if (!tam.isTamed()) return;
-//			final AnimalTamer tamer = tam.getOwner();
-//			if (tam.isTamed() && tamer != null && (tamer instanceof OfflinePlayer)){
-//				final OfflinePlayer player = (OfflinePlayer) tamer;
-//				final String playerName = player.getName();
-//				System.out.println("Teleport "+playerName + " <- "+tam);
-//				final VanishConfig cfg = core.getVanishConfig(playerName, false);
-//				if (cfg.vanished.state || cfg.god.state){
-//					if (entity instanceof Animals){
-//						// TODO: maybe set sitting !
-//						((Animals)entity).setTarget(null);
-//					}
-//					event.setCancelled(true);
-//					return;
-//				}
-//			}
-//		}
-//	}
+    //	@EventHandler(priority = EventPriority.LOW)
+    //	final void onEntityTeleport(final EntityTeleportEvent event){
+    //		final Entity entity = event.getEntity();
+    //		System.out.println("Teleport: " + entity);
+    //		if (entity instanceof Tameable){
+    //			final Tameable tam = (Tameable) entity;
+    //			if (!tam.isTamed()) return;
+    //			final AnimalTamer tamer = tam.getOwner();
+    //			if (tam.isTamed() && tamer != null && (tamer instanceof OfflinePlayer)){
+    //				final OfflinePlayer player = (OfflinePlayer) tamer;
+    //				final String playerName = player.getName();
+    //				System.out.println("Teleport "+playerName + " <- "+tam);
+    //				final VanishConfig cfg = core.getVanishConfig(playerName, false);
+    //				if (cfg.vanished.state || cfg.god.state){
+    //					if (entity instanceof Animals){
+    //						// TODO: maybe set sitting !
+    //						((Animals)entity).setTarget(null);
+    //					}
+    //					event.setCancelled(true);
+    //					return;
+    //				}
+    //			}
+    //		}
+    //	}
 
     /**
      * Attempt some workaround for experience orbs:

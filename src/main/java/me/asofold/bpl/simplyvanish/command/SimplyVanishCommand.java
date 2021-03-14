@@ -21,7 +21,7 @@ import java.util.*;
 
 public class SimplyVanishCommand {
 
-    private SimplyVanishCore core;
+    private final SimplyVanishCore core;
 
     /**
      * Dynamic "fake" commands.
@@ -61,8 +61,11 @@ public class SimplyVanishCommand {
     String getMappedCommandLabel(String label) {
         label = label.toLowerCase();
         String mapped = commandAliases.get(label);
-        if (mapped == null) return label;
-        else return mapped;
+        if (mapped == null) {
+            return label;
+        } else {
+            return mapped;
+        }
     }
 
     public void registerCommandAliases(CompatConfig config, Path path) {
@@ -74,7 +77,9 @@ public class SimplyVanishCommand {
             // TODO: only register the needed aliases.
             cmd = cmd.trim().toLowerCase();
             List<String> mapped = config.getStringList("commands" + path.sep + cmd + path.sep + "aliases", null);
-            if (mapped == null || mapped.isEmpty()) continue;
+            if (mapped == null || mapped.isEmpty()) {
+                continue;
+            }
             List<String> needed = new LinkedList<String>(); // those that need to be registered.
             for (String alias : mapped) {
                 Command ref = plugin.getCommand(alias);
@@ -83,9 +88,13 @@ public class SimplyVanishCommand {
                 } else if (ref.getLabel().equalsIgnoreCase(cmd)) {
                     // already mapped to that command.
                     continue;
-                } else needed.add(alias);
+                } else {
+                    needed.add(alias);
+                }
             }
-            if (needed.isEmpty()) continue;
+            if (needed.isEmpty()) {
+                continue;
+            }
             // register with wrong(!) label:
             if (!aliasManager.registerCommand(cmd, needed, plugin)) {
                 // TODO: log maybe
@@ -108,9 +117,13 @@ public class SimplyVanishCommand {
         for (String cmd : SimplyVanishCommand.baseLabels) {
             cmd = cmd.trim().toLowerCase();
             PluginCommand command = plugin.getCommand(cmd);
-            if (command == null) continue;
+            if (command == null) {
+                continue;
+            }
             List<String> aliases = command.getAliases();
-            if (aliases == null) continue;
+            if (aliases == null) {
+                continue;
+            }
             for (String alias : aliases) {
                 commandAliases.put(alias.trim().toLowerCase(), cmd);
             }
@@ -119,7 +132,7 @@ public class SimplyVanishCommand {
 
     public boolean onCommand(CommandSender sender, Command command, String label,
                              String[] args) {
-//		SimplyVanish plugin = core.getPlugin();
+        //		SimplyVanish plugin = core.getPlugin();
         label = getMappedCommandLabel(label);
         int len = args.length;
         boolean hasFlags = false;
@@ -129,32 +142,49 @@ public class SimplyVanishCommand {
                 if (args[i].startsWith("+") || args[i].startsWith("-") || args[i].startsWith("*")) {
                     len--;
                     hasFlags = true;
-                } else break;
+                } else {
+                    break;
+                }
             }
         }
         if (label.equals("vantell")) {
             onVantell(sender, args);
             return true;
-        } else if (label.equals("vanish")) return vanishCommand(sender, args, len, hasFlags);
-        else if (label.equals("reappear")) return reappearCommand(sender, args, len, hasFlags);
-        else if (label.equals("tvanish")) {
+        } else if (label.equals("vanish")) {
+            return vanishCommand(sender, args, len, hasFlags);
+        } else if (label.equals("reappear")) {
+            return reappearCommand(sender, args, len, hasFlags);
+        } else if (label.equals("tvanish")) {
             String name;
             if (len == 0) {
-                if (!Utils.checkPlayer(sender)) return true;
+                if (!Utils.checkPlayer(sender)) {
+                    return true;
+                }
                 name = ((Player) sender).getName();
             } else if (len == 1) {
                 name = args[0].trim();
-                if (name.isEmpty()) return unrecognized(sender);
-            } else return unrecognized(sender);
-            if (!core.isVanished(name)) return vanishCommand(sender, args, len, hasFlags);
-            else return reappearCommand(sender, args, len, hasFlags);
+                if (name.isEmpty()) {
+                    return unrecognized(sender);
+                }
+            } else {
+                return unrecognized(sender);
+            }
+            if (!core.isVanished(name)) {
+                return vanishCommand(sender, args, len, hasFlags);
+            } else {
+                return reappearCommand(sender, args, len, hasFlags);
+            }
         } else if (label.equals("vanished")) {
-            if (!Utils.checkPerm(sender, "simplyvanish.vanished")) return true;
+            if (!Utils.checkPerm(sender, "simplyvanish.vanished")) {
+                return true;
+            }
             Utils.send(sender, core.getVanishedMessage());
             return true;
         } else if (label.equals("simplyvanish") || label.equals("vanflag")) {
             if (!hasFlags && label.equals("simplyvanish")) {
-                if (rootCommand(sender, args)) return true;
+                if (rootCommand(sender, args)) {
+                    return true;
+                }
             }
             return flagCommand(sender, args, len, hasFlags);
         } else if (label.equals("vangod")) {
@@ -169,12 +199,16 @@ public class SimplyVanishCommand {
 
     private boolean vanPeekCommand(CommandSender sender, String name) {
         name = name.trim().toLowerCase();
-        if (name.isEmpty()) return false;
+        if (name.isEmpty()) {
+            return false;
+        }
         if (name.equalsIgnoreCase(sender.getName())) {
             Utils.send(sender, SimplyVanish.msgLabel + ChatColor.YELLOW + "You can not peek into your own inventory :) !");
             return true;
         }
-        if (!Utils.checkPerm(sender, "simplyvanish.inventories.peek.at-all")) return true; // TODO
+        if (!Utils.checkPerm(sender, "simplyvanish.inventories.peek.at-all")) {
+            return true; // TODO
+        }
         InventoryUtil.showInventory(sender, (sender instanceof Player) ? core.getVanishConfig(sender.getName(), true) : null, name, core.getSettings());
         return true;
     }
@@ -184,7 +218,9 @@ public class SimplyVanishCommand {
         // TODO: maybe later accept flags.
         String perm = "simplyvanish." + (ungod ? "ungod." : "god.");
         if (len == 0) {
-            if (!Utils.checkPlayer(sender)) return true;
+            if (!Utils.checkPlayer(sender)) {
+                return true;
+            }
             checkVangod(sender, perm + ".self", sender.getName(), ungod);
             return true;
         } else if (len == 1) {
@@ -196,35 +232,45 @@ public class SimplyVanishCommand {
 
     private void checkVangod(CommandSender sender, String perm, String name,
                              boolean ungod) {
-        if (!Utils.checkPerm(sender, perm)) return;
+        if (!Utils.checkPerm(sender, perm)) {
+            return;
+        }
         core.setGod(name, !ungod, sender);
     }
 
     private boolean flagCommand(CommandSender sender, String[] args, int len,
                                 boolean hasFlags) {
         if (hasFlags && len == 0) {
-            if (!Utils.checkPlayer(sender)) return true;
+            if (!Utils.checkPlayer(sender)) {
+                return true;
+            }
             core.setFlags(((Player) sender).getName(), args, len, sender, false, false, true);
-            if (SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.self"))
+            if (SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.self")) {
                 core.onShowFlags((Player) sender, null);
+            }
             return true;
         } else if (len == 0) {
-            if (!Utils.checkPlayer(sender)) return true;
-            if (SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.self"))
+            if (!Utils.checkPlayer(sender)) {
+                return true;
+            }
+            if (SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.self")) {
                 core.onShowFlags((Player) sender, null);
-            else
+            } else {
                 sender.sendMessage(SimplyVanish.msgLabel + ChatColor.RED + "You do not have permission to display flags.");
+            }
             return true;
         } else if (hasFlags && len == 1) {
             core.setFlags(args[0], args, len, sender, false, true, true);
-            if (SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.other"))
+            if (SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.other")) {
                 core.onShowFlags(sender, args[0]);
+            }
             return true;
         } else if (len == 1) {
-            if (SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.other"))
+            if (SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.other")) {
                 core.onShowFlags(sender, args[0]);
-            else
+            } else {
                 sender.sendMessage(SimplyVanish.msgLabel + ChatColor.RED + "You do not have permission to display flags of others.");
+            }
             return true;
         }
         return unrecognized(sender);
@@ -233,25 +279,40 @@ public class SimplyVanishCommand {
     private boolean reappearCommand(CommandSender sender, String[] args, int len,
                                     boolean hasFlags) {
         if (len == 0) {
-            if (!Utils.checkPlayer(sender)) return true;
-            if (!SimplyVanish.hasPermission(sender, "simplyvanish.reappear.self")) return Utils.noPerm(sender);
+            if (!Utils.checkPlayer(sender)) {
+                return true;
+            }
+            if (!SimplyVanish.hasPermission(sender, "simplyvanish.reappear.self")) {
+                return Utils.noPerm(sender);
+            }
             // Let the player be seen...
-            if (hasFlags) core.setFlags(((Player) sender).getName(), args, len, sender, false, false, false);
-            if (!SimplyVanish.setVanished((Player) sender, false))
+            if (hasFlags) {
+                core.setFlags(((Player) sender).getName(), args, len, sender, false, false, false);
+            }
+            if (!SimplyVanish.setVanished((Player) sender, false)) {
                 Utils.send(sender, SimplyVanish.msgLabel + ChatColor.RED + "Action was prevented by hooks.");
-            if (hasFlags && SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.self"))
+            }
+            if (hasFlags && SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.self")) {
                 core.onShowFlags((Player) sender, null);
+            }
             return true;
         } else if (len == 1) {
-            if (!SimplyVanish.hasPermission(sender, "simplyvanish.reappear.other")) return Utils.noPerm(sender);
+            if (!SimplyVanish.hasPermission(sender, "simplyvanish.reappear.other")) {
+                return Utils.noPerm(sender);
+            }
             // Make sure the other player is shown...
             String name = args[0].trim();
-            if (hasFlags) core.setFlags(name, args, len, sender, false, true, false);
-            if (SimplyVanish.setVanished(name, false))
+            if (hasFlags) {
+                core.setFlags(name, args, len, sender, false, true, false);
+            }
+            if (SimplyVanish.setVanished(name, false)) {
                 Utils.send(sender, SimplyVanish.msgLabel + "Show player: " + name);
-            else Utils.send(sender, SimplyVanish.msgLabel + ChatColor.RED + "Action was prevented by hooks.");
-            if (hasFlags && SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.other"))
+            } else {
+                Utils.send(sender, SimplyVanish.msgLabel + ChatColor.RED + "Action was prevented by hooks.");
+            }
+            if (hasFlags && SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.other")) {
                 core.onShowFlags((Player) sender, name);
+            }
             return true;
         }
         return unrecognized(sender);
@@ -260,25 +321,40 @@ public class SimplyVanishCommand {
     private boolean vanishCommand(CommandSender sender, String[] args, int len,
                                   boolean hasFlags) {
         if (len == 0) {
-            if (!Utils.checkPlayer(sender)) return true;
-            if (!Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
+            if (!Utils.checkPlayer(sender)) {
+                return true;
+            }
+            if (!Utils.checkPerm(sender, "simplyvanish.vanish.self")) {
+                return true;
+            }
             // Make sure the player is vanished...
-            if (hasFlags) core.setFlags(((Player) sender).getName(), args, len, sender, false, false, false);
-            if (!SimplyVanish.setVanished((Player) sender, true))
+            if (hasFlags) {
+                core.setFlags(((Player) sender).getName(), args, len, sender, false, false, false);
+            }
+            if (!SimplyVanish.setVanished((Player) sender, true)) {
                 Utils.send(sender, SimplyVanish.msgLabel + ChatColor.RED + "Action was prevented by hooks.");
-            if (hasFlags && SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.self"))
+            }
+            if (hasFlags && SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.self")) {
                 core.onShowFlags((Player) sender, null);
+            }
             return true;
         } else if (len == 1) {
-            if (!Utils.checkPerm(sender, "simplyvanish.vanish.other")) return true;
+            if (!Utils.checkPerm(sender, "simplyvanish.vanish.other")) {
+                return true;
+            }
             // Make sure the other player is vanished...
             String name = args[0].trim();
-            if (hasFlags) core.setFlags(name, args, len, sender, false, true, false);
-            if (SimplyVanish.setVanished(name, true))
+            if (hasFlags) {
+                core.setFlags(name, args, len, sender, false, true, false);
+            }
+            if (SimplyVanish.setVanished(name, true)) {
                 Utils.send(sender, SimplyVanish.msgLabel + "Vanish player: " + name);
-            else Utils.send(sender, SimplyVanish.msgLabel + ChatColor.RED + "Action was prevented by hooks.");
-            if (hasFlags && SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.other"))
+            } else {
+                Utils.send(sender, SimplyVanish.msgLabel + ChatColor.RED + "Action was prevented by hooks.");
+            }
+            if (hasFlags && SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.other")) {
                 core.onShowFlags((Player) sender, name);
+            }
             return true;
         }
         return unrecognized(sender);
@@ -295,35 +371,46 @@ public class SimplyVanishCommand {
         SimplyVanish plugin = core.getPlugin();
         int len = args.length;
         if (len == 1 && args[0].equalsIgnoreCase("reload")) {
-            if (!Utils.checkPerm(sender, "simplyvanish.reload")) return true;
+            if (!Utils.checkPerm(sender, "simplyvanish.reload")) {
+                return true;
+            }
             plugin.loadSettings();
             Utils.send(sender, SimplyVanish.msgLabel + ChatColor.YELLOW + "Settings reloaded.");
             return true;
         }
-//		else if (len==1 && args[0].equalsIgnoreCase("drop")){
-//			if ( !Utils.checkPerm(sender, "simplyvanish.cmd.drop")) return true;
-//			if (!Utils.checkPlayer(sender)) return true;
-//			Utils.dropItemInHand((Player) sender);
-//			return true;
-//		}
+        //		else if (len==1 && args[0].equalsIgnoreCase("drop")){
+        //			if ( !Utils.checkPerm(sender, "simplyvanish.cmd.drop")) return true;
+        //			if (!Utils.checkPlayer(sender)) return true;
+        //			Utils.dropItemInHand((Player) sender);
+        //			return true;
+        //		}
         else if (len == 1 && args[0].equalsIgnoreCase("save")) {
-            if (!Utils.checkPerm(sender, "simplyvanish.save")) return true;
+            if (!Utils.checkPerm(sender, "simplyvanish.save")) {
+                return true;
+            }
             core.doSaveVanished();
             sender.sendMessage(SimplyVanish.msgLabel + "Saved vanished configs.");
             return true;
-        } else if (len == 1 && args[0].equals(SimplyVanish.cmdNoOpArg)) return true;
-        else if (len == 1 && args[0].equalsIgnoreCase("stats")) {
-            if (!Utils.checkPerm(sender, "simplyvanish.stats.display")) return true;
+        } else if (len == 1 && args[0].equals(SimplyVanish.cmdNoOpArg)) {
+            return true;
+        } else if (len == 1 && args[0].equalsIgnoreCase("stats")) {
+            if (!Utils.checkPerm(sender, "simplyvanish.stats.display")) {
+                return true;
+            }
             Utils.send(sender, SimplyVanish.stats.getStatsStr(true));
             return true;
         } else if (len == 2 && args[0].equalsIgnoreCase("stats") && args[1].equalsIgnoreCase("reset")) {
-            if (!Utils.checkPerm(sender, "simplyvanish.stats.reset")) return true;
+            if (!Utils.checkPerm(sender, "simplyvanish.stats.reset")) {
+                return true;
+            }
             SimplyVanish.stats.clear();
             Utils.send(sender, SimplyVanish.msgLabel + "Stats reset.");
             return true;
         } else if (len == 1 && args[0].equalsIgnoreCase("flags")) {
-            if (!SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.self") && !SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.other"))
+            if (!SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.self") &&
+                !SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.other")) {
                 return Utils.noPerm(sender);
+            }
             VanishConfig cfg = new VanishConfig();
             StringBuilder b = new StringBuilder();
             for (Flag flag : cfg.getAllFlags()) {
@@ -362,15 +449,19 @@ public class SimplyVanishCommand {
             otherName = other.getName();
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                if (player.equals(other)) other = null;
-                else if (!player.canSee(other)) {
+                if (player.equals(other)) {
+                    other = null;
+                } else if (!player.canSee(other)) {
                     VanishConfig cfg = core.getVanishConfig(otherName, false);
-                    if (cfg == null) other = null; // don't let pass
-                    else {
+                    if (cfg == null) {
+                        other = null; // don't let pass
+                    } else {
                         if (!cfg.tell.state) {
                             // check permissions (global bypass, individual bypass)
-                            if (!core.hasPermission(sender, "simplyvanish.vantell.bypass") && !core.hasPermission(sender, "simplyvanish.vantell.bypass.player." + otherName.toLowerCase()))
+                            if (!core.hasPermission(sender, "simplyvanish.vantell.bypass") &&
+                                !core.hasPermission(sender, "simplyvanish.vantell.bypass.player." + otherName.toLowerCase())) {
                                 other = null;
+                            }
                         }
                         // else: let pass
                     }
@@ -395,9 +486,12 @@ public class SimplyVanishCommand {
         // Log if desired
         // TODO: check settings for log and probably log.
         Settings settings = core.getSettings();
-        if (settings.logVantell)
+        if (settings.logVantell) {
             Bukkit.getServer().getLogger().info("[vantell] (" + sender.getName() + " -> " + otherName + ")" + coreMessage);
-        if (settings.mirrorVantell) Utils.send(sender, ChatColor.DARK_GRAY + "(-> " + otherName + ")" + coreMessage);
+        }
+        if (settings.mirrorVantell) {
+            Utils.send(sender, ChatColor.DARK_GRAY + "(-> " + otherName + ")" + coreMessage);
+        }
     }
 
     /**

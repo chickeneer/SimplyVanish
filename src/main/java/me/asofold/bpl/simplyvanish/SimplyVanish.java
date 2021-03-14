@@ -42,9 +42,12 @@ public class SimplyVanish extends JavaPlugin {
     public static final String cmdNoOp = "simplyvanish " + cmdNoOpArg;
 
     public static final String msgLabel = ChatColor.GOLD + "[SimplyVanish]" + ChatColor.GRAY + " ";
-    public static final String msgStillInvisible = SimplyVanish.msgLabel + ChatColor.GRAY + "You are still " + ChatColor.GREEN + "invisible" + ChatColor.GRAY + " to normal players.";
-    public static final String msgNowInvisible = SimplyVanish.msgLabel + ChatColor.GRAY + "You are now " + ChatColor.GREEN + "invisible" + ChatColor.GRAY + " to normal players.";
-    public static final String msgNotifyPing = SimplyVanish.msgLabel + ChatColor.GRAY + "You are " + ChatColor.GREEN + "invisible" + ChatColor.GRAY + ", right now.";
+    public static final String msgStillInvisible =
+            SimplyVanish.msgLabel + ChatColor.GRAY + "You are still " + ChatColor.GREEN + "invisible" + ChatColor.GRAY + " to normal players.";
+    public static final String msgNowInvisible =
+            SimplyVanish.msgLabel + ChatColor.GRAY + "You are now " + ChatColor.GREEN + "invisible" + ChatColor.GRAY + " to normal players.";
+    public static final String msgNotifyPing =
+            SimplyVanish.msgLabel + ChatColor.GRAY + "You are " + ChatColor.GREEN + "invisible" + ChatColor.GRAY + ", right now.";
     public static final String msgDefaultFlags = SimplyVanish.msgLabel + ChatColor.GRAY + "Flags are at default values.";
 
     public static final Stats stats = new Stats(msgLabel.trim() + "[STATS]");
@@ -53,7 +56,6 @@ public class SimplyVanish extends JavaPlugin {
     public static final Integer statsReappear = stats.getNewId("Reappear");
     public static final Integer statsSetFlags = stats.getNewId("SetFlags");
     public static final Integer statsSave = stats.getNewId("SaveData");
-    ;
 
     static {
         stats.setLogStats(false);
@@ -72,16 +74,18 @@ public class SimplyVanish extends JavaPlugin {
     @Override
     public void onLoad() {
         try {
-//			core.getHookUtil().addOnLoadHook(new ProtocolLibHook(this));
+            //			core.getHookUtil().addOnLoadHook(new ProtocolLibHook(this));
         } catch (Throwable t) {
-//			Utils.warn(t);
+            //			Utils.warn(t);
         }
     }
 
 
     @Override
     public void onDisable() {
-        if (core.getSettings().saveVanished) core.doSaveVanished();
+        if (core.getSettings().saveVanished) {
+            core.doSaveVanished();
+        }
         core.setEnabled(false);
         core.setPlugin(null);
         // TODO: maybe let all players see each other again?
@@ -148,12 +152,12 @@ public class SimplyVanish extends JavaPlugin {
         sched.cancelTasks(this);
         CompatConfig config = CompatConfigFactory.getConfig(new File(getDataFolder(), "config.yml"));
         final Path path;
-//		if (config.setPathSeparatorChar('/')){
-//			path = new Path('/');
-//		} else{
-//			// This would  render some things inoperable (permissions with dot as keys).
+        //		if (config.setPathSeparatorChar('/')){
+        //			path = new Path('/');
+        //		} else{
+        //			// This would  render some things inoperable (permissions with dot as keys).
         path = new Path('.');
-//		}
+        //		}
         boolean changed = false;
         Settings settings = new Settings();
         try {
@@ -166,8 +170,12 @@ public class SimplyVanish extends JavaPlugin {
         }
         core.setSettings(settings);
         cmdExe.registerCommandAliases(config, path);
-        if (changed) config.save(); // TODO: maybe check for changes, somehow ?
-        if (settings.saveVanished) core.loadVanished();
+        if (changed) {
+            config.save(); // TODO: maybe check for changes, somehow ?
+        }
+        if (settings.saveVanished) {
+            core.loadVanished();
+        }
         if (settings.pingEnabled) {
             final long period = Math.max(settings.pingPeriod / 50, 200);
             sched.scheduleSyncRepeatingTask(this, new Runnable() {
@@ -190,7 +198,9 @@ public class SimplyVanish extends JavaPlugin {
         PluginManager pm = server.getPluginManager();
         for (String plgName : settings.loadPlugins) {
             Plugin plg = pm.getPlugin(plgName);
-            if (plg != null && !plg.isEnabled()) pm.enablePlugin(plg);
+            if (plg != null && !plg.isEnabled()) {
+                pm.enablePlugin(plg);
+            }
         }
     }
 
@@ -207,7 +217,9 @@ public class SimplyVanish extends JavaPlugin {
      * @param vanished true=vanish, false=reappear
      */
     public static boolean setVanished(Player player, boolean vanished) {
-        if (!core.isEnabled()) return false;
+        if (!core.isEnabled()) {
+            return false;
+        }
         return core.setVanished(player.getName(), vanished);
     }
 
@@ -218,7 +230,9 @@ public class SimplyVanish extends JavaPlugin {
      * @param vanished
      */
     public static boolean setVanished(String playerName, boolean vanished) {
-        if (!core.isEnabled()) return false;
+        if (!core.isEnabled()) {
+            return false;
+        }
         return core.setVanished(playerName, vanished);
     }
 
@@ -229,8 +243,11 @@ public class SimplyVanish extends JavaPlugin {
      * @return
      */
     public static boolean isVanished(String playerName) {
-        if (!core.isEnabled()) return false;
-        else return core.isVanished(playerName);
+        if (!core.isEnabled()) {
+            return false;
+        } else {
+            return core.isVanished(playerName);
+        }
     }
 
     /**
@@ -240,8 +257,11 @@ public class SimplyVanish extends JavaPlugin {
      * @return
      */
     public static boolean isVanished(Player player) {
-        if (!core.isEnabled()) return false;
-        else return core.isVanished(player.getName());
+        if (!core.isEnabled()) {
+            return false;
+        } else {
+            return core.isVanished(player.getName());
+        }
     }
 
     /**
@@ -253,8 +273,11 @@ public class SimplyVanish extends JavaPlugin {
      * @deprecated The method signature will most likely change to Collection or List.
      */
     public static Set<String> getVanishedPlayers() {
-        if (!core.isEnabled()) return new HashSet<String>();
-        else return core.getVanishedPlayers();
+        if (!core.isEnabled()) {
+            return new HashSet<String>();
+        } else {
+            return core.getVanishedPlayers();
+        }
     }
 
     /**
@@ -278,9 +301,14 @@ public class SimplyVanish extends JavaPlugin {
     public static VanishConfig getVanishConfig(String playerName, boolean create) {
         VanishConfig cfg = core.getVanishConfig(playerName, false);
         if (cfg == null) {
-            if (create) return getDefaultVanishConfig();
-            else return null;
-        } else return cfg.clone();
+            if (create) {
+                return getDefaultVanishConfig();
+            } else {
+                return null;
+            }
+        } else {
+            return cfg.clone();
+        }
     }
 
     /**

@@ -18,12 +18,20 @@ public final class DropListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     final void onItemDrop(final PlayerDropItemEvent event) {
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            return;
+        }
         final Player player = event.getPlayer();
         final VanishConfig cfg = core.getVanishConfig(player.getName(), false);
-        if (cfg == null) return;
-        if (!cfg.vanished.state) return;
-        if (!cfg.drop.state) event.setCancelled(true);
+        if (cfg == null) {
+            return;
+        }
+        if (!cfg.vanished.state) {
+            return;
+        }
+        if (!cfg.drop.state) {
+            event.setCancelled(true);
+        }
     }
 
 }

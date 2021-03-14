@@ -16,13 +16,19 @@ public abstract class AbstractConfig implements CompatConfig {
     @Override
     public Boolean getBoolean(String path, Boolean defaultValue) {
         String val = getString(path, null);
-        if (val == null) return defaultValue;
+        if (val == null) {
+            return defaultValue;
+        }
         try {
             // return Boolean.parseBoolean(val);
             String t = val.trim().toLowerCase();
-            if (t.equals("true")) return true;
-            else if (t.equals("false")) return false;
-            else return defaultValue;
+            if (t.equals("true")) {
+                return true;
+            } else if (t.equals("false")) {
+                return false;
+            } else {
+                return defaultValue;
+            }
         } catch (NumberFormatException exc) {
             return defaultValue;
         }
@@ -31,7 +37,9 @@ public abstract class AbstractConfig implements CompatConfig {
     @Override
     public Double getDouble(String path, Double defaultValue) {
         String val = getString(path, null);
-        if (val == null) return defaultValue;
+        if (val == null) {
+            return defaultValue;
+        }
         try {
             return Double.parseDouble(val);
         } catch (NumberFormatException exc) {
@@ -42,7 +50,9 @@ public abstract class AbstractConfig implements CompatConfig {
     @Override
     public Long getLong(String path, Long defaultValue) {
         String val = getString(path, null);
-        if (val == null) return defaultValue;
+        if (val == null) {
+            return defaultValue;
+        }
         try {
             return Long.parseLong(val);
         } catch (NumberFormatException exc) {
@@ -53,7 +63,9 @@ public abstract class AbstractConfig implements CompatConfig {
     @Override
     public Integer getInt(String path, Integer defaultValue) {
         String val = getString(path, null);
-        if (val == null) return defaultValue;
+        if (val == null) {
+            return defaultValue;
+        }
         try {
             return Integer.parseInt(val);
         } catch (NumberFormatException exc) {
@@ -63,9 +75,13 @@ public abstract class AbstractConfig implements CompatConfig {
 
     @Override
     public List<Integer> getIntList(String path, List<Integer> defaultValue) {
-        if (!hasEntry(path)) return defaultValue;
+        if (!hasEntry(path)) {
+            return defaultValue;
+        }
         List<String> strings = getStringList(path, null);
-        if (strings == null) return defaultValue;
+        if (strings == null) {
+            return defaultValue;
+        }
         List<Integer> out = new LinkedList<Integer>();
         for (String s : strings) {
             try {
@@ -79,9 +95,13 @@ public abstract class AbstractConfig implements CompatConfig {
 
     @Override
     public List<Double> getDoubleList(String path, List<Double> defaultValue) {
-        if (!hasEntry(path)) return defaultValue;
+        if (!hasEntry(path)) {
+            return defaultValue;
+        }
         List<String> strings = getStringList(path, null);
-        if (strings == null) return defaultValue;
+        if (strings == null) {
+            return defaultValue;
+        }
         List<Double> out = new LinkedList<Double>();
         for (String s : strings) {
             try {
@@ -95,7 +115,9 @@ public abstract class AbstractConfig implements CompatConfig {
 
     @Override
     public Set<String> getStringKeys(String path, boolean deep) {
-        if (deep) return getStringKeysDeep(path);
+        if (deep) {
+            return getStringKeysDeep(path);
+        }
         Set<String> keys = new HashSet<String>();
         keys.addAll(getStringKeys(path));
         return keys;
@@ -109,9 +131,13 @@ public abstract class AbstractConfig implements CompatConfig {
         Set<String> out = new HashSet<String>();
         final int len = path.length();
         for (String key : values.keySet()) {
-            if (!key.startsWith(path)) continue;
-            else if (key.length() == len) continue;
-            else if (key.charAt(len) == sep) out.add(key);
+            if (!key.startsWith(path)) {
+                continue;
+            } else if (key.length() == len) {
+                continue;
+            } else if (key.charAt(len) == sep) {
+                out.add(key);
+            }
         }
         return out;
     }
@@ -221,13 +247,17 @@ public abstract class AbstractConfig implements CompatConfig {
     public Set<String> getSetFromStringList(String path,
                                             Set<String> defaultValue, boolean trim, boolean lowerCase) {
         List<String> list = getStringList(path);
-        if (list == null) return defaultValue;
+        if (list == null) {
+            return defaultValue;
+        }
         Set<String> set = new HashSet<String>();
         if (lowerCase) {
             for (String entry : list) {
                 set.add((trim ? entry.trim() : entry).toLowerCase());
             }
-        } else set.addAll(list);
+        } else {
+            set.addAll(list);
+        }
         return set;
     }
 

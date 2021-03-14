@@ -17,10 +17,10 @@ public class CompatConfigFactory {
     public static final CompatConfig getConfig(File file) {
         CompatConfig out = null;
         // TODO: add more (latest API)
-//		try{
-//			return new OldConfig(file);
-//		} catch (Throwable t){
-//		}
+        //		try{
+        //			return new OldConfig(file);
+        //		} catch (Throwable t){
+        //		}
         try {
             return new NewConfig(file);
         } catch (Throwable t) {
@@ -29,27 +29,27 @@ public class CompatConfigFactory {
         return out;
     }
 
-//	public static final CompatConfig getOldConfig(File file){
-//		return new OldConfig(file);
-//	}
+    //	public static final CompatConfig getOldConfig(File file){
+    //		return new OldConfig(file);
+    //	}
 
     public static final CompatConfig getNewConfig(File file) {
         return new NewConfig(file);
     }
 
-//	/**
-//	 * Get a ebeans based database config (!).
-//	 * @param file
-//	 * @return
-//	 */
-//	public static final CompatConfig getDBConfig(EbeanServer server, String dbKey){
-//		try{
-//			return new SnakeDBConfig(server, dbKey);
-//		} catch (Throwable t){
-//			
-//		}
-//		return new DBConfig(server, dbKey);
-//	}
+    //	/**
+    //	 * Get a ebeans based database config (!).
+    //	 * @param file
+    //	 * @return
+    //	 */
+    //	public static final CompatConfig getDBConfig(EbeanServer server, String dbKey){
+    //		try{
+    //			return new SnakeDBConfig(server, dbKey);
+    //		} catch (Throwable t){
+    //
+    //		}
+    //		return new DBConfig(server, dbKey);
+    //	}
 
 
     // TODO: add setup helpers (!)

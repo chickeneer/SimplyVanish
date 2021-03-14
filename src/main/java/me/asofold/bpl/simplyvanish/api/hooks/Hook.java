@@ -18,19 +18,19 @@ public interface Hook {
      *
      * @return
      */
-    public String getHookName();
+    String getHookName();
 
     /**
      * @return null if all are supported.
      */
-    public HookPurpose[] getSupportedMethods();
+    HookPurpose[] getSupportedMethods();
 
     /**
      * Get an event listener.
      *
      * @return null if not desired.
      */
-    public HookListener getListener();
+    HookListener getListener();
 
 
     /**
@@ -38,40 +38,40 @@ public interface Hook {
      *
      * @param playerName
      */
-    public void beforeVanish(String playerName);
+    void beforeVanish(String playerName);
 
     /**
      * Executed after a player vanishes or logs in vanished.
      *
      * @param playerName
      */
-    public void afterVanish(String playerName);
+    void afterVanish(String playerName);
 
     /**
      * Executed before a player reappears.
      *
      * @param playerName
      */
-    public void beforeReappear(String playerName);
+    void beforeReappear(String playerName);
 
     /**
      * Executed after a player reappears.
      *
      * @param playerName
      */
-    public void afterReappear(String playerName);
+    void afterReappear(String playerName);
 
     /**
      * @param playerName
      * @param oldCfg     (clone)
      * @param newCfg     (clone)
      */
-    public void beforeSetFlags(String playerName, VanishConfig oldCfg, VanishConfig newCfg);
+    void beforeSetFlags(String playerName, VanishConfig oldCfg, VanishConfig newCfg);
 
     /**
      * @param playerName
      */
-    public void afterSetFlags(String playerName);
+    void afterSetFlags(String playerName);
 
     /**
      * Called on updateVanishState.<br>
@@ -82,7 +82,7 @@ public interface Hook {
      * @param isAllowed Will be set to false and stay false, if one hook returns false on allowUpdateVanishState.
      * @return If false is returned, an update will not be performed.
      */
-    public boolean allowUpdateVanishState(Player player, int hookId, boolean isAllowed);
+    boolean allowUpdateVanishState(Player player, int hookId, boolean isAllowed);
 
     /**
      * @param player
@@ -90,7 +90,7 @@ public interface Hook {
      * @param isAllowed
      * @return
      */
-    public boolean allowShow(Player player, Player canSee, boolean isAllowed);
+    boolean allowShow(Player player, Player canSee, boolean isAllowed);
 
     /**
      * @param player
@@ -98,6 +98,6 @@ public interface Hook {
      * @param isAllowed
      * @return
      */
-    public boolean allowHide(Player player, Player canNotSee, boolean isAllowed);
+    boolean allowHide(Player player, Player canNotSee, boolean isAllowed);
 
 }

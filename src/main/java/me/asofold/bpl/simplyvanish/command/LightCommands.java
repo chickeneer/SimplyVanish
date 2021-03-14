@@ -33,8 +33,11 @@ public class LightCommands implements Listener {
 
         @Override
         public boolean execute(CommandSender sender, String label, String[] args) {
-            if (exe == null) return false;
-            else return exe.onCommand(sender, this, label, args);
+            if (exe == null) {
+                return false;
+            } else {
+                return exe.onCommand(sender, this, label, args);
+            }
         }
 
         public void setExecutor(CommandExecutor commandExecutor) {
@@ -69,14 +72,18 @@ public class LightCommands implements Listener {
         for (String alias : aliases) {
             aliasList.add(alias.trim().toLowerCase());
         }
-        if (commandMap.containsKey(label)) return false;
+        if (commandMap.containsKey(label)) {
+            return false;
+        }
         LightCommand cmd = new LightCommand(label, description, usage, aliasList);
         cmd.setExecutor(commandExecutor);
         cmd.setUsage(usage);
         cmd.setDescription(description);
         this.commandMap.put(label, cmd);
         for (String alias : aliasList) {
-            if (!commandMap.containsKey(alias)) commandMap.put(alias, cmd);
+            if (!commandMap.containsKey(alias)) {
+                commandMap.put(alias, cmd);
+            }
         }
         return true;
     }
@@ -89,8 +96,11 @@ public class LightCommands implements Listener {
      */
     public boolean removeAlias(String label) {
         LightCommand cmd = commandMap.remove(label.trim().toLowerCase());
-        if (cmd == null) return false;
-        else return true;
+        if (cmd == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -103,13 +113,21 @@ public class LightCommands implements Listener {
     public boolean removeCommand(String label) {
         label = label.trim().toLowerCase();
         LightCommand cmd = commandMap.get(label);
-        if (cmd == null) return false;
-        if (!label.equals(cmd.getLabel())) return false;
+        if (cmd == null) {
+            return false;
+        }
+        if (!label.equals(cmd.getLabel())) {
+            return false;
+        }
         commandMap.remove(label);
         for (String alias : cmd.getAliases()) {
             LightCommand candidate = commandMap.get(alias.trim().toLowerCase());
-            if (candidate == null) continue;
-            if (!label.equals(candidate.getLabel())) continue;
+            if (candidate == null) {
+                continue;
+            }
+            if (!label.equals(candidate.getLabel())) {
+                continue;
+            }
             commandMap.remove(alias);
         }
         return true;
@@ -119,19 +137,28 @@ public class LightCommands implements Listener {
     public void onConsoleTryCommand(ServerCommandEvent event) {
         String msg = event.getCommand();
         CommandSender sender = event.getSender();
-        if (processCommand(sender, msg)) event.setCommand(cmdNoOp); // TODO
+        if (processCommand(sender, msg)) {
+            event.setCommand(cmdNoOp); // TODO
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerTryCommand(PlayerCommandPreprocessEvent event) {
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            return;
+        }
         CommandSender sender = event.getPlayer();
         String msg = event.getMessage();
-        if (msg == null) return;
+        if (msg == null) {
+            return;
+        }
         msg = msg.trim();
         if (msg.startsWith("/")) {
-            if (msg.length() > 1) msg = msg.substring(1);
-            else msg = "";
+            if (msg.length() > 1) {
+                msg = msg.substring(1);
+            } else {
+                msg = "";
+            }
         }
         if (processCommand(sender, msg)) {
             event.setCancelled(true);
@@ -145,8 +172,12 @@ public class LightCommands implements Listener {
      * @return
      */
     public boolean processCommand(CommandSender sender, String msg) {
-        if (msg == null) return false;
-        if (sender == null) return false;
+        if (msg == null) {
+            return false;
+        }
+        if (sender == null) {
+            return false;
+        }
         String[] split = msg.split(" ");
         List<String> valid = new LinkedList<String>();
         String label = null;
@@ -154,25 +185,35 @@ public class LightCommands implements Listener {
         for (String part : split) {
             if (aggressiveTrim) {
                 part = part.trim();
-                if (part.isEmpty()) continue;
+                if (part.isEmpty()) {
+                    continue;
+                }
             }
             if (label == null) {
                 label = part;
                 // ensure quick return.
                 command = commandMap.get(label.trim().toLowerCase());
-                if (command == null) return false;
-            } else valid.add(part);
+                if (command == null) {
+                    return false;
+                }
+            } else {
+                valid.add(part);
+            }
         }
-        if (label == null) return false;
+        if (label == null) {
+            return false;
+        }
         String[] args = new String[valid.size()];
-        if (args.length > 0) valid.toArray(args);
-        boolean res = command.execute(sender, label, args);
-        if (res == false) {
+        if (args.length > 0) {
+            valid.toArray(args);
+        }
+        if (!command.execute(sender, label, args)) {
             String usage = command.getUsage();
-            if (usage != null) {
-                if (!usage.isEmpty()) {
-                    if (sender instanceof Player) sender.sendMessage(usage);
-                    else sender.sendMessage(ChatColor.stripColor(usage));
+            if (!usage.isEmpty()) {
+                if (sender instanceof Player) {
+                    sender.sendMessage(usage);
+                } else {
+                    sender.sendMessage(ChatColor.stripColor(usage));
                 }
             }
         }

@@ -29,12 +29,16 @@ public final class CoreListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     final void onPlayerQuit(final PlayerQuitEvent event) {
-        if (onLeave(event.getPlayer().getName(), false, " quit.")) event.setQuitMessage(null);
+        if (onLeave(event.getPlayer().getName(), false, " quit.")) {
+            event.setQuitMessage(null);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     final void onPlayerKick(final PlayerKickEvent event) {
-        if (onLeave(event.getPlayer().getName(), event.isCancelled(), " was kicked.")) event.setLeaveMessage(null);
+        if (onLeave(event.getPlayer().getName(), event.isCancelled(), " was kicked.")) {
+            event.setLeaveMessage(null);
+        }
     }
 
     /**
@@ -58,7 +62,9 @@ public final class CoreListener implements Listener {
                 }
             }
             return !online; // suppress in any case if vanished.
-        } else return false;
+        } else {
+            return false;
+        }
     }
 
 
@@ -95,7 +101,9 @@ public final class CoreListener implements Listener {
             if (core.hasPermission(player, settings.autoVanishPerm)) {
                 // permission given, do attempt to vanish
                 auto = true;
-                if (cfg == null) cfg = core.getVanishConfig(playerName, true);
+                if (cfg == null) {
+                    cfg = core.getVanishConfig(playerName, true);
+                }
             }
         }
         boolean doVanish = auto || was;
@@ -109,7 +117,9 @@ public final class CoreListener implements Listener {
             }
             doVanish = svEvent.getVisibleAfter();
             cfg.set("vanished", doVanish);
-            if (doVanish) hookUtil.callBeforeVanish(playerName); // need to check again.
+            if (doVanish) {
+                hookUtil.callBeforeVanish(playerName); // need to check again.
+            }
         }
         if (!core.updateVanishState(event.getPlayer())) {
             // TODO: set doVanish ? remove from vanished ?
@@ -121,7 +131,9 @@ public final class CoreListener implements Listener {
                 if (!cfg.online.state) {
                     event.setJoinMessage(null);
                 }
-            } else if (!cfg.needsSave()) core.removeVanishedName(playerName);
+            } else if (!cfg.needsSave()) {
+                core.removeVanishedName(playerName);
+            }
         }
     }
 

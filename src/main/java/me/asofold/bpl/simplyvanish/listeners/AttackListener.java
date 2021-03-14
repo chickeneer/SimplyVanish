@@ -20,37 +20,53 @@ public final class AttackListener implements Listener {
         this.core = core;
     }
 
-    private final boolean shouldCancelAttack(final String name) {
+    private boolean shouldCancelAttack(final String name) {
         final VanishConfig cfg = core.getVanishConfig(name, false);
-        if (cfg == null) return false;
-        if (!cfg.vanished.state || cfg.attack.state) return false;
-        return true;
+        if (cfg == null) {
+            return false;
+        }
+        return cfg.vanished.state && !cfg.attack.state;
     }
 
     @EventHandler(priority = EventPriority.LOW)
-    final void onEntitiyDamage(final EntityDamageByEntityEvent event) {
+    final void onEntityDamage(final EntityDamageByEntityEvent event) {
         // TODO: maybe integrate with the damage check
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            return;
+        }
         Entity entity = event.getDamager();
-        if (entity == null) return;
-        if (entity instanceof Projectile) entity = Utils.getShooterEntity((Projectile) entity);
-        if (!(entity instanceof Player)) return;
-        if (shouldCancelAttack(((Player) entity).getName())) event.setCancelled(true);
+        if (entity instanceof Projectile) {
+            entity = Utils.getShooterEntity((Projectile) entity);
+        }
+        if (!(entity instanceof Player)) {
+            return;
+        }
+        if (shouldCancelAttack(entity.getName())) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler(priority = EventPriority.LOW)
     final void onProjectileLaunch(final ProjectileLaunchEvent event) {
         final Entity entity = Utils.getShooterEntity(event.getEntity());
-        if (!(entity instanceof Player)) return;
-        if (shouldCancelAttack(((Player) entity).getName())) event.setCancelled(true);
+        if (!(entity instanceof Player)) {
+            return;
+        }
+        if (shouldCancelAttack(((Player) entity).getName())) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler(priority = EventPriority.LOW)
     final void onShootBow(final EntityShootBowEvent event) {
-        // nmot sure about this one.
+        // not sure about this one.
         final Entity entity = event.getEntity();
-        if (!(entity instanceof Player)) return;
-        if (shouldCancelAttack(((Player) entity).getName())) event.setCancelled(true);
+        if (!(entity instanceof Player)) {
+            return;
+        }
+        if (shouldCancelAttack(entity.getName())) {
+            event.setCancelled(true);
+        }
     }
 
 }
