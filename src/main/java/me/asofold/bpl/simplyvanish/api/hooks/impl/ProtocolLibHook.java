@@ -58,13 +58,8 @@ public class ProtocolLibHook extends AbstractHook {
 
     @Override
     public HookListener getListener() {
-        return new HookListener() {
-            @Override
-            public boolean unregisterEvents() {
-                return false;
-            }
-            // TODO
-        };
+        // TODO
+        return () -> false;
     }
 
     @Override

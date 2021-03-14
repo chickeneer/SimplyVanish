@@ -92,13 +92,10 @@ public class LibsDisguisesHook extends AbstractHook {
             }
             final Player player = (Player) event.getEntity();
             String name = player.getName();
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SimplyVanish.getPluginInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    Player dummy = Bukkit.getServer().getPlayerExact(player.getName());
-                    if (dummy != null) {
-                        SimplyVanish.updateVanishState(dummy, false, hookId);
-                    }
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SimplyVanish.getPluginInstance(), () -> {
+                Player dummy = Bukkit.getServer().getPlayerExact(player.getName());
+                if (dummy != null) {
+                    SimplyVanish.updateVanishState(dummy, false, hookId);
                 }
             });
         }
@@ -118,7 +115,6 @@ public class LibsDisguisesHook extends AbstractHook {
             // Disguise and remember disguise.
             DisguiseAPI.undisguiseToAll(player); // TODO: change priorities and check result, act accordingly.
         }
-        return;
     }
 
     @Override

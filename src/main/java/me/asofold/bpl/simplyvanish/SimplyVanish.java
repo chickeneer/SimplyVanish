@@ -22,6 +22,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.HashSet;
@@ -64,7 +65,7 @@ public class SimplyVanish extends JavaPlugin {
     SimplyVanishCommand cmdExe;
 
     /**
-     * Constructor: set some defualt configuration values.
+     * Constructor: set some default configuration values.
      */
     public SimplyVanish() {
         cmdExe = new SimplyVanishCommand(core);
@@ -75,7 +76,7 @@ public class SimplyVanish extends JavaPlugin {
     public void onLoad() {
         try {
             //			core.getHookUtil().addOnLoadHook(new ProtocolLibHook(this));
-        } catch (Throwable t) {
+        } catch (Exception t) {
             //			Utils.warn(t);
         }
     }
@@ -121,14 +122,9 @@ public class SimplyVanish extends JavaPlugin {
         // just in case quadratic time checking:
         try {
             updateAllPlayers();
-        } catch (Throwable t) {
+        } catch (Exception t) {
             Utils.severe("Failed to update players in onEnable (scheduled for next tick), are you using reload?", t);
-            getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-                @Override
-                public void run() {
-                    updateAllPlayers();
-                }
-            });
+            getServer().getScheduler().scheduleSyncDelayedTask(this, this::updateAllPlayers);
         }
         System.out.println("[SimplyVanish] Enabled");
     }
@@ -164,7 +160,7 @@ public class SimplyVanish extends JavaPlugin {
             config.load();
             changed = Settings.addDefaults(config, path);
             settings.applyConfig(config, path);
-        } catch (Throwable t) {
+        } catch (Exception t) {
             Utils.severe("Failed to load the configuration, continue with default settings. ", t);
             settings = new Settings();
         }
@@ -178,21 +174,11 @@ public class SimplyVanish extends JavaPlugin {
         }
         if (settings.pingEnabled) {
             final long period = Math.max(settings.pingPeriod / 50, 200);
-            sched.scheduleSyncRepeatingTask(this, new Runnable() {
-                @Override
-                public void run() {
-                    core.onNotifyPing();
-                }
-            }, period, period);
+            sched.scheduleSyncRepeatingTask(this, core::onNotifyPing, period, period);
         }
         if (settings.saveVanishedInterval > 0) {
             final long period = settings.saveVanishedInterval / 50;
-            sched.scheduleSyncRepeatingTask(this, new Runnable() {
-                @Override
-                public void run() {
-                    core.doSaveVanished();
-                }
-            }, period, period);
+            sched.scheduleSyncRepeatingTask(this, core::doSaveVanished, period, period);
         }
         // Load plugins (permissions!):
         PluginManager pm = server.getPluginManager();
@@ -205,8 +191,8 @@ public class SimplyVanish extends JavaPlugin {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command,
-                             String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command,
+                             @NotNull String label, @NotNull String[] args) {
         return cmdExe.onCommand(sender, command, label, args);
     }
 
@@ -274,7 +260,7 @@ public class SimplyVanish extends JavaPlugin {
      */
     public static Set<String> getVanishedPlayers() {
         if (!core.isEnabled()) {
-            return new HashSet<String>();
+            return new HashSet<>();
         } else {
             return core.getVanishedPlayers();
         }
@@ -339,7 +325,7 @@ public class SimplyVanish extends JavaPlugin {
     }
 
     /**
-     * Force an update of who sees who for this player, without notification, as if SimplyVanish would acall it internally.<br>
+     * Force an update of who sees who for this player, without notification, as if SimplyVanish would call it internally.<br>
      *
      * @param player
      * @return false, if the action was prevented by a hook, true otherwise.
@@ -383,7 +369,7 @@ public class SimplyVanish extends JavaPlugin {
     }
 
     /**
-     * Get a new hook id to be passed for certain calls, to allow knwing if your own code called updateVanishState.
+     * Get a new hook id to be passed for certain calls, to allow knowing if your own code called updateVanishState.
      * API
      *
      * @return
@@ -466,7 +452,7 @@ public class SimplyVanish extends JavaPlugin {
      * Get a thread safe copy of the VanishConfig for a player.<br>
      * This method will synchronize into the main server thread with an event,
      * this take up to 50 milliseconds for processing, but it will return a copy
-     * of the VanishCOnfig instance for the player, exactly at a cxertain moment of time.<br>
+     * of the VanishConfig instance for the player, exactly at a certain moment of time.<br>
      * <p>
      * NOTE: This probably mostly obsolete and will likely be removed for the use of synchronized maps, but it is interesting to see (once) to use events to get some object in a thread safe way.
      *

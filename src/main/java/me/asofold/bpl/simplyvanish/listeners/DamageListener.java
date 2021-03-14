@@ -58,7 +58,7 @@ public final class DamageListener implements Listener {
         if (!(entity instanceof Player)) {
             return;
         }
-        if (shouldCancelDamage(((Player) entity).getName())) {
+        if (shouldCancelDamage(entity.getName())) {
             event.setCancelled(true);
             if (entity.getFireTicks() > 0) {
                 entity.setFireTicks(0);
@@ -85,7 +85,7 @@ public final class DamageListener implements Listener {
             final Collection<LivingEntity> affected = event.getAffectedEntities();
             for (final LivingEntity entity : affected) {
                 if (entity instanceof Player) {
-                    if (shouldCancelDamage(((Player) entity).getName())) {
+                    if (shouldCancelDamage(entity.getName())) {
                         rem.add(entity);
                     }
                 }
@@ -93,7 +93,7 @@ public final class DamageListener implements Listener {
             if (!rem.isEmpty()) {
                 affected.removeAll(rem);
             }
-        } catch (Throwable t) {
+        } catch (Exception t) {
             // ignore (fast addition.)
         }
     }

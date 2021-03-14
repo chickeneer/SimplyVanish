@@ -120,23 +120,23 @@ public class Settings {
     /**
      * All lower-case: Player -> permissions.
      */
-    public final Map<String, Set<String>> fakePermissions = new HashMap<String, Set<String>>();
+    public final Map<String, Set<String>> fakePermissions = new HashMap<>();
 
     public boolean addExtendedConfiguration = true;
 
-    public final Set<Integer> bypassBlocks = new HashSet<Integer>();
-    public final Set<EntityType> bypassEntities = new HashSet<EntityType>();
+    public final Set<Integer> bypassBlocks = new HashSet<>();
+    public final Set<EntityType> bypassEntities = new HashSet<>();
 
     public boolean bypassIgnorePermissions = true;
 
 
     public boolean cmdWhitelist = false;
 
-    public final Set<String> cmdCommands = new HashSet<String>();
+    public final Set<String> cmdCommands = new HashSet<>();
 
-    public final Map<String, String[]> flagSets = new HashMap<String, String[]>();
+    public final Map<String, String[]> flagSets = new HashMap<>();
 
-    public List<String> loadPlugins = new LinkedList<String>();
+    public final List<String> loadPlugins = new LinkedList<>();
 
     /**
      * If to log vantell messages.
@@ -211,7 +211,7 @@ public class Settings {
         bypassEntities.addAll(getEntityList(config.getStringList(path.flagsBypassEntities, null)));
 
         loadPlugins.clear();
-        loadPlugins.addAll(config.getStringList(path.loadPlugins, new LinkedList<String>()));
+        loadPlugins.addAll(config.getStringList(path.loadPlugins, new LinkedList<>()));
 
         logVantell = config.getBoolean(path.cmdVantellLog, ref.logVantell);
         mirrorVantell = config.getBoolean(path.cmdVantellMirror, ref.mirrorVantell);
@@ -248,7 +248,7 @@ public class Settings {
 
         // Fake permissions:
         fakePermissions.clear();
-        String inUse = "";
+        StringBuilder inUse = new StringBuilder();
         Collection<String> keys = config.getStringKeys(path.permSets);
         if (keys != null) {
             for (String setName : keys) {
@@ -263,13 +263,9 @@ public class Settings {
                     continue; // just skip;
                 }
                 for (String n : players) {
-                    inUse += " " + n;
+                    inUse.append(" ").append(n);
                     String lcn = n.trim().toLowerCase();
-                    Set<String> permSet = fakePermissions.get(lcn);
-                    if (permSet == null) {
-                        permSet = new HashSet<String>();
-                        fakePermissions.put(lcn, permSet);
-                    }
+                    Set<String> permSet = fakePermissions.computeIfAbsent(lcn, k -> new HashSet<>());
                     for (String p : perms) {
                         String part = p.trim().toLowerCase();
                         if (part.startsWith("simplyvanish.")) {
@@ -281,13 +277,13 @@ public class Settings {
                 }
             }
         }
-        if (!inUse.isEmpty()) {
+        if (inUse.length() > 0) {
             Utils.warn("Fake permissions in use for: " + inUse);
         }
     }
 
     private List<EntityType> getEntityList(List<String> entries) {
-        List<EntityType> out = new LinkedList<EntityType>();
+        List<EntityType> out = new LinkedList<>();
         if (entries == null) {
             return out;
         }
@@ -295,7 +291,7 @@ public class Settings {
             EntityType type = null;
             try {
                 type = EntityType.valueOf(entry.trim().toUpperCase().replace(" ", "_"));
-            } catch (Throwable t) {
+            } catch (Exception t) {
             }
             if (type != null) {
                 out.add(type);
@@ -307,7 +303,7 @@ public class Settings {
     }
 
     private List<Integer> getIdList(List<String> blocks) {
-        List<Integer> out = new LinkedList<Integer>();
+        List<Integer> out = new LinkedList<>();
         if (blocks == null) {
             return out;
         }
@@ -315,7 +311,7 @@ public class Settings {
             Material mat = null;
             try {
                 mat = Material.matchMaterial(entry.trim().toUpperCase());
-            } catch (Throwable t) {
+            } catch (Exception t) {
             }
             if (mat != null) {
                 //TODO: out.add(mat.getId());
@@ -323,7 +319,7 @@ public class Settings {
             }
             try {
                 mat = null; //TODO: Material.getMaterial(Integer.parseInt(entry.trim()));
-            } catch (Throwable t) {
+            } catch (Exception t) {
             }
             if (mat != null) {
                 //TODO: out.add(mat.getId());
@@ -378,10 +374,7 @@ public class Settings {
         defaults.set(path.flagsBypassIgnorePermissions, ref.bypassIgnorePermissions);
 
         defaults.set(path.flagsCmdWhitelist, ref.cmdWhitelist);
-        List<String> cmds = new LinkedList<String>();
-        for (String cmd : defaultFLagCmds) {
-            cmds.add(cmd);
-        }
+        List<String> cmds = new LinkedList<>(Arrays.asList(defaultFLagCmds));
         defaults.set(path.flagsCmdCommands, cmds);
 
         defaults.set(path.loadPlugins, ref.loadPlugins);
@@ -400,12 +393,12 @@ public class Settings {
         boolean changed = false;
         // Add more complex defaults:
         if (!config.contains(path.flagsBypass)) {
-            List<String> blocks = new LinkedList<String>();
+            List<String> blocks = new LinkedList<>();
             for (Integer id : presetBypassBlocks) {
                 blocks.add(id.toString());
             }
             config.set(path.flagsBypassBlocks, blocks);
-            List<String> entities = new LinkedList<String>();
+            List<String> entities = new LinkedList<>();
             for (EntityType entity : presetBypassEntities) {
                 entities.add(entity.toString());
             }
@@ -438,10 +431,7 @@ public class Settings {
             int i = 0;
             for (String[] perms : presetPermSets) {
                 i++;
-                List<String> entries = new LinkedList<String>();
-                for (String e : perms) {
-                    entries.add(e);
-                }
+                List<String> entries = new LinkedList<>(Arrays.asList(perms));
                 final String prefix = base + i + path.sep;
                 config.set(prefix + path.keyPerms, entries);
                 config.set(prefix + path.keyPlayers, new LinkedList<String>());

@@ -21,7 +21,7 @@ public class Stats {
     private long nDone = 0;
     private boolean logStats = true;
     private boolean showRange = true;
-    private final Map<Integer, Entry> entries = new HashMap<Integer, Stats.Entry>();
+    private final Map<Integer, Entry> entries = new HashMap<>();
     private final DecimalFormat f;
     private final String label;
 
@@ -42,7 +42,7 @@ public class Stats {
     /**
      * Map id to name.
      */
-    private final Map<Integer, String> idKeyMap = new HashMap<Integer, String>();
+    private final Map<Integer, String> idKeyMap = new HashMap<>();
     int maxId = 0;
 
     public final void addStats(Integer key, long dur) {
@@ -87,7 +87,7 @@ public class Stats {
 
     public final String getStatsStr(boolean colors) {
         StringBuilder b = new StringBuilder(400);
-        b.append(label + " ");
+        b.append(label).append(" ");
         boolean first = true;
         for (Integer id : entries.keySet()) {
             if (!first) {
@@ -102,9 +102,9 @@ public class Stats {
                 n = ChatColor.AQUA + n + ChatColor.WHITE;
                 av = ChatColor.YELLOW + av + ChatColor.WHITE;
             }
-            b.append(key + " av=" + av + " n=" + n);
+            b.append(key).append(" av=").append(av).append(" n=").append(n);
             if (showRange) {
-                b.append(" rg=" + f.format(entry.min) + "..." + f.format(entry.max));
+                b.append(" rg=").append(f.format(entry.min)).append("...").append(f.format(entry.max));
             }
             first = false;
         }
@@ -116,12 +116,7 @@ public class Stats {
      * @return
      */
     public final String getKey(Integer id) {
-        String key = idKeyMap.get(id);
-        if (key == null) {
-            key = "<no key for id: " + id + ">";
-            idKeyMap.put(id, key);
-        }
-        return key;
+        return idKeyMap.computeIfAbsent(id, i -> "<no key for id: " + i + ">");
 
     }
 

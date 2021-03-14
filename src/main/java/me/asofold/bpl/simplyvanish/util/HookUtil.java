@@ -20,16 +20,16 @@ public class HookUtil {
     /**
      * Hooks by purpose.
      */
-    private final Map<HookPurpose, List<Hook>> usedHooks = new HashMap<HookPurpose, List<Hook>>();
+    private final Map<HookPurpose, List<Hook>> usedHooks = new HashMap<>();
 
-    private final Map<String, HookListener> usedHookListeners = new HashMap<String, HookListener>();
+    private final Map<String, HookListener> usedHookListeners = new HashMap<>();
 
-    private final List<Hook> onLoadHooks = new ArrayList<Hook>();
+    private final List<Hook> onLoadHooks = new ArrayList<>();
 
     /**
      * Registered hooks by name.
      */
-    private final Map<String, Hook> registeredHooks = new HashMap<String, Hook>();
+    private final Map<String, Hook> registeredHooks = new HashMap<>();
 
     private int maxHookId = 0;
 
@@ -46,7 +46,7 @@ public class HookUtil {
      */
     private void init() {
         for (HookPurpose sup : HookPurpose.values()) {
-            usedHooks.put(sup, new LinkedList<Hook>());
+            usedHooks.put(sup, new LinkedList<>());
         }
     }
 
@@ -92,7 +92,7 @@ public class HookUtil {
                 }
             }
             System.out.println("[SimplyVanish] Add hook: " + hook.getHookName());
-        } catch (Throwable t) {
+        } catch (Exception t) {
             Utils.warn("Disable hook (" + hook.getHookName() + ") due to failure on registration: " + t.getMessage());
             t.printStackTrace();
             removeHook(hook);
@@ -116,13 +116,13 @@ public class HookUtil {
                 if (!listener.unregisterEvents()) {
                     Utils.warn("HookListener (" + hookName + ") returns failure on unregister.");
                 }
-            } catch (Throwable t) {
+            } catch (Exception t) {
                 Utils.warn("Failed to unregister HookListener (" + hookName + "): " + t.getMessage());
                 t.printStackTrace();
             }
         }
         for (HookPurpose sup : usedHooks.keySet()) {
-            List<Hook> rem = new LinkedList<Hook>();
+            List<Hook> rem = new LinkedList<>();
             List<Hook> present = getUsedHooks(sup);
             for (Hook ref : present) {
                 if (ref == hook || ref.getHookName().equals(hookName)) {
@@ -146,14 +146,13 @@ public class HookUtil {
             hooks = usedHooks.get(purpose);
         }
         if (hooks == null) {
-            return new LinkedList<Hook>();
+            return new LinkedList<>();
         }
         return hooks;
     }
 
     public void removeAllHooks() {
-        List<String> names = new LinkedList<String>();
-        names.addAll(registeredHooks.keySet());
+        List<String> names = new LinkedList<>(registeredHooks.keySet());
         for (String name : names) {
             removeHook(name);
             // TODO: maybe something more complete.
@@ -186,7 +185,7 @@ public class HookUtil {
         for (final Hook hook : getUsedHooks(sup)) {
             try {
                 hook.beforeVanish(playerName);
-            } catch (Throwable t) {
+            } catch (Exception t) {
                 onHookCallError(sup, hook, playerName, t);
             }
         }
@@ -197,7 +196,7 @@ public class HookUtil {
         for (final Hook hook : getUsedHooks(sup)) {
             try {
                 hook.afterVanish(playerName);
-            } catch (Throwable t) {
+            } catch (Exception t) {
                 onHookCallError(sup, hook, playerName, t);
             }
         }
@@ -208,7 +207,7 @@ public class HookUtil {
         for (final Hook hook : getUsedHooks(sup)) {
             try {
                 hook.beforeSetFlags(playerName, oldCfg, newCfg);
-            } catch (Throwable t) {
+            } catch (Exception t) {
                 onHookCallError(sup, hook, playerName, t);
             }
         }
@@ -219,7 +218,7 @@ public class HookUtil {
         for (final Hook hook : getUsedHooks(sup)) {
             try {
                 hook.afterSetFlags(playerName);
-            } catch (Throwable t) {
+            } catch (Exception t) {
                 onHookCallError(sup, hook, playerName, t);
             }
         }
@@ -230,7 +229,7 @@ public class HookUtil {
         for (final Hook hook : getUsedHooks(sup)) {
             try {
                 hook.beforeReappear(playerName);
-            } catch (Throwable t) {
+            } catch (Exception t) {
                 onHookCallError(sup, hook, playerName, t);
             }
         }
@@ -241,7 +240,7 @@ public class HookUtil {
         for (final Hook hook : getUsedHooks(sup)) {
             try {
                 hook.afterReappear(playerName);
-            } catch (Throwable t) {
+            } catch (Exception t) {
                 onHookCallError(sup, hook, playerName, t);
             }
         }
@@ -253,7 +252,7 @@ public class HookUtil {
         for (final Hook hook : getUsedHooks(sup)) {
             try {
                 allow &= hook.allowUpdateVanishState(player, hookId, allow);
-            } catch (Throwable t) {
+            } catch (Exception t) {
                 onHookCallError(sup, hook, player.getName(), t);
             }
         }
@@ -266,7 +265,7 @@ public class HookUtil {
         for (final Hook hook : getUsedHooks(sup)) {
             try {
                 allow &= hook.allowShow(player, canSee, allow);
-            } catch (Throwable t) {
+            } catch (Exception t) {
                 onHookCallError(sup, hook, player.getName(), t);
             }
         }
@@ -279,7 +278,7 @@ public class HookUtil {
         for (final Hook hook : getUsedHooks(sup)) {
             try {
                 allow &= hook.allowShow(player, canNotSee, allow);
-            } catch (Throwable t) {
+            } catch (Exception t) {
                 onHookCallError(sup, hook, player.getName(), t);
             }
         }

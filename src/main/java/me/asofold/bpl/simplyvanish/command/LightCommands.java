@@ -10,6 +10,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.server.ServerCommandEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -32,7 +33,7 @@ public class LightCommands implements Listener {
         }
 
         @Override
-        public boolean execute(CommandSender sender, String label, String[] args) {
+        public boolean execute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args) {
             if (exe == null) {
                 return false;
             } else {
@@ -59,7 +60,7 @@ public class LightCommands implements Listener {
      */
     public String cmdNoOp = null;
 
-    Map<String, LightCommand> commandMap = new HashMap<String, LightCommand>();
+    final Map<String, LightCommand> commandMap = new HashMap<>();
 
 
     public boolean registerCommand(String label, Collection<String> aliases, CommandExecutor commandExecutor) {
@@ -68,7 +69,7 @@ public class LightCommands implements Listener {
 
     public boolean registerCommand(String label, String description, String usage, Collection<String> aliases, CommandExecutor commandExecutor) {
         label = label.trim().toLowerCase();
-        List<String> aliasList = new LinkedList<String>();
+        List<String> aliasList = new LinkedList<>();
         for (String alias : aliases) {
             aliasList.add(alias.trim().toLowerCase());
         }
@@ -96,11 +97,7 @@ public class LightCommands implements Listener {
      */
     public boolean removeAlias(String label) {
         LightCommand cmd = commandMap.remove(label.trim().toLowerCase());
-        if (cmd == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return cmd != null;
     }
 
     /**
@@ -149,9 +146,6 @@ public class LightCommands implements Listener {
         }
         CommandSender sender = event.getPlayer();
         String msg = event.getMessage();
-        if (msg == null) {
-            return;
-        }
         msg = msg.trim();
         if (msg.startsWith("/")) {
             if (msg.length() > 1) {
@@ -179,7 +173,7 @@ public class LightCommands implements Listener {
             return false;
         }
         String[] split = msg.split(" ");
-        List<String> valid = new LinkedList<String>();
+        List<String> valid = new LinkedList<>();
         String label = null;
         LightCommand command = null;
         for (String part : split) {

@@ -3,6 +3,7 @@ package me.asofold.bpl.simplyvanish.api.events;
 import me.asofold.bpl.simplyvanish.config.VanishConfig;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Fire this event to get a VanishConfig, it will be set at lowest level.<br>
@@ -28,6 +29,7 @@ public class GetVanishConfigEvent extends Event {
     }
 
     @Override
+    @NotNull
     public HandlerList getHandlers() {
         return handlers;
     }

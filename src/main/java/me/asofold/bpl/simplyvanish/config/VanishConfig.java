@@ -18,7 +18,7 @@ public class VanishConfig implements Cloneable {
     /**
      * Map alias names to standard name.
      */
-    protected static Map<String, String> mappedFlags = new HashMap<String, String>();
+    protected static final Map<String, String> mappedFlags = new HashMap<>();
 
     static {
         for (String[] c : new String[][]{
@@ -55,7 +55,7 @@ public class VanishConfig implements Cloneable {
     /**
      * Mapping names to flags.
      */
-    final Map<String, Flag> flags = new LinkedHashMap<String, Flag>(); // takes more space but is the fastest way.
+    final Map<String, Flag> flags = new LinkedHashMap<>(); // takes more space but is the fastest way.
 
     // False flags:
 
@@ -173,7 +173,7 @@ public class VanishConfig implements Cloneable {
             if (s.isEmpty() || s.length() < 2) {
                 continue;
             }
-            boolean state = false;
+            boolean state;
             if (s.startsWith("+")) {
                 state = true;
                 s = s.substring(1);
@@ -269,7 +269,7 @@ public class VanishConfig implements Cloneable {
      * @return
      */
     public static List<String> getChanges(VanishConfig from, VanishConfig to) {
-        List<String> out = new LinkedList<String>();
+        List<String> out = new LinkedList<>();
         for (String name : from.flags.keySet()) {
             Flag fromFlag = from.flags.get(name);
             Flag toFlag = to.flags.get(name);
@@ -355,9 +355,7 @@ public class VanishConfig implements Cloneable {
     }
 
     public List<Flag> getAllFlags() {
-        List<Flag> all = new LinkedList<Flag>();
-        all.addAll(flags.values());
-        return all;
+        return new LinkedList<>(flags.values());
     }
 
 }

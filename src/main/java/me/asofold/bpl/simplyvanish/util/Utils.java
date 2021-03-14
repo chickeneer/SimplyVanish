@@ -101,11 +101,11 @@ public class Utils {
         return new String(chars);
     }
 
-    public static final boolean checkOnline(final Player player) {
+    public static boolean checkOnline(final Player player) {
         return checkOnline(player.getName());
     }
 
-    public static final boolean checkOnline(final String name) {
+    public static boolean checkOnline(final String name) {
         final Player player = Bukkit.getServer().getPlayerExact(name);
         return player != null;
     }
@@ -117,7 +117,7 @@ public class Utils {
      * @param tag
      * @return
      */
-    public static final boolean checkOnline(final Player player, final String tag) {
+    public static boolean checkOnline(final Player player, final String tag) {
         final boolean res = checkOnline(player);
         if (!res) {
             warn("[" + tag + "] Inconsistent online state (flag=" + player.isOnline() + ") Server returns null for: " + player.getName());
@@ -125,33 +125,33 @@ public class Utils {
         return res;
     }
 
-    public static final void warn(final String msg) {
+    public static void warn(final String msg) {
         Bukkit.getServer().getLogger().warning("[SimplyVanish] " + msg);
     }
 
-    public static final void severe(final String msg) {
+    public static void severe(final String msg) {
         Bukkit.getServer().getLogger().severe("[SimplyVanish] " + msg);
     }
 
-    public static final void severe(final String msg, final Throwable t) {
+    public static void severe(final String msg, final Throwable t) {
         severe(msg);
         severe(t);
     }
 
-    public final static void severe(final Throwable t) {
+    public static void severe(final Throwable t) {
         severe(toString(t));
     }
 
-    public static final void warn(final String msg, final Throwable t) {
+    public static void warn(final String msg, final Throwable t) {
         warn(msg);
         warn(t);
     }
 
-    public final static void warn(final Throwable t) {
+    public static void warn(final Throwable t) {
         warn(toString(t));
     }
 
-    public static final String toString(final Throwable t) {
+    public static String toString(final Throwable t) {
         final Writer buf = new StringWriter(500);
         final PrintWriter writer = new PrintWriter(buf);
         t.printStackTrace(writer);
@@ -162,7 +162,7 @@ public class Utils {
     public static void sendToTargets(String msg,
                                      String targetSpec) {
         // check targets:
-        List<Player> players = new LinkedList<Player>();
+        List<Player> players = new LinkedList<>();
         Collection<? extends Player> online = Bukkit.getServer().getOnlinePlayers();
         for (String x : targetSpec.split(",")) {
             String targets = x.trim();
@@ -173,9 +173,7 @@ public class Utils {
                     }
                 }
             } else if (targets.equalsIgnoreCase("all") || targets.equalsIgnoreCase("everyone") || (targets.equalsIgnoreCase("everybody"))) {
-                for (Player player : online) {
-                    players.add(player);
-                }
+                players.addAll(online);
             } else if (targets.toLowerCase().startsWith("permission:") && targets.length() > 11) {
                 String perm = targets.substring(11).trim();
                 for (Player player : online) {
@@ -192,15 +190,12 @@ public class Utils {
 
     public static void dropItemInHand(Player player) {
         ItemStack stack = player.getInventory().getItemInMainHand();
-        if (stack == null) {
-            return;
-        }
         if (stack.getType() == Material.AIR) {
             return;
         }
         ItemStack newStack = stack.clone();
         Item item = player.getWorld().dropItem(player.getLocation().add(new Vector(0.0, 1.0, 0.0)), newStack);
-        if (item != null && !item.isDead()) {
+        if (!item.isDead()) {
             item.setVelocity(player.getLocation().getDirection().normalize().multiply(0.05));
             player.getInventory().setItemInMainHand(null);
         }
@@ -219,7 +214,7 @@ public class Utils {
      * @param link  can be null
      * @return
      */
-    public static final String join(Collection<String> parts, String link) {
+    public static String join(Collection<String> parts, String link) {
         StringBuilder builder = new StringBuilder();
         int i = 0;
         int max = parts.size();
@@ -233,7 +228,7 @@ public class Utils {
         return builder.toString();
     }
 
-    public static final void sendBlock(final Player player, final Block block) {
+    public static void sendBlock(final Player player, final Block block) {
         if (block == null) {
             return;
         }
@@ -245,9 +240,8 @@ public class Utils {
         Player player = Bukkit.getPlayerExact(name);
         if (player == null) {
             return;
-        } else {
-            player.sendMessage(msg);
         }
+        player.sendMessage(msg);
     }
 
     /**

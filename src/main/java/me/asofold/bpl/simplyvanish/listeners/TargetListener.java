@@ -48,7 +48,7 @@ public final class TargetListener implements Listener {
         if (!(target instanceof Player)) {
             return;
         }
-        final String playerName = ((Player) target).getName();
+        final String playerName = target.getName();
         final VanishConfig cfg = core.getVanishConfig(playerName, false);
         if (cfg == null) {
             return;

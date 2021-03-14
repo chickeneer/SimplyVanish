@@ -11,7 +11,7 @@ public class Essentials2Hook extends AbstractHook {
     private final PluginGetter<Essentials> getter;
 
     public Essentials2Hook() throws SecurityException, NoSuchMethodException {
-        getter = new PluginGetter<Essentials>("Essentials");
+        getter = new PluginGetter<>("Essentials");
         User.class.getDeclaredMethod("setHidden", boolean.class); // hmmm
     }
 
@@ -41,7 +41,7 @@ public class Essentials2Hook extends AbstractHook {
             if (user != null) {
                 user.setHidden(hidden);
             }
-        } catch (Throwable t) {
+        } catch (Exception t) {
             // TODO: organize the source code by grace of devs.
         }
     }

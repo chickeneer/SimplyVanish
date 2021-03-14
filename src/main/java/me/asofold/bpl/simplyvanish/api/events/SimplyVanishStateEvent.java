@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This event is called when setVanished is used internally (on commands and API usage) or on player logins (see NOTE below), it is not called for updateVanishState, thus can be bypassed, also by API calls (!).<br>
@@ -32,6 +33,7 @@ public class SimplyVanishStateEvent extends Event implements SimplyVanishEvent {
     }
 
     @Override
+    @NotNull
     public HandlerList getHandlers() {
         return handlers;
     }

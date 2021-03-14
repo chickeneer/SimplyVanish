@@ -24,7 +24,7 @@ public class ConfigUtil {
         StringBuilder builder = new StringBuilder();
         builder.append(stringPart(split[0]));
         for (int i = 1; i < split.length; i++) {
-            builder.append(sep + stringPart(split[i]));
+            builder.append(sep).append(stringPart(split[i]));
         }
         return builder.toString();
     }
@@ -134,99 +134,6 @@ public class ConfigUtil {
     }
 
     /**
-     * Return an ArrayList.
-     *
-     * @param input
-     * @return
-     */
-    public static final <T> List<T> asList(final T[] input) {
-        final List<T> out = new ArrayList<T>(input.length);
-        for (int i = 0; i < input.length; i++) {
-            out.add(input[i]);
-        }
-        return out;
-    }
-
-    /**
-     * Return an ArrayList.
-     *
-     * @param input
-     * @return
-     */
-    public static final List<Integer> asList(final int[] input) {
-        final List<Integer> out = new ArrayList<Integer>(input.length);
-        for (int i = 0; i < input.length; i++) {
-            out.add(input[i]);
-        }
-        return out;
-    }
-
-    /**
-     * Return an ArrayList.
-     *
-     * @param input
-     * @return
-     */
-    public static final List<Long> asList(final long[] input) {
-        final List<Long> out = new ArrayList<Long>(input.length);
-        for (int i = 0; i < input.length; i++) {
-            out.add(input[i]);
-        }
-        return out;
-    }
-
-    /**
-     * Return an ArrayList.
-     *
-     * @param input
-     * @return
-     */
-    public static final List<Double> asList(final double[] input) {
-        final List<Double> out = new ArrayList<Double>(input.length);
-        for (int i = 0; i < input.length; i++) {
-            out.add(input[i]);
-        }
-        return out;
-    }
-
-    /**
-     * Return an ArrayList.
-     *
-     * @param input
-     * @return
-     */
-    public static final List<Float> asList(final float[] input) {
-        final List<Float> out = new ArrayList<Float>(input.length);
-        for (int i = 0; i < input.length; i++) {
-            out.add(input[i]);
-        }
-        return out;
-    }
-
-    /**
-     * Return an ArrayList.
-     *
-     * @param input
-     * @return
-     */
-    public static final List<Boolean> asList(final boolean[] input) {
-        final List<Boolean> out = new ArrayList<Boolean>(input.length);
-        for (int i = 0; i < input.length; i++) {
-            out.add(input[i]);
-        }
-        return out;
-    }
-
-    public static final String[] toArray(final Collection<String> collection) {
-        if (collection == null) {
-            return null;
-        }
-        final String[] a = new String[collection.size()];
-        collection.toArray(a);
-        return a;
-    }
-
-    /**
      * Read keys and return map sorted by inheritance, safe for reading.<br>
      * Entries without inheritance have their own key set in the map (!).
      * <hr>
@@ -239,15 +146,15 @@ public class ConfigUtil {
      */
     public static LinkedHashMap<String, String> getInheritanceOrder(CompatConfig cfg, String path, String inheritanceKey) {
         // TODO: detach this to ConfigUtil from compatlayer !
-        LinkedHashMap<String, String> ordered = new LinkedHashMap<String, String>();
+        LinkedHashMap<String, String> ordered = new LinkedHashMap<>();
 
         List<String> keys = cfg.getStringKeys(path); // node names
         if (keys.isEmpty()) {
             return ordered;
         }
 
-        Set<String> done = new HashSet<String>();
-        Map<String, String> inheritance = new HashMap<String, String>();
+        Set<String> done = new HashSet<>();
+        Map<String, String> inheritance = new HashMap<>();
         // First sorting in:
         for (String key : keys) {
             String parent = cfg.getString(path + "." + key + "." + inheritanceKey, null);
@@ -259,7 +166,7 @@ public class ConfigUtil {
             }
         }
         // Now attempt to resolve parents:
-        List<String> rem = new LinkedList<String>();
+        List<String> rem = new LinkedList<>();
         while (!inheritance.isEmpty()) {
             rem.clear();
             int found = 0;
@@ -282,9 +189,9 @@ public class ConfigUtil {
         }
         if (!inheritance.isEmpty()) {
             StringBuilder b = new StringBuilder();
-            b.append("[ConfigUtil] Inheritance entries could not be resolved(" + path + "):");
+            b.append("[ConfigUtil] Inheritance entries could not be resolved(").append(path).append("):");
             for (Entry<String, String> entry : inheritance.entrySet()) {
-                b.append(" " + entry.getKey() + "->" + entry.getValue());
+                b.append(" ").append(entry.getKey()).append("->").append(entry.getValue());
             }
             Bukkit.getLogger().warning(b.toString());
         }

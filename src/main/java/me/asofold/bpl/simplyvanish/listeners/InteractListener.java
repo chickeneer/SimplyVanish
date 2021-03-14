@@ -160,7 +160,7 @@ public final class InteractListener implements Listener {
         if (!(entity instanceof Player)) {
             return;
         }
-        if (shouldCancel(((Player) entity).getName())) {
+        if (shouldCancel(entity.getName())) {
             event.setCancelled(true);
         }
     }
@@ -169,13 +169,10 @@ public final class InteractListener implements Listener {
     final void onVehicleEnter(final VehicleEnterEvent event) {
         // this could be omitted, probably
         final Entity entity = event.getEntered();
-        if (entity == null) {
-            return;
-        }
         if (!(entity instanceof Player)) {
             return;
         }
-        if (shouldCancel(((Player) entity).getName())) {
+        if (shouldCancel(entity.getName())) {
             event.setCancelled(true);
         }
     }
@@ -183,13 +180,10 @@ public final class InteractListener implements Listener {
     @EventHandler(priority = EventPriority.LOW)
     final void onVehicleExit(final VehicleExitEvent event) {
         Entity entity = event.getExited();
-        if (entity == null) {
-            return;
-        }
         if (!(entity instanceof Player)) {
             return;
         }
-        if (shouldCancel(((Player) entity).getName())) {
+        if (shouldCancel(entity.getName())) {
             event.setCancelled(true);
         }
     }
@@ -204,7 +198,7 @@ public final class InteractListener implements Listener {
         if (!(entity instanceof Player)) {
             return;
         }
-        if (shouldCancel(((Player) entity).getName())) {
+        if (shouldCancel(entity.getName())) {
             event.setCancelled(true);
         }
     }
@@ -219,13 +213,10 @@ public final class InteractListener implements Listener {
     @EventHandler(priority = EventPriority.LOW)
     final void onCollision(final VehicleEntityCollisionEvent event) {
         final Entity entity = event.getEntity();
-        if (entity == null) {
-            return;
-        }
         if (!(entity instanceof Player)) {
             return;
         }
-        if (shouldCancel(((Player) entity).getName())) {
+        if (shouldCancel(entity.getName())) {
             event.setPickupCancelled(true);
             event.setCollisionCancelled(true);
             // maybe that is enough:
@@ -235,11 +226,11 @@ public final class InteractListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     final void onInventoryOpen(final InventoryOpenEvent event) {
-        final LivingEntity entitiy = event.getPlayer();
-        if (!(entitiy instanceof Player)) {
+        final LivingEntity entity = event.getPlayer();
+        if (!(entity instanceof Player)) {
             return;
         }
-        final Player player = (Player) entitiy;
+        final Player player = (Player) entity;
         final VanishConfig cfg = core.getVanishConfig(player.getName(), false);
         if (cfg == null) {
             return;
@@ -254,11 +245,11 @@ public final class InteractListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     final void onInventoryClose(final InventoryCloseEvent event) {
-        final LivingEntity entitiy = event.getPlayer();
-        if (!(entitiy instanceof Player)) {
+        final LivingEntity entity = event.getPlayer();
+        if (!(entity instanceof Player)) {
             return;
         }
-        final Player player = (Player) entitiy;
+        final Player player = (Player) entity;
         final VanishConfig cfg = core.getVanishConfig(player.getName(), false);
         if (cfg == null) {
             return;
@@ -268,11 +259,11 @@ public final class InteractListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     final void onInventoryClick(final InventoryClickEvent event) {
-        final LivingEntity entitiy = event.getWhoClicked();
-        if (!(entitiy instanceof Player)) {
+        final LivingEntity entity = event.getWhoClicked();
+        if (!(entity instanceof Player)) {
             return;
         }
-        final Player player = (Player) entitiy;
+        final Player player = (Player) entity;
         final VanishConfig cfg = core.getVanishConfig(player.getName(), false);
         if (cfg == null) {
             return;

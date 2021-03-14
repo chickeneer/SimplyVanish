@@ -31,7 +31,7 @@ public class Panic {
         } else if (inconsistent) {
             try {
                 player1.sendMessage(SimplyVanish.msgLabel + ChatColor.RED + "Warning: Could not use " + tag + " to player: " + player2.getName());
-            } catch (Throwable t) {
+            } catch (Exception t) {
             }
         }
         return !inconsistent; // "true = continue = not inconsistent"
@@ -43,7 +43,7 @@ public class Panic {
             for (Player player : server.getOnlinePlayers()) {
                 try {
                     player.kickPlayer(settings.panicKickMessage);
-                } catch (Throwable t) {
+                } catch (Exception t) {
                     // ignore
                 }
             }
@@ -51,21 +51,21 @@ public class Panic {
             for (Player player : involved) {
                 try {
                     player.kickPlayer(settings.panicKickMessage);
-                } catch (Throwable t) {
+                } catch (Exception t) {
                     // ignore
                 }
             }
         }
         try {
             Utils.sendToTargets(settings.panicMessage, settings.panicMessageTargets);
-        } catch (Throwable t) {
+        } catch (Exception t) {
             Utils.warn("[Panic] Failed to send to: " + settings.panicMessageTargets + " (" + t.getMessage() + ")");
             t.printStackTrace();
         }
         if (settings.panicRunCommand && !"".equals(settings.panicCommand)) {
             try {
                 server.dispatchCommand(server.getConsoleSender(), settings.panicCommand);
-            } catch (Throwable t) {
+            } catch (Exception t) {
                 Utils.warn("[Panic] Failed to dispathc command: " + settings.panicCommand + " (" + t.getMessage() + ")");
                 t.printStackTrace();
             }

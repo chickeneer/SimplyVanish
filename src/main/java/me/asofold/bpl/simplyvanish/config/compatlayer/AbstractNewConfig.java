@@ -43,7 +43,7 @@ public abstract class AbstractNewConfig extends AbstractConfig {
     @Override
     public List<String> getStringKeys(String path) {
         // TODO policy: only strings or all keys as strings ?
-        List<String> out = new LinkedList<String>();
+        List<String> out = new LinkedList<>();
         List<Object> keys = getKeys(path);
         if (keys == null) {
             return out;
@@ -54,7 +54,7 @@ public abstract class AbstractNewConfig extends AbstractConfig {
             } else {
                 try {
                     out.add(obj.toString());
-                } catch (Throwable t) {
+                } catch (Exception t) {
                     // ignore.
                 }
             }
@@ -64,7 +64,7 @@ public abstract class AbstractNewConfig extends AbstractConfig {
 
     @Override
     public List<Object> getKeys(String path) {
-        List<Object> out = new LinkedList<Object>();
+        List<Object> out = new LinkedList<>();
         Set<String> keys;
         if (path == null) {
             keys = config.getKeys(false);
@@ -74,9 +74,6 @@ public abstract class AbstractNewConfig extends AbstractConfig {
                 return out;
             }
             keys = sec.getKeys(false);
-        }
-        if (keys == null) {
-            return out;
         }
         out.addAll(keys);
         return out;
@@ -112,18 +109,15 @@ public abstract class AbstractNewConfig extends AbstractConfig {
         if (!hasEntry(path)) {
             return defaultValue;
         }
-        List<String> out = new LinkedList<String>();
+        List<String> out = new LinkedList<>();
         List<String> entries = config.getStringList(path);
-        if (entries == null) {
-            return defaultValue;
-        }
         for (String entry : entries) {
-            if (entry instanceof String) {
+            if (entry != null) {
                 out.add(entry);
             } else {
                 try {
-                    out.add(entry.toString());
-                } catch (Throwable t) {
+                    out.add(null); //TODO: wat
+                } catch (Exception t) {
                     // ignore
                 }
             }
@@ -144,9 +138,7 @@ public abstract class AbstractNewConfig extends AbstractConfig {
             values.remove(path);
         } else {
             final String altPath = "." + path;
-            if (values.containsKey(altPath)) {
-                values.remove(altPath);
-            }
+            values.remove(altPath);
         }
         for (String _p : values.keySet()) {
             Object v = values.get(_p);
@@ -186,12 +178,10 @@ public abstract class AbstractNewConfig extends AbstractConfig {
             }
         }
         Boolean res = defaultValue;
-        if (val == null) {
-            if (defaultValue == null) {
-                defaultValue = false;
-            }
-            res = config.getBoolean(path, defaultValue);
+        if (defaultValue == null) {
+            defaultValue = false;
         }
+        res = config.getBoolean(path, defaultValue);
         return res;
     }
 

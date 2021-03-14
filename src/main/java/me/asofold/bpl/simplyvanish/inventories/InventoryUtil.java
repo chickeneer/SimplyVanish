@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,22 +27,17 @@ public class InventoryUtil {
     public static void showInventory(final CommandSender viewer, final VanishConfig cfg, final String playerName, final Settings settings) {
         if (settings.allowRealPeek && viewer instanceof Player && SimplyVanish.hasPermission(viewer, "simplyvanish.inventories.peek.real")) {
             final Player player = (Player) viewer;
-            Bukkit.getScheduler().scheduleSyncDelayedTask(SimplyVanish.getPluginInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    final Player other = Bukkit.getPlayerExact(playerName);
-                    if (other == null) {
-                        Utils.send(viewer, SimplyVanish.msgLabel + ChatColor.RED + "Not available: " + playerName);
-                        return;
-                    }
-                    if (player.getOpenInventory() != null) {
-                        player.closeInventory();
-                    }
-                    final Inventory inv = other.getInventory();
-                    prepareInventoryOpen(player, inv, cfg); // TODO
-                    // TODO: trigger OpenInv if modifiable !
-                    player.openInventory(inv);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SimplyVanish.getPluginInstance(), () -> {
+                final Player other = Bukkit.getPlayerExact(playerName);
+                if (other == null) {
+                    Utils.send(viewer, SimplyVanish.msgLabel + ChatColor.RED + "Not available: " + playerName);
+                    return;
                 }
+                player.closeInventory();
+                final Inventory inv = other.getInventory();
+                prepareInventoryOpen(player, inv, cfg); // TODO
+                // TODO: trigger OpenInv if modifiable !
+                player.openInventory(inv);
             });
         } else {
             final Player other = Bukkit.getPlayerExact(playerName);
@@ -49,16 +45,11 @@ public class InventoryUtil {
                 Utils.send(viewer, SimplyVanish.msgLabel + ChatColor.RED + "Not available: " + playerName);
                 return;
             }
-            List<ItemStack> items = new LinkedList<ItemStack>();
-            for (ItemStack stack : other.getInventory().getContents()) {
-                if (stack != null) {
-                    items.add(stack);
-                }
-            }
-            StringBuilder b = new StringBuilder();
-            b.append("Inventory(" + other.getName() + "): ");
+            List<ItemStack> items = new LinkedList<>(Arrays.asList(other.getInventory().getContents()));
             //TODO: addItemDescr(items, b);
-            viewer.sendMessage(b.toString());
+            viewer.sendMessage("Inventory(" + other.getName() + "): "
+                    //TODO: addItemDescr(items, b);
+            );
         }
     }
 
@@ -72,11 +63,8 @@ public class InventoryUtil {
     public static void prepareInventoryOpen(Player player, Inventory inventory, VanishConfig cfg) {
         if (SimplyVanish.hasPermission(player, "simplyvanish.inventories.manipulate")) {
             cfg.preventInventoryAction = false;
-        } else if (inventory == player.getInventory()) {
-            cfg.preventInventoryAction = false;
-        } else {
-            cfg.preventInventoryAction = true;
-        }
+        } else
+            cfg.preventInventoryAction = inventory != player.getInventory();
     }
 
     /**
@@ -147,7 +135,7 @@ public class InventoryUtil {
 			if (data == 0) return mat.toString();
 			else return mat.toString() + ":" + data;
 		}
-		catch (Throwable t){
+		catch (Exception t){
 			if (data == 0) return "" + id;
 			else return "" + id + ":" + data;
 		}

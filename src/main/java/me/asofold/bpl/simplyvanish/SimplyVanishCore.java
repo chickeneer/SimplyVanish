@@ -31,7 +31,7 @@ public class SimplyVanishCore {
     /**
      * Vanished players.
      */
-    private final Map<String, VanishConfig> vanishConfigs = Collections.synchronizedMap(new HashMap<String, VanishConfig>(20, 0.5f));
+    private final Map<String, VanishConfig> vanishConfigs = Collections.synchronizedMap(new HashMap<>(20, 0.5f));
 
     private final HookUtil hookUtil = new HookUtil();
 
@@ -112,12 +112,8 @@ public class SimplyVanishCore {
                 if (saveTaskId != -1 && sched.isQueued(saveTaskId)) {
                     return;
                 }
-                saveTaskId = sched.scheduleSyncDelayedTask(plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        onSaveVanished(); // Check if save is necessary.
-                    }
-                }, 1 + (settings.saveVanishedDelay / 50));
+                // Check if save is necessary.
+                saveTaskId = sched.scheduleSyncDelayedTask(plugin, this::onSaveVanished, 1 + (settings.saveVanishedDelay / 50));
                 if (saveTaskId == -1) {
                     doSaveVanished(); // force save if scheduling failed.
                 }
@@ -141,11 +137,9 @@ public class SimplyVanishCore {
         if (!createFile(file, "vanished players")) {
             return;
         }
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(new FileWriter(file));
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write("\n"); // to write something at least.
-            Map<String, VanishConfig> copyMap = new HashMap<String, VanishConfig>(vanishConfigs.size());
+            Map<String, VanishConfig> copyMap = new HashMap<>(vanishConfigs.size());
             synchronized (vanishConfigs) {
                 for (Entry<String, VanishConfig> entry : vanishConfigs.entrySet()) {
                     copyMap.put(entry.getKey(), entry.getValue().clone());
@@ -163,13 +157,6 @@ public class SimplyVanishCore {
             }
         } catch (IOException e) {
             Utils.warn("Can not save vanished players: " + e.getMessage());
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                }
-            }
         }
         SimplyVanish.stats.addStats(SimplyVanish.statsSave, System.nanoTime() - ns);
     }
@@ -194,9 +181,7 @@ public class SimplyVanishCore {
         if (!createFile(file, "vanished players")) {
             return;
         }
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(file));
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line = "";
             while (line != null) {
                 String n = line.trim().toLowerCase();
@@ -223,13 +208,6 @@ public class SimplyVanishCore {
             }
         } catch (IOException e) {
             Utils.warn("Can not load vanished players: " + e.getMessage());
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                }
-            }
         }
     }
 
@@ -528,7 +506,7 @@ public class SimplyVanishCore {
             cfg = new VanishConfig();
         }
         boolean hasClearFlag = false;
-        List<String[]> applySets = new LinkedList<String[]>();
+        List<String[]> applySets = new LinkedList<>();
         for (int i = startIndex; i < args.length; i++) {
             final String arg = args[i].trim().toLowerCase();
             if (arg.isEmpty()) {
@@ -565,9 +543,9 @@ public class SimplyVanishCore {
         List<String> changes = cfg.getChanges(newCfg);
 
         // Determine permissions and apply valid changes:
-        Set<String> missing = new HashSet<String>();
+        Set<String> missing = new HashSet<>();
 
-        Set<String> ok = new HashSet<String>();
+        Set<String> ok = new HashSet<>();
         for (String fn : changes) {
             String name = fn.substring(1);
             if (!hasBypass && !hasPermission(sender, permBase + "." + name)) {
@@ -652,7 +630,7 @@ public class SimplyVanishCore {
         }
         try {
             canSee.showPlayer(player);
-        } catch (Throwable t) {
+        } catch (Exception t) {
             Utils.severe("showPlayer failed (show " + player.getName() + " to " + canSee.getName() + "): " + t.getMessage());
             t.printStackTrace();
             Panic.onPanic(settings, new Player[]{player, canSee});
@@ -675,7 +653,7 @@ public class SimplyVanishCore {
         }
         try {
             canNotSee.hidePlayer(player);
-        } catch (Throwable t) {
+        } catch (Exception t) {
             Utils.severe("hidePlayer failed (hide " + player.getName() + " from " + canNotSee.getName() + "): " + t.getMessage());
             t.printStackTrace();
             Panic.onPanic(settings, new Player[]{player, canNotSee});
@@ -750,7 +728,7 @@ public class SimplyVanishCore {
      * @return
      */
     public Set<String> getVanishedPlayers() {
-        Set<String> out = new HashSet<String>();
+        Set<String> out = new HashSet<>();
         synchronized (vanishConfigs) {
             for (Entry<String, VanishConfig> entry : vanishConfigs.entrySet()) {
                 if (entry.getValue().vanished.state) {
@@ -764,7 +742,7 @@ public class SimplyVanishCore {
     public String getVanishedMessage() {
         List<String> sorted = getSortedVanished();
         StringBuilder builder = new StringBuilder();
-        builder.append(ChatColor.GOLD + "[VANISHED]");
+        builder.append(ChatColor.GOLD).append("[VANISHED]");
         Server server = Bukkit.getServer();
         boolean found = false;
         for (String n : sorted) {
@@ -776,21 +754,21 @@ public class SimplyVanishCore {
             found = true;
             boolean isNosee = !cfg.see.state; // is lower case
             if (player == null) {
-                builder.append(" " + ChatColor.GRAY + "(" + n + ")");
+                builder.append(" ").append(ChatColor.GRAY).append("(").append(n).append(")");
                 if (isNosee) {
-                    builder.append(ChatColor.DARK_RED + "[NOSEE]");
+                    builder.append(ChatColor.DARK_RED).append("[NOSEE]");
                 }
             } else {
-                builder.append(" " + ChatColor.GREEN + player.getName());
+                builder.append(" ").append(ChatColor.GREEN).append(player.getName());
                 if (!hasPermission(player, "simplyvanish.see-all")) {
-                    builder.append(ChatColor.DARK_RED + "[CANTSEE]");
+                    builder.append(ChatColor.DARK_RED).append("[CANTSEE]");
                 } else if (isNosee) {
-                    builder.append(ChatColor.RED + "[NOSEE]");
+                    builder.append(ChatColor.RED).append("[NOSEE]");
                 }
             }
         }
         if (!found) {
-            builder.append(" " + ChatColor.DARK_GRAY + "<none>");
+            builder.append(" ").append(ChatColor.DARK_GRAY).append("<none>");
         }
         return builder.toString();
     }
@@ -802,7 +780,7 @@ public class SimplyVanishCore {
      */
     public List<String> getSortedVanished() {
         Collection<String> vanished = getVanishedPlayers();
-        List<String> sorted = new ArrayList<String>(vanished.size());
+        List<String> sorted = new ArrayList<>(vanished.size());
         sorted.addAll(vanished);
         Collections.sort(sorted);
         return sorted;
@@ -812,9 +790,9 @@ public class SimplyVanishCore {
         if (!settings.pingEnabled) {
             return;
         }
-        Set<String> keys = new HashSet<String>();
+        Set<String> keys;
         synchronized (vanishConfigs) {
-            keys.addAll(vanishConfigs.keySet());
+            keys = new HashSet<>(vanishConfigs.keySet());
         }
         for (final String name : keys) {
             final VanishConfig cfg = vanishConfigs.get(name);
@@ -894,15 +872,15 @@ public class SimplyVanishCore {
         hookUtil.registerOnLoadHooks();
         try {
             hookUtil.addHook(new LibsDisguisesHook());
-        } catch (Throwable t) {
+        } catch (Exception t) {
         }
         try {
             hookUtil.addHook(new DynmapHook());
-        } catch (Throwable t) {
+        } catch (Exception t) {
         }
         try {
             hookUtil.addHook(new Essentials2Hook());
-        } catch (Throwable t) {
+        } catch (Exception t) {
         }
     }
 
@@ -919,7 +897,7 @@ public class SimplyVanishCore {
                 return true;
             }
         }
-        final Set<String> perms = settings.fakePermissions.get(((Player) sender).getName().toLowerCase());
+        final Set<String> perms = settings.fakePermissions.get(sender.getName().toLowerCase());
         if (perms == null) {
             return false;
         } else if (perms.contains("simplyvanish.all")) {

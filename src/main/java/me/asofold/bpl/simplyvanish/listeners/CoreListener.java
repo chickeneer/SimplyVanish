@@ -37,7 +37,7 @@ public final class CoreListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     final void onPlayerKick(final PlayerKickEvent event) {
         if (onLeave(event.getPlayer().getName(), event.isCancelled(), " was kicked.")) {
-            event.setLeaveMessage(null);
+            event.setLeaveMessage("");
         }
     }
 
@@ -73,9 +73,7 @@ public final class CoreListener implements Listener {
         Iterator<Player> it;
         try {
             it = event.iterator();
-        } catch (UnsupportedOperationException e) {
-            return;
-        } catch (NoSuchMethodError e2) {
+        } catch (UnsupportedOperationException | NoSuchMethodError e) {
             return;
         }
         while (it.hasNext()) {
@@ -109,7 +107,7 @@ public final class CoreListener implements Listener {
         boolean doVanish = auto || was;
         final HookUtil hookUtil = core.getHookUtil();
         if (doVanish) {
-            final SimplyVanishAtLoginEvent svEvent = new SimplyVanishAtLoginEvent(playerName, was, doVanish, auto);
+            final SimplyVanishAtLoginEvent svEvent = new SimplyVanishAtLoginEvent(playerName, was, true, auto);
             Bukkit.getServer().getPluginManager().callEvent(svEvent);
             if (svEvent.isCancelled()) {
                 // no update

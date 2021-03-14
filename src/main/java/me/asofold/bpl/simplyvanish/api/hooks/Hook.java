@@ -75,7 +75,7 @@ public interface Hook {
 
     /**
      * Called on updateVanishState.<br>
-     * All hooks will be called, even if a hook returrns false (!), see isAllowed if it was cancelled.
+     * All hooks will be called, even if a hook returns false (!), see isAllowed if it was cancelled.
      *
      * @param player
      * @param hookId    The caller of updateVanishState, 0 = SimplyVanish (or an API call not specifying a hookId).

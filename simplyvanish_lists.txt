@@ -35,7 +35,7 @@ PigZombies still problematic !
 *** COMPATIBILITY / HOOKS
 - ?hide / show player: collect Map<String, Set<String>> or similar then call hooks then hide/show cumulative
 - !(add) prevent-hooks 
-- !(adjust) Check PalyerJoin twice: lowest = update state, highest = update messages
+- !(adjust) Check PlayerJoin twice: lowest = update state, highest = update messages
 - !CONSIDER: Delayed message on join. 
 
 

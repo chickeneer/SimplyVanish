@@ -34,7 +34,7 @@ public class NewConfig extends AbstractNewConfig {
         try {
             cfg.save(file);
             return true;
-        } catch (Throwable t) {
+        } catch (Exception t) {
             return false;
         }
     }

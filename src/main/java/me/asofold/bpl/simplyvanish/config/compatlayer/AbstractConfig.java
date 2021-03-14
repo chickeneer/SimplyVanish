@@ -82,7 +82,7 @@ public abstract class AbstractConfig implements CompatConfig {
         if (strings == null) {
             return defaultValue;
         }
-        List<Integer> out = new LinkedList<Integer>();
+        List<Integer> out = new LinkedList<>();
         for (String s : strings) {
             try {
                 out.add(Integer.parseInt(s));
@@ -102,7 +102,7 @@ public abstract class AbstractConfig implements CompatConfig {
         if (strings == null) {
             return defaultValue;
         }
-        List<Double> out = new LinkedList<Double>();
+        List<Double> out = new LinkedList<>();
         for (String s : strings) {
             try {
                 out.add(Double.parseDouble(s));
@@ -118,17 +118,15 @@ public abstract class AbstractConfig implements CompatConfig {
         if (deep) {
             return getStringKeysDeep(path);
         }
-        Set<String> keys = new HashSet<String>();
-        keys.addAll(getStringKeys(path));
-        return keys;
+        return new HashSet<>(getStringKeys(path));
 
     }
 
     @Override
     public Set<String> getStringKeysDeep(String path) {
-        // NOTE: pretty inefficient, but aimed at seldomly read sections.
+        // NOTE: pretty inefficient, but aimed at seldom read sections.
         Map<String, Object> values = getValuesDeep();
-        Set<String> out = new HashSet<String>();
+        Set<String> out = new HashSet<>();
         final int len = path.length();
         for (String key : values.keySet()) {
             if (!key.startsWith(path)) {
@@ -250,7 +248,7 @@ public abstract class AbstractConfig implements CompatConfig {
         if (list == null) {
             return defaultValue;
         }
-        Set<String> set = new HashSet<String>();
+        Set<String> set = new HashSet<>();
         if (lowerCase) {
             for (String entry : list) {
                 set.add((trim ? entry.trim() : entry).toLowerCase());
@@ -264,11 +262,10 @@ public abstract class AbstractConfig implements CompatConfig {
     public <T> void setAsList(String path, Set<T> set) {
         if (set == null) {
             // Not sure about this one.
-            set(path, (List<T>) null);
+            set(path, null);
             return;
         }
-        List<T> list = new LinkedList<T>();
-        list.addAll(set);
+        List<T> list = new LinkedList<>(set);
         set(path, list);
     }
 

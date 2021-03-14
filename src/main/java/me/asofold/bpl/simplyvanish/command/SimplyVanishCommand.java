@@ -26,12 +26,12 @@ public class SimplyVanishCommand {
     /**
      * Dynamic "fake" commands.
      */
-    public LightCommands aliasManager = new LightCommands();
+    public final LightCommands aliasManager = new LightCommands();
 
     /**
      * Map aliases to recognized labels.
      */
-    public Map<String, String> commandAliases = new HashMap<String, String>();
+    public final Map<String, String> commandAliases = new HashMap<>();
 
     /**
      * All command labels (not aliases).
@@ -43,9 +43,7 @@ public class SimplyVanishCommand {
     /**
      * Command labels (not aliases) that take flags.
      */
-    private final Set<String> flagLabels = new HashSet<String>(Arrays.asList(new String[]{
-            "vanish", "reappear", "tvanish", "simplyvanish", "vanflag", "vangod", "vanungod"
-    }));
+    private final Set<String> flagLabels = new HashSet<>(Arrays.asList("vanish", "reappear", "tvanish", "simplyvanish", "vanflag", "vangod", "vanungod"));
 
 
     public SimplyVanishCommand(SimplyVanishCore core) {
@@ -80,7 +78,7 @@ public class SimplyVanishCommand {
             if (mapped == null || mapped.isEmpty()) {
                 continue;
             }
-            List<String> needed = new LinkedList<String>(); // those that need to be registered.
+            List<String> needed = new LinkedList<>(); // those that need to be registered.
             for (String alias : mapped) {
                 Command ref = plugin.getCommand(alias);
                 if (ref == null) {
@@ -121,9 +119,6 @@ public class SimplyVanishCommand {
                 continue;
             }
             List<String> aliases = command.getAliases();
-            if (aliases == null) {
-                continue;
-            }
             for (String alias : aliases) {
                 commandAliases.put(alias.trim().toLowerCase(), cmd);
             }
@@ -160,7 +155,7 @@ public class SimplyVanishCommand {
                 if (!Utils.checkPlayer(sender)) {
                     return true;
                 }
-                name = ((Player) sender).getName();
+                name = sender.getName();
             } else if (len == 1) {
                 name = args[0].trim();
                 if (name.isEmpty()) {
@@ -244,9 +239,9 @@ public class SimplyVanishCommand {
             if (!Utils.checkPlayer(sender)) {
                 return true;
             }
-            core.setFlags(((Player) sender).getName(), args, len, sender, false, false, true);
+            core.setFlags(sender.getName(), args, len, sender, false, false, true);
             if (SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.self")) {
-                core.onShowFlags((Player) sender, null);
+                core.onShowFlags(sender, null);
             }
             return true;
         } else if (len == 0) {
@@ -254,7 +249,7 @@ public class SimplyVanishCommand {
                 return true;
             }
             if (SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.self")) {
-                core.onShowFlags((Player) sender, null);
+                core.onShowFlags(sender, null);
             } else {
                 sender.sendMessage(SimplyVanish.msgLabel + ChatColor.RED + "You do not have permission to display flags.");
             }
@@ -287,13 +282,13 @@ public class SimplyVanishCommand {
             }
             // Let the player be seen...
             if (hasFlags) {
-                core.setFlags(((Player) sender).getName(), args, len, sender, false, false, false);
+                core.setFlags(sender.getName(), args, len, sender, false, false, false);
             }
             if (!SimplyVanish.setVanished((Player) sender, false)) {
                 Utils.send(sender, SimplyVanish.msgLabel + ChatColor.RED + "Action was prevented by hooks.");
             }
             if (hasFlags && SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.self")) {
-                core.onShowFlags((Player) sender, null);
+                core.onShowFlags(sender, null);
             }
             return true;
         } else if (len == 1) {
@@ -311,7 +306,7 @@ public class SimplyVanishCommand {
                 Utils.send(sender, SimplyVanish.msgLabel + ChatColor.RED + "Action was prevented by hooks.");
             }
             if (hasFlags && SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.other")) {
-                core.onShowFlags((Player) sender, name);
+                core.onShowFlags(sender, name);
             }
             return true;
         }
@@ -329,13 +324,13 @@ public class SimplyVanishCommand {
             }
             // Make sure the player is vanished...
             if (hasFlags) {
-                core.setFlags(((Player) sender).getName(), args, len, sender, false, false, false);
+                core.setFlags(sender.getName(), args, len, sender, false, false, false);
             }
             if (!SimplyVanish.setVanished((Player) sender, true)) {
                 Utils.send(sender, SimplyVanish.msgLabel + ChatColor.RED + "Action was prevented by hooks.");
             }
             if (hasFlags && SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.self")) {
-                core.onShowFlags((Player) sender, null);
+                core.onShowFlags(sender, null);
             }
             return true;
         } else if (len == 1) {
@@ -353,7 +348,7 @@ public class SimplyVanishCommand {
                 Utils.send(sender, SimplyVanish.msgLabel + ChatColor.RED + "Action was prevented by hooks.");
             }
             if (hasFlags && SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.other")) {
-                core.onShowFlags((Player) sender, name);
+                core.onShowFlags(sender, name);
             }
             return true;
         }
@@ -414,7 +409,7 @@ public class SimplyVanishCommand {
             VanishConfig cfg = new VanishConfig();
             StringBuilder b = new StringBuilder();
             for (Flag flag : cfg.getAllFlags()) {
-                b.append(" " + Flag.fs(flag.preset) + flag.name);
+                b.append(" ").append(Flag.fs(flag.preset)).append(flag.name);
             }
             Utils.send(sender, SimplyVanish.msgLabel + ChatColor.GRAY + "All default flags: " + ChatColor.YELLOW + b.toString());
             return true;

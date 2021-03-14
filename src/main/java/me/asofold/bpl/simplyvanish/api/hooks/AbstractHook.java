@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
  */
 public abstract class AbstractHook implements Hook {
 
-    protected int hookId = SimplyVanish.getNewHookId();
+    protected final int hookId = SimplyVanish.getNewHookId();
 
     @Override
     public abstract String getHookName();

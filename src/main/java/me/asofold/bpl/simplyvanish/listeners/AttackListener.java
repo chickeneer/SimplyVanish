@@ -52,7 +52,7 @@ public final class AttackListener implements Listener {
         if (!(entity instanceof Player)) {
             return;
         }
-        if (shouldCancelAttack(((Player) entity).getName())) {
+        if (shouldCancelAttack(entity.getName())) {
             event.setCancelled(true);
         }
     }

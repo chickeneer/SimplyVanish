@@ -9,7 +9,7 @@ public class Path {
     public final String pickup;
     public final String exp;
     public final String expWorkaround;
-    public String expDistance;
+    public final String expDistance;
     public final String expThreshold;
     public final String expTeleDist;
     public final String expKillDist;
