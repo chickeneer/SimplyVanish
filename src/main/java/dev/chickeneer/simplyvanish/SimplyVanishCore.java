@@ -915,7 +915,9 @@ public class SimplyVanishCore {
         UUID uuid = config.getUuid();
         if (uuid != null) {
             PlayerVanishConfig oldConfig = uuidVanishConfigs.remove(uuid);
-            nameVanishConfigs.remove(oldConfig.getLowerCaseName());
+            if (oldConfig != null) {
+                nameVanishConfigs.remove(oldConfig.getLowerCaseName());
+            }
             uuidVanishConfigs.put(uuid, config);
         }
         nameVanishConfigs.put(config.getLowerCaseName(), config);
