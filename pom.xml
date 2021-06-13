@@ -13,16 +13,20 @@
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
         <repository>
+            <id>aikar</id>
+            <url>https://repo.aikar.co/content/groups/aikar/</url>
+        </repository>
+        <repository>
             <id>dynmap-repo</id>
-            <url>http://repo.mikeprimm.com/</url>
+            <url>https://repo.mikeprimm.com/</url>
         </repository>
         <repository>
     		<id>dmulloy2-repo</id>
-    		<url>http://repo.dmulloy2.net/nexus/repository/public/</url>
+    		<url>https://repo.dmulloy2.net/nexus/repository/public/</url>
   		</repository>
         <repository>
   			<id>md_5-public</id>
-  			<url>http://repo.md-5.net/content/groups/public/</url>
+  			<url>https://repo.md-5.net/content/groups/public/</url>
 		</repository>
     </repositories>
     <dependencies>
@@ -33,11 +37,29 @@
             <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <!--ACF-->
+        <dependency>
+            <groupId>co.aikar</groupId>
+            <artifactId>acf-paper</artifactId>
+            <version>0.5.0-SNAPSHOT</version>
+        </dependency>
+        <!--TaskChain-->
+        <dependency>
+            <groupId>co.aikar</groupId>
+            <artifactId>taskchain-bukkit</artifactId>
+            <version>3.7.2</version> <!-- Replace this with the version from TaskChain -->
+        </dependency>
+        <!--Json-->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20210307</version>
+        </dependency>
         <!--Dynmap-->
         <dependency>
             <groupId>us.dynmap</groupId>
             <artifactId>dynmap-api</artifactId>
-            <version>3.1-SNAPSHOT</version>
+            <version>3.0</version>
             <scope>provided</scope>
         </dependency>
         <!--Protocol Lib-->
@@ -66,10 +88,44 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
                 <configuration>
                     <source>11</source>
                     <target>11</target>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <configuration>
+                    <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+                    <relocations>
+                        <relocation>
+                            <pattern>co.aikar.commands</pattern>
+                            <shadedPattern>dev.chickeneer.simplyvanish.acf</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>co.aikar.locales</pattern>
+                            <shadedPattern>dev.chickeneer.simplyvanish.locales</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>co.aikar.taskchain</pattern>
+                            <shadedPattern>dev.chickeneer.simplyvanish.taskchain</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
