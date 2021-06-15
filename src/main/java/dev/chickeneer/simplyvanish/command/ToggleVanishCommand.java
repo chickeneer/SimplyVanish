@@ -6,12 +6,14 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import dev.chickeneer.simplyvanish.SimplyVanish;
 import dev.chickeneer.simplyvanish.SimplyVanishCore;
+import dev.chickeneer.simplyvanish.config.PlayerVanishConfig;
 import dev.chickeneer.simplyvanish.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -46,23 +48,29 @@ public class ToggleVanishCommand extends SimplyVanishBaseCommand {
             Player player = (Player) sender;
             doToggle(sender, args, player.getName(), player.getUniqueId(), len, hasFlags);
         } else if (len == 1) {
+            String name = args[0];
+            PlayerVanishConfig config = core.getVanishConfig(name);
+            if (config != null) {
+                doToggle(sender, args, config.getName(), config.getUniqueId(), len, hasFlags);
+                return;
+            }
             int finalLen = len;
             boolean finalHasFlags = hasFlags;
             SimplyVanish.newChain()
-                        .asyncFirst(() -> Bukkit.getServer().getOfflinePlayer(args[0]))
+                        .asyncFirst(() -> Bukkit.getServer().getOfflinePlayer(name))
                         .syncLast(player -> {
-                            if (player.getName() == null || !player.hasPlayedBefore()) {
-                                Utils.send(sender, SimplyVanish.msgLabel + "Player has not connected to this server before: " + args[0]);
+                            if (player.getName() == null) {
+                                Utils.send(sender, SimplyVanish.msgLabel + "Unknown player: " + name);
                                 return;
                             }
-                            doToggle(sender, args, player.getName(), player.getUniqueId(), finalLen, finalHasFlags);
+                            doToggle(sender, args, player.getName(), player.hasPlayedBefore() ? player.getUniqueId() : null, finalLen, finalHasFlags);
                         }).execute();
         } else {
             unrecognized(sender);
         }
     }
 
-    private void doToggle(@NotNull CommandSender sender, @NotNull String[] args, @NotNull String name, @NotNull UUID uuid, int len, boolean hasFlags) {
+    private void doToggle(@NotNull CommandSender sender, @NotNull String[] args, @NotNull String name, @Nullable UUID uuid, int len, boolean hasFlags) {
         boolean other = !name.equalsIgnoreCase(sender.getName());
         boolean doVanish = !core.isVanished(name, uuid);
         if (!Utils.checkPerm(sender, "simplyvanish." + (doVanish ? "vanish" : "reappear") + "." + (other ? "other" : "self"))) {
@@ -84,7 +92,7 @@ public class ToggleVanishCommand extends SimplyVanishBaseCommand {
         }
         String displayPerm = "simplyvanish.display." + (other ? "other" : "self");
         if (hasFlags && SimplyVanish.hasPermission(sender, displayPerm)) {
-            core.onShowFlags(sender, uuid);
+            core.onShowFlags(sender, name, uuid);
         }
     }
 }

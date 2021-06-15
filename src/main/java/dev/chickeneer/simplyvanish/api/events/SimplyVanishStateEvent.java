@@ -28,7 +28,7 @@ public class SimplyVanishStateEvent extends Event implements SimplyVanishEvent {
 
     private boolean vanishAfter;
 
-    public SimplyVanishStateEvent(@NotNull String name, @NotNull UUID uuid, boolean vanishBefore, boolean vanishAfter) {
+    public SimplyVanishStateEvent(@NotNull String name, @Nullable UUID uuid, boolean vanishBefore, boolean vanishAfter) {
         this.playerName = name;
         this.uuid = uuid;
         this.vanishBefore = vanishBefore;
@@ -61,7 +61,7 @@ public class SimplyVanishStateEvent extends Event implements SimplyVanishEvent {
         vanishAfter = visible;
     }
 
-    public @NotNull UUID getUuid() {
+    public @Nullable UUID getUniqueId() {
         return uuid;
     }
 

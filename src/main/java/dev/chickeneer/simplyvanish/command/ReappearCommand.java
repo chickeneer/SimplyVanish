@@ -6,12 +6,14 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import dev.chickeneer.simplyvanish.SimplyVanish;
 import dev.chickeneer.simplyvanish.SimplyVanishCore;
+import dev.chickeneer.simplyvanish.config.PlayerVanishConfig;
 import dev.chickeneer.simplyvanish.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -44,23 +46,29 @@ public class ReappearCommand extends SimplyVanishBaseCommand {
             Player player = (Player) sender;
             doReappear(sender, args, player.getName(), player.getUniqueId(), len, hasFlags);
         } else if (len == 1) {
+            final String name = args[0];
+            PlayerVanishConfig config = core.getVanishConfig(name);
+            if (config != null) {
+                doReappear(sender, args, config.getName(), config.getUniqueId(), len, hasFlags);
+                return;
+            }
             boolean finalHasFlags = hasFlags;
             int finalLen = len;
             SimplyVanish.newChain()
-                        .asyncFirst(() -> Bukkit.getServer().getOfflinePlayer(args[0]))
+                        .asyncFirst(() -> Bukkit.getServer().getOfflinePlayer(name))
                         .syncLast(player -> {
-                            if (player.getName() == null || !player.hasPlayedBefore()) {
-                                Utils.send(sender, SimplyVanish.msgLabel + "Player has not connected to this server before: " + args[0]);
+                            if (player.getName() == null) {
+                                Utils.send(sender, SimplyVanish.msgLabel + "Unknown player: " + name);
                                 return;
                             }
-                            doReappear(sender, args, player.getName(), player.getUniqueId(), finalLen, finalHasFlags);
+                            doReappear(sender, args, player.getName(), player.hasPlayedBefore() ? player.getUniqueId() : null, finalLen, finalHasFlags);
                         }).execute();
         } else {
             unrecognized(sender);
         }
     }
 
-    private void doReappear(@NotNull CommandSender sender, @NotNull String[] args, @NotNull String name, @NotNull UUID uuid, int len, boolean hasFlags) {
+    private void doReappear(@NotNull CommandSender sender, @NotNull String[] args, @NotNull String name, @Nullable UUID uuid, int len, boolean hasFlags) {
         boolean other = !name.equalsIgnoreCase(sender.getName());
         if (!SimplyVanish.hasPermission(sender, "simplyvanish.reappear." + (other ? "other" : "self"))) {
             Utils.noPerm(sender);
@@ -77,7 +85,7 @@ public class ReappearCommand extends SimplyVanishBaseCommand {
             Utils.send(sender, SimplyVanish.msgLabel + ChatColor.RED + "Action was prevented by hooks.");
         }
         if (hasFlags && SimplyVanish.hasPermission(sender, "simplyvanish.flags.display." + (other ? "other" : "self"))) {
-            core.onShowFlags(sender, uuid);
+            core.onShowFlags(sender, name, uuid);
         }
     }
 }

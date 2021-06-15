@@ -3,11 +3,13 @@ package dev.chickeneer.simplyvanish.command;
 import co.aikar.commands.annotation.*;
 import dev.chickeneer.simplyvanish.SimplyVanish;
 import dev.chickeneer.simplyvanish.SimplyVanishCore;
+import dev.chickeneer.simplyvanish.config.PlayerVanishConfig;
 import dev.chickeneer.simplyvanish.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -24,14 +26,19 @@ public class VanGodCommand extends SimplyVanishBaseCommand {
         // TODO: maybe later accept flags.
 
         if (name != null) {
+            PlayerVanishConfig config = core.getVanishConfig(name);
+            if (config != null) {
+                doGod(sender, config.getName(), config.getUniqueId());
+                return;
+            }
             SimplyVanish.newChain()
                         .asyncFirst(() -> Bukkit.getServer().getOfflinePlayer(name))
                         .syncLast(player -> {
-                            if (player.getName() == null || !player.hasPlayedBefore()) {
-                                Utils.send(sender, SimplyVanish.msgLabel + "Player has not connected to this server before: " + name);
+                            if (player.getName() == null) {
+                                Utils.send(sender, SimplyVanish.msgLabel + "Unknown player: " + name);
                                 return;
                             }
-                            doGod(sender, player.getName(), player.getUniqueId());
+                            doGod(sender, player.getName(), player.hasPlayedBefore() ? player.getUniqueId() : null);
                         }).execute();
         } else {
             if (!Utils.checkPlayer(sender)) {
@@ -42,7 +49,7 @@ public class VanGodCommand extends SimplyVanishBaseCommand {
         }
     }
 
-    private void doGod(@NotNull CommandSender sender, @NotNull String name, @NotNull UUID uuid) {
+    private void doGod(@NotNull CommandSender sender, @NotNull String name, @Nullable UUID uuid) {
         boolean other = !name.equalsIgnoreCase(sender.getName());
         if (!Utils.checkPerm(sender, "simplyvanish.god." + (other ? "other" : "self"))) {
             return;

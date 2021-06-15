@@ -383,7 +383,7 @@ public class SimplyVanishCore {
      * @param vanished
      * @return
      */
-    public boolean setVanished(@NotNull String name, @NotNull UUID uuid, boolean vanished) {
+    public boolean setVanished(@NotNull String name, @Nullable UUID uuid, boolean vanished) {
         boolean was = isVanished(name, uuid);
         // call event:
         SimplyVanishStateEvent svEvent = new SimplyVanishStateEvent(name, uuid, was, vanished);
@@ -508,7 +508,7 @@ public class SimplyVanishCore {
      * @param other      If is sender is other than name
      * @param save       If to save state.
      */
-    public void setFlags(@NotNull String name, @NotNull UUID uuid, @NotNull String[] args, int startIndex, @NotNull CommandSender sender, boolean hasBypass, boolean other, boolean save) {
+    public void setFlags(@NotNull String name, @Nullable UUID uuid, @NotNull String[] args, int startIndex, @NotNull CommandSender sender, boolean hasBypass, boolean other, boolean save) {
         long ns = System.nanoTime();
         final String permBase = "simplyvanish.flags.set." + (other ? "other" : "self"); // bypass permission
         if (!hasBypass) {
@@ -593,10 +593,12 @@ public class SimplyVanishCore {
         if (save && cfg.changed && settings.saveVanishedAlways) {
             onSaveVanished();
         }
-        Player player = Bukkit.getPlayer(uuid);
-        if (player != null) {
-            updateVanishState(player, false);
-            // TODO: what if returns false
+        if (uuid != null) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null) {
+                updateVanishState(player, false);
+                // TODO: what if returns false
+            }
         }
         if (!cfg.needsSave()) {
             removeVanished(name, uuid);
@@ -611,8 +613,8 @@ public class SimplyVanishCore {
      * @param sender
      * @param uuid
      */
-    public void onShowFlags(@NotNull CommandSender sender, @NotNull UUID uuid) {
-        PlayerVanishConfig cfg = getVanishConfig(uuid);
+    public void onShowFlags(@NotNull CommandSender sender, @NotNull String name, @Nullable UUID uuid) {
+        PlayerVanishConfig cfg = getVanishConfig(name, uuid);
         if (cfg != null) {
             if (!cfg.needsSave()) {
                 sender.sendMessage(SimplyVanish.msgDefaultFlags);
@@ -726,7 +728,7 @@ public class SimplyVanishCore {
         return isVanished(player.getName(), player.getUniqueId());
     }
 
-    public final boolean isVanished(@NotNull String name, @NotNull UUID uuid) {
+    public final boolean isVanished(@NotNull String name, @Nullable UUID uuid) {
         VanishConfig cfg = getVanishConfig(name, uuid ,false);
         if (cfg != null) {
             return cfg.vanished.state;
@@ -743,14 +745,8 @@ public class SimplyVanishCore {
         }
     }
 
-    @Deprecated
     public final boolean isVanished(@NotNull String name) {
-        final VanishConfig cfg = getVanishConfig(name, false);
-        if (cfg == null) {
-            return false;
-        } else {
-            return cfg.vanished.state;
-        }
+        return isVanished(name, null);
     }
 
     /**
@@ -851,7 +847,6 @@ public class SimplyVanishCore {
      * @param name
      * @return
      */
-    @Deprecated
     public final @Nullable PlayerVanishConfig getVanishConfig(@NotNull String name) {
         return getVanishConfig(name, false);
     }
@@ -863,9 +858,8 @@ public class SimplyVanishCore {
      * @param create
      * @return
      */
-    @Deprecated
     @Contract("_, true -> !null")
-    public final PlayerVanishConfig getVanishConfig(@NotNull String name, final boolean create) {
+    public @Nullable PlayerVanishConfig getVanishConfig(@NotNull String name, final boolean create) {
         String lowerCaseName = name.toLowerCase();
         PlayerVanishConfig cfg = nameVanishConfigs.get(lowerCaseName);
         if (cfg != null) {
@@ -888,8 +882,15 @@ public class SimplyVanishCore {
         return getVanishConfig(player.getName(), player.getUniqueId(), create);
     }
 
+    public final @Nullable PlayerVanishConfig getVanishConfig(@NotNull String name, @Nullable UUID uuid) {
+        return getVanishConfig(name, uuid, false);
+    }
+
     @Contract("_, _, true -> !null")
-    public final PlayerVanishConfig getVanishConfig(@NotNull String name, @NotNull UUID uuid, final boolean create) {
+    public final PlayerVanishConfig getVanishConfig(@NotNull String name, @Nullable UUID uuid, final boolean create) {
+        if (uuid == null) {
+            return getVanishConfig(name, create);
+        }
         String lowerCaseName = name.toLowerCase();
         PlayerVanishConfig config = uuidVanishConfigs.get(uuid);
         if (config == null) {
@@ -912,7 +913,7 @@ public class SimplyVanishCore {
     }
 
     private void putVanishConfig(@NotNull PlayerVanishConfig config) {
-        UUID uuid = config.getUuid();
+        UUID uuid = config.getUniqueId();
         if (uuid != null) {
             PlayerVanishConfig oldConfig = uuidVanishConfigs.remove(uuid);
             if (oldConfig != null) {
@@ -924,7 +925,7 @@ public class SimplyVanishCore {
     }
 
     private void removeVanishConfig(@NotNull PlayerVanishConfig config) {
-        UUID uuid = config.getUuid();
+        UUID uuid = config.getUniqueId();
         if (uuid != null) {
             uuidVanishConfigs.remove(uuid);
         }
@@ -965,7 +966,6 @@ public class SimplyVanishCore {
      * @param update
      * @param message
      */
-    @Deprecated
     public VanishConfig setVanishConfig(@NotNull String name, @NotNull VanishConfig cfg, boolean update, boolean message) {
         PlayerVanishConfig newCfg = new PlayerVanishConfig(name, null);
         newCfg.setAll(cfg);
@@ -1026,7 +1026,7 @@ public class SimplyVanishCore {
         return hookUtil;
     }
 
-    public void setGod(@NotNull String name, @NotNull UUID uuid, boolean god, @Nullable CommandSender notify) {
+    public void setGod(@NotNull String name, @Nullable UUID uuid, boolean god, @Nullable CommandSender notify) {
         PlayerVanishConfig cfg = getVanishConfig(name, uuid, true);
         if (god == cfg.god.state) {
             if (notify != null) {

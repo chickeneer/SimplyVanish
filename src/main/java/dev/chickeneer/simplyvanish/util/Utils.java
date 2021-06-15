@@ -230,7 +230,10 @@ public class Utils {
         // player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
     }
 
-    public static void tryMessage(@NotNull UUID uuid, @NotNull String msg) {
+    public static void tryMessage(@Nullable UUID uuid, @NotNull String msg) {
+        if (uuid == null) {
+            return;
+        }
         Player player = Bukkit.getPlayer(uuid);
         if (player == null) {
             return;

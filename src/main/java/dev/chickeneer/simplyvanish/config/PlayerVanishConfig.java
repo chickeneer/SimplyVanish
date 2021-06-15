@@ -61,7 +61,7 @@ public class PlayerVanishConfig extends VanishConfig {
         return lowerCaseName;
     }
 
-    public @Nullable UUID getUuid() {
+    public @Nullable UUID getUniqueId() {
         return uuid;
     }
 
