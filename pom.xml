@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>dev.chickeneer</groupId>
-    <artifactId>SimplyVanish</artifactId>
-    <version>2.0.0</version>
+    <artifactId>simplyvanish</artifactId>
+    <version>2.0.1-SNAPSHOT</version>
 
     <repositories>
         <repository>
