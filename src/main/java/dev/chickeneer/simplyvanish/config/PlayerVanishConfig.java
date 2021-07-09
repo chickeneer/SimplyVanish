@@ -1,9 +1,9 @@
 package dev.chickeneer.simplyvanish.config;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.UUID;
 
@@ -19,12 +19,12 @@ public class PlayerVanishConfig extends VanishConfig {
         this.uuid = uuid;
     }
 
-    public static PlayerVanishConfig load(JSONObject jsonObject) {
-        String name = (String) jsonObject.get("name");
-        UUID uuid = (UUID) jsonObject.get("uuid");
+    public static PlayerVanishConfig load(JsonObject jsonObject) {
+        String name = jsonObject.get("name").toString();
+        UUID uuid = UUID.fromString(jsonObject.get("uuid").toString());
         PlayerVanishConfig config = new PlayerVanishConfig(name, uuid);
 
-        JSONArray list = (JSONArray) jsonObject.get("flags");
+        JsonArray list = (JsonArray) jsonObject.get("flags");
         for (Object o : list) {
             String s = ((String) o).trim().toLowerCase();
             if (s.isEmpty() || s.length() < 2) {
@@ -79,18 +79,18 @@ public class PlayerVanishConfig extends VanishConfig {
 
 
     public String toJsonString() {
-        JSONObject obj = new JSONObject();
-        obj.put("name", name);
-        obj.put("uuid", uuid);
+        JsonObject obj = new JsonObject();
+        obj.addProperty("name", name);
+        obj.addProperty("uuid", uuid.toString());
 
-        JSONArray list = new JSONArray();
+        JsonArray list = new JsonArray();
         for (Flag flag : flags.values()) {
             if (flag.state == flag.preset) {
                 continue;
             }
-            list.put(flag.toLine());
+            list.add(flag.toLine());
         }
-        obj.put("flags", list);
+        obj.add("flags", list);
 
         return obj.toString();
     }

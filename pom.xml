@@ -49,12 +49,6 @@
             <artifactId>taskchain-bukkit</artifactId>
             <version>3.7.2</version> <!-- Replace this with the version from TaskChain -->
         </dependency>
-        <!--Json-->
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20210307</version>
-        </dependency>
         <!--Dynmap-->
         <dependency>
             <groupId>us.dynmap</groupId>
@@ -63,11 +57,11 @@
             <scope>provided</scope>
         </dependency>
         <!--Protocol Lib-->
-        <dependency>
+        <!--dependency>
     		<groupId>com.comphenix.protocol</groupId>
     		<artifactId>ProtocolLib</artifactId>
     		<version>4.6.0</version>
-  		</dependency>
+  		</dependency-->
         <!--Lib's Disguises-->
         <dependency>
    			<groupId>LibsDisguises</groupId>

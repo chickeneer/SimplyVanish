@@ -1,5 +1,8 @@
 package dev.chickeneer.simplyvanish;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import dev.chickeneer.simplyvanish.api.events.SimplyVanishStateEvent;
 import dev.chickeneer.simplyvanish.api.hooks.impl.DynmapHook;
 import dev.chickeneer.simplyvanish.api.hooks.impl.LibsDisguisesHook;
@@ -18,9 +21,6 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.util.*;
@@ -188,15 +188,15 @@ public class SimplyVanishCore {
             return;
         }
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            JSONParser parser = new JSONParser();
+            JsonParser parser = new JsonParser();
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 line = line.trim().toLowerCase();
                 if (!line.isEmpty()) {
                     if (line.startsWith("{")) {
                         try {
-                            PlayerVanishConfig cfg = PlayerVanishConfig.load((JSONObject) parser.parse(line));
+                            PlayerVanishConfig cfg = PlayerVanishConfig.load((JsonObject) parser.parse(line));
                             putVanishConfig(cfg);
-                        } catch (ParseException e) {
+                        } catch (JsonSyntaxException e) {
                             Utils.severe("Json Parse exception: " + line, e);
                         }
                     } else {
