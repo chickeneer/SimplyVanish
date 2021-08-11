@@ -402,7 +402,7 @@ public class SimplyVanishCore {
         }
 
         // Do vanish or reappear:
-        Player player = Bukkit.getPlayer(uuid);
+        Player player = uuid != null ? Bukkit.getPlayer(uuid) : null;
         if (player != null) {
             // The simple but costly part.
             if (vanished) {
@@ -671,7 +671,7 @@ public class SimplyVanishCore {
         }
     }
 
-    public boolean addVanished(@NotNull String name, @NotNull UUID uuid) {
+    public boolean addVanished(@NotNull String name, @Nullable UUID uuid) {
         VanishConfig cfg = getVanishConfig(name, uuid, true);
         boolean res = false;
         if (!cfg.vanished.state) {
@@ -689,7 +689,7 @@ public class SimplyVanishCore {
      * @param uuid
      * @return If the player was vanished.
      */
-    public boolean removeVanished(@NotNull String name, @NotNull UUID uuid) {
+    public boolean removeVanished(@NotNull String name, @Nullable UUID uuid) {
         PlayerVanishConfig cfg = getVanishConfig(name, uuid, false);
         if (cfg == null) {
             return false;

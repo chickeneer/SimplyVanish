@@ -27,7 +27,7 @@ public class PlayerVanishConfig extends VanishConfig {
         JsonArray list = (JsonArray) jsonObject.get("flags");
         for (Object o : list) {
             String s = ((String) o).trim().toLowerCase();
-            if (s.isEmpty() || s.length() < 2) {
+            if (s.length() < 2) {
                 continue;
             }
             boolean state;
@@ -81,7 +81,9 @@ public class PlayerVanishConfig extends VanishConfig {
     public String toJsonString() {
         JsonObject obj = new JsonObject();
         obj.addProperty("name", name);
-        obj.addProperty("uuid", uuid.toString());
+        if (uuid != null) {
+            obj.addProperty("uuid", uuid.toString());
+        }
 
         JsonArray list = new JsonArray();
         for (Flag flag : flags.values()) {

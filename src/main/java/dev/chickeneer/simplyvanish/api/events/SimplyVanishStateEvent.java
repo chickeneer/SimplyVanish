@@ -80,7 +80,7 @@ public class SimplyVanishStateEvent extends Event implements SimplyVanishEvent {
     }
 
     public @Nullable Player getPlayer() {
-        return Bukkit.getPlayer(uuid);
+        return uuid == null ? null : Bukkit.getPlayer(uuid);
     }
 
     public boolean isPlayerOnline() {
