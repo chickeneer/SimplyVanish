@@ -21,7 +21,7 @@ public class PlayerVanishConfig extends VanishConfig {
 
     public static PlayerVanishConfig load(JsonObject jsonObject) {
         String name = jsonObject.get("name").toString();
-        UUID uuid = UUID.fromString(jsonObject.get("uuid").toString());
+        UUID uuid = jsonObject.has("uuid") ? UUID.fromString(jsonObject.get("uuid").toString()) : null;
         PlayerVanishConfig config = new PlayerVanishConfig(name, uuid);
 
         JsonArray list = (JsonArray) jsonObject.get("flags");
