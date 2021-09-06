@@ -1,6 +1,7 @@
 package dev.chickeneer.simplyvanish.config;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,13 +21,13 @@ public class PlayerVanishConfig extends VanishConfig {
     }
 
     public static PlayerVanishConfig load(JsonObject jsonObject) {
-        String name = jsonObject.get("name").toString();
-        UUID uuid = jsonObject.has("uuid") ? UUID.fromString(jsonObject.get("uuid").toString()) : null;
+        String name = jsonObject.get("name").getAsString();
+        UUID uuid = jsonObject.has("uuid") ? UUID.fromString(jsonObject.get("uuid").getAsString()) : null;
         PlayerVanishConfig config = new PlayerVanishConfig(name, uuid);
 
         JsonArray list = (JsonArray) jsonObject.get("flags");
-        for (Object o : list) {
-            String s = ((String) o).trim().toLowerCase();
+        for (JsonElement e : list) {
+            String s = e.getAsString().toLowerCase();
             if (s.length() < 2) {
                 continue;
             }
