@@ -775,8 +775,8 @@ public class SimplyVanishCore {
         boolean found = false;
         for (String n : sorted) {
             Player player = server.getPlayerExact(n);
-            VanishConfig cfg = nameVanishConfigs.get(n);
-            if (!cfg.vanished.state) {
+            VanishConfig cfg = nameVanishConfigs.get(n.toLowerCase());
+            if (cfg == null || !cfg.vanished.state) {
                 continue;
             }
             found = true;
