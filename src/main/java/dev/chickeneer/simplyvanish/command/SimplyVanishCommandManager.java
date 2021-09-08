@@ -20,7 +20,7 @@ public class SimplyVanishCommandManager extends PaperCommandManager {
     }
 
     private static final Pattern COMMA = Pattern.compile(",");
-    private static final Pattern PIPE = Pattern.compile(",");
+    private static final Pattern PIPE = Pattern.compile("\\|");
 
     @Override
     public boolean hasPermission(CommandIssuer issuer, String permission) {
