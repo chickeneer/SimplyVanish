@@ -51,9 +51,9 @@ public class SimplyVanishCommand extends SimplyVanishBaseCommand {
     @Subcommand("flags")
     @CommandPermission("simplyvanish.flags.display.self|simplyvanish.flags.display.other")
     @Default
-    public static void onFlags(CommandSender sender) {
-        if (!SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.self") &&
-            !SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.other")) {
+    public void onFlags(CommandSender sender) {
+        if (!core.hasPermission(sender, "simplyvanish.flags.display.self") &&
+            !core.hasPermission(sender, "simplyvanish.flags.display.other")) {
             Utils.noPerm(sender);
             return;
         }

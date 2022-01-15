@@ -36,7 +36,7 @@ public class Utils {
      * @return
      */
     public static boolean checkPerm(@NotNull CommandSender sender, @NotNull String perm) {
-        if (!SimplyVanish.hasPermission(sender, perm)) {
+        if (!SimplyVanish.getInstance().hasPermission(sender, perm)) {
             noPerm(sender);
             return false;
         }
@@ -174,7 +174,7 @@ public class Utils {
             } else if (targets.toLowerCase().startsWith("permission:") && targets.length() > 11) {
                 String perm = targets.substring(11).trim();
                 for (Player player : online) {
-                    if (SimplyVanish.hasPermission(player, perm)) {
+                    if (SimplyVanish.getInstance().hasPermission(player, perm)) {
                         players.add(player);
                     }
                 }

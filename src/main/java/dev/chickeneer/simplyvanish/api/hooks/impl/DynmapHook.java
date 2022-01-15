@@ -51,9 +51,9 @@ public class DynmapHook extends AbstractHook {
     private void adjust(@NotNull String name, @Nullable UUID uuid) {
         boolean vanished;
         if (uuid != null) {
-            vanished = SimplyVanish.isVanished(uuid);
+            vanished = SimplyVanish.getInstance().isVanished(uuid);
         } else {
-            vanished = SimplyVanish.isVanished(name);
+            vanished = SimplyVanish.getInstance().isVanished(name);
         }
         DynmapAPI plg = (DynmapAPI) getter.getPlugin();
         plg.assertPlayerInvisibility(name, vanished, "SimplyVanish");

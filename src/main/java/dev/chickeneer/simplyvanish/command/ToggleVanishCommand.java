@@ -91,7 +91,7 @@ public class ToggleVanishCommand extends SimplyVanishBaseCommand {
             Utils.send(sender, SimplyVanish.msgLabel + ChatColor.RED + "Action was prevented by hooks.");
         }
         String displayPerm = "simplyvanish.display." + (other ? "other" : "self");
-        if (hasFlags && SimplyVanish.hasPermission(sender, displayPerm)) {
+        if (hasFlags && core.hasPermission(sender, displayPerm)) {
             core.onShowFlags(sender, name, uuid);
         }
     }

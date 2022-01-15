@@ -61,8 +61,8 @@ public class LibsDisguisesHook extends AbstractHook {
                 return;
             }
             Player player = (Player) event.getEntity();
-            if (SimplyVanish.isVanished(player)) {
-                if (!SimplyVanish.setVanished(player, false)) {
+            if (SimplyVanish.getInstance().isVanished(player)) {
+                if (!SimplyVanish.getInstance().setVanished(player, false)) {
                     event.setCancelled(true); // TODO: something
                     // TODO: Consider suppressing if notify=false.
                     if (shouldNotify(player)) {
@@ -73,7 +73,7 @@ public class LibsDisguisesHook extends AbstractHook {
         }
 
         private boolean shouldNotify(@NotNull Player player) {
-            final VanishConfig config = SimplyVanish.getVanishConfig(player, false);
+            final VanishConfig config = SimplyVanish.getInstance().getVanishConfig(player, false);
             if (config == null) {
                 return true;
             } else {
@@ -92,10 +92,10 @@ public class LibsDisguisesHook extends AbstractHook {
             }
             final Player player = (Player) event.getEntity();
             String name = player.getName();
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SimplyVanish.getPluginInstance(), () -> {
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SimplyVanish.getInstance(), () -> {
                 Player dummy = Bukkit.getServer().getPlayerExact(player.getName());
                 if (dummy != null) {
-                    SimplyVanish.updateVanishState(dummy, false, hookId);
+                    SimplyVanish.getInstance().updateVanishState(dummy, false, hookId);
                 }
             });
         }

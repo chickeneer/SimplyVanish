@@ -85,7 +85,7 @@ public class VanishCommand extends SimplyVanishBaseCommand {
         } else {
             Utils.send(sender, SimplyVanish.msgLabel + ChatColor.RED + "Action was prevented by hooks.");
         }
-        if (hasFlags && SimplyVanish.hasPermission(sender, "simplyvanish.flags.display." + (other ? "other" : "self"))) {
+        if (hasFlags && core.hasPermission(sender, "simplyvanish.flags.display." + (other ? "other" : "self"))) {
             core.onShowFlags(sender, name, uuid);
         }
     }

@@ -70,7 +70,7 @@ public class ReappearCommand extends SimplyVanishBaseCommand {
 
     private void doReappear(@NotNull CommandSender sender, @NotNull String[] args, @NotNull String name, @Nullable UUID uuid, int len, boolean hasFlags) {
         boolean other = !name.equalsIgnoreCase(sender.getName());
-        if (!SimplyVanish.hasPermission(sender, "simplyvanish.reappear." + (other ? "other" : "self"))) {
+        if (!SimplyVanish.getInstance().hasPermission(sender, "simplyvanish.reappear." + (other ? "other" : "self"))) {
             Utils.noPerm(sender);
             return;
         }
@@ -84,7 +84,7 @@ public class ReappearCommand extends SimplyVanishBaseCommand {
         } else {
             Utils.send(sender, SimplyVanish.msgLabel + ChatColor.RED + "Action was prevented by hooks.");
         }
-        if (hasFlags && SimplyVanish.hasPermission(sender, "simplyvanish.flags.display." + (other ? "other" : "self"))) {
+        if (hasFlags && SimplyVanish.getInstance().hasPermission(sender, "simplyvanish.flags.display." + (other ? "other" : "self"))) {
             core.onShowFlags(sender, name, uuid);
         }
     }

@@ -24,7 +24,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -36,9 +35,10 @@ import java.util.UUID;
  * Vanish + God mode + No Target + No pickup.
  */
 public class SimplyVanish extends JavaPlugin {
+    private static SimplyVanish INSTANCE;
 
-    static final SimplyVanishCore core = new SimplyVanishCore();
-    static SimplyVanishCommandManager commandManager;
+    SimplyVanishCore core;
+    SimplyVanishCommandManager commandManager;
 
     public static final String msgLabel = ChatColor.GOLD + "[SimplyVanish]" + ChatColor.GRAY + " ";
     public static final String msgStillInvisible =
@@ -78,6 +78,7 @@ public class SimplyVanish extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        INSTANCE = this;
         try {
             //core.getHookUtil().addOnLoadHook(new ProtocolLibHook(this));
         } catch (Exception t) {
@@ -91,14 +92,13 @@ public class SimplyVanish extends JavaPlugin {
             core.doSaveVanished();
         }
         core.setEnabled(false);
-        core.setPlugin(null);
         // TODO: maybe let all players see each other again?
         Utils.info("Disabled.");
     }
 
     @Override
     public void onEnable() {
-        core.setPlugin(this);
+        core = new SimplyVanishCore(this);
 
         taskChainFactory = BukkitTaskChainFactory.create(this);
         taskChainFactory.setDefaultErrorHandler((e, task) -> {
@@ -224,7 +224,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param player
      * @param vanished success
      */
-    public static boolean setVanished(@NotNull Player player, boolean vanished) {
+    public boolean setVanished(@NotNull Player player, boolean vanished) {
         return setVanished(player.getName(), player.getUniqueId(), vanished);
     }
 
@@ -235,7 +235,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param uuid
      * @param vanished success
      */
-    public static boolean setVanished(@NotNull String name, @NotNull UUID uuid, boolean vanished) {
+    public boolean setVanished(@NotNull String name, @NotNull UUID uuid, boolean vanished) {
         if (!core.isEnabled()) {
             return false;
         }
@@ -248,7 +248,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param player
      * @return
      */
-    public static boolean isVanished(@NotNull Player player) {
+    public boolean isVanished(@NotNull Player player) {
         return isVanished(player.getUniqueId());
     }
 
@@ -258,7 +258,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param uuid
      * @return
      */
-    public static boolean isVanished(@NotNull UUID uuid) {
+    public boolean isVanished(@NotNull UUID uuid) {
         if (!core.isEnabled()) {
             return false;
         } else {
@@ -273,7 +273,7 @@ public class SimplyVanish extends JavaPlugin {
      * @return
      */
     @Deprecated
-    public static boolean isVanished(@NotNull String name) {
+    public boolean isVanished(@NotNull String name) {
         if (!core.isEnabled()) {
             return false;
         } else {
@@ -290,7 +290,7 @@ public class SimplyVanish extends JavaPlugin {
      * @deprecated The method signature will most likely change to Collection or List.
      */
     @Deprecated
-    public static @NotNull Set<String> getVanishedPlayers() {
+    public @NotNull Set<String> getVanishedPlayers() {
         if (!core.isEnabled()) {
             return new HashSet<>();
         } else {
@@ -304,7 +304,7 @@ public class SimplyVanish extends JavaPlugin {
      *
      * @return
      */
-    public static @NotNull VanishConfig getDefaultVanishConfig() {
+    public @NotNull VanishConfig getDefaultVanishConfig() {
         return new VanishConfig();
     }
 
@@ -317,7 +317,7 @@ public class SimplyVanish extends JavaPlugin {
      * @return A clone of the VanishConfig.
      */
     @Contract("_, true -> !null")
-    public static VanishConfig getVanishConfig(@NotNull Player player, boolean create) {
+    public VanishConfig getVanishConfig(@NotNull Player player, boolean create) {
         return getVanishConfig(player.getName(), player.getUniqueId(), create);
     }
 
@@ -329,7 +329,7 @@ public class SimplyVanish extends JavaPlugin {
      * @return A clone of the VanishConfig.
      */
     @Contract("_, true -> !null")
-    public static VanishConfig getVanishConfig(@NotNull UUID uuid, boolean create) {
+    public VanishConfig getVanishConfig(@NotNull UUID uuid, boolean create) {
         VanishConfig config = core.getVanishConfig(uuid);
         if (config == null) {
             return create ? getDefaultVanishConfig() : null;
@@ -348,7 +348,7 @@ public class SimplyVanish extends JavaPlugin {
      * @return A clone of the VanishConfig.
      */
     @Contract("_, _, true -> !null")
-    public static VanishConfig getVanishConfig(@NotNull String name, @NotNull UUID uuid, boolean create) {
+    public VanishConfig getVanishConfig(@NotNull String name, @NotNull UUID uuid, boolean create) {
         VanishConfig cfg = core.getVanishConfig(name, uuid, false);
         if (cfg == null) {
             return create ? getDefaultVanishConfig() : null;
@@ -367,7 +367,7 @@ public class SimplyVanish extends JavaPlugin {
      */
     @Deprecated
     @Contract("_, true -> !null")
-    public static VanishConfig getVanishConfig(@NotNull String name, boolean create) {
+    public VanishConfig getVanishConfig(@NotNull String name, boolean create) {
         VanishConfig cfg = core.getVanishConfig(name, false);
         if (cfg == null) {
             if (create) {
@@ -390,7 +390,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param cfg
      * @param update
      */
-    public static void setVanishConfig(@NotNull String name, @NotNull UUID uuid, @NotNull VanishConfig cfg, boolean update) {
+    public void setVanishConfig(@NotNull String name, @NotNull UUID uuid, @NotNull VanishConfig cfg, boolean update) {
         setVanishConfig(name, uuid, cfg, update, false);
     }
 
@@ -404,7 +404,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param update
      */
     @Deprecated
-    public static void setVanishConfig(@NotNull String name, @NotNull VanishConfig cfg, boolean update) {
+    public void setVanishConfig(@NotNull String name, @NotNull VanishConfig cfg, boolean update) {
         setVanishConfig(name, cfg, update, false);
     }
 
@@ -419,7 +419,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param update
      * @param message
      */
-    public static VanishConfig setVanishConfig(@NotNull String name, @NotNull UUID uuid, @NotNull VanishConfig cfg, boolean update, boolean message) {
+    public VanishConfig setVanishConfig(@NotNull String name, @NotNull UUID uuid, @NotNull VanishConfig cfg, boolean update, boolean message) {
         return core.setVanishConfig(name, uuid, cfg, update, message);
     }
 
@@ -434,7 +434,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param message
      */
     @Deprecated
-    public static VanishConfig setVanishConfig(@NotNull String name, @NotNull VanishConfig cfg, boolean update, boolean message) {
+    public VanishConfig setVanishConfig(@NotNull String name, @NotNull VanishConfig cfg, boolean update, boolean message) {
         return core.setVanishConfig(name, cfg, update, message);
     }
 
@@ -444,7 +444,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param player
      * @return false, if the action was prevented by a hook, true otherwise.
      */
-    public static boolean updateVanishState(@NotNull Player player) {
+    public boolean updateVanishState(@NotNull Player player) {
         return core.updateVanishState(player, false); // Mind the difference of flag to core.updateVanishState(Player).
     }
 
@@ -455,7 +455,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param hookId To identify who calls this, 0 = as if SimplyVanish called it.
      * @return false, if the action was prevented by a hook, true otherwise.
      */
-    public static boolean updateVanishState(@NotNull Player player, int hookId) {
+    public boolean updateVanishState(@NotNull Player player, int hookId) {
         return core.updateVanishState(player, false, hookId);
     }
 
@@ -466,7 +466,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param message If to send notifications and state messages.
      * @return false, if the action was prevented by a hook, true otherwise.
      */
-    public static boolean updateVanishState(@NotNull Player player, boolean message) {
+    public boolean updateVanishState(@NotNull Player player, boolean message) {
         return core.updateVanishState(player, message);
     }
 
@@ -478,7 +478,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param hookId  To identify who calls this, 0 = as if SimplyVanish called it.
      * @return false, if the action was prevented by a hook, true otherwise.
      */
-    public static boolean updateVanishState(@NotNull Player player, boolean message, int hookId) {
+    public boolean updateVanishState(@NotNull Player player, boolean message, int hookId) {
         return core.updateVanishState(player, message, hookId);
     }
 
@@ -488,7 +488,7 @@ public class SimplyVanish extends JavaPlugin {
      *
      * @return
      */
-    public static int getNewHookId() {
+    public int getNewHookId() {
         return core.getHookUtil().getNewHookId();
     }
 
@@ -498,7 +498,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param hook
      * @return If one was already present.
      */
-    public static boolean addHook(@NotNull Hook hook) {
+    public boolean addHook(@NotNull Hook hook) {
         return core.getHookUtil().addHook(hook);
     }
 
@@ -509,7 +509,7 @@ public class SimplyVanish extends JavaPlugin {
      * @return Hook or null, if not registered.
      */
     @Deprecated
-    public static Hook getRegisteredHook(@NotNull String name) {
+    public Hook getRegisteredHook(@NotNull String name) {
         return core.getHookUtil().getHook(name);
     }
 
@@ -520,7 +520,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param hook
      * @return If one was already present.
      */
-    public static boolean removeHook(@NotNull Hook hook) {
+    public boolean removeHook(@NotNull Hook hook) {
         return core.getHookUtil().removeHook(hook);
     }
 
@@ -531,7 +531,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param hookName
      * @return If one was already present.
      */
-    public static boolean removeHook(@NotNull String hookName) {
+    public boolean removeHook(@NotNull String hookName) {
         return core.getHookUtil().removeHook(hookName);
     }
 
@@ -542,7 +542,7 @@ public class SimplyVanish extends JavaPlugin {
      * @param perm
      * @return
      */
-    public static boolean hasPermission(@NotNull CommandSender sender, @NotNull String perm) {
+    public boolean hasPermission(@NotNull CommandSender sender, @NotNull String perm) {
         return core.hasPermission(sender, perm);
     }
 
@@ -551,9 +551,9 @@ public class SimplyVanish extends JavaPlugin {
      *
      * @return
      */
-    @Nullable
-    public static SimplyVanish getPluginInstance() {
-        return core.getPlugin();
+    @NotNull
+    public static SimplyVanish getInstance() {
+        return INSTANCE;
     }
 
 }

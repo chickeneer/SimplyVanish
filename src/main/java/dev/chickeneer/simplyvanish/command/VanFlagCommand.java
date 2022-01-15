@@ -72,7 +72,7 @@ public class VanFlagCommand extends SimplyVanishBaseCommand {
         if (hasFlags) {
             core.setFlags(name, uuid, args, len, sender, false, other, true);
         }
-        if (SimplyVanish.hasPermission(sender, "simplyvanish.flags.display." + (other ? "other" : "self"))) {
+        if (core.hasPermission(sender, "simplyvanish.flags.display." + (other ? "other" : "self"))) {
             core.onShowFlags(sender, name, uuid);
         } else if (!hasFlags) {
             sender.sendMessage(SimplyVanish.msgLabel + ChatColor.RED + "You do not have permission to display flags" + (other ? " of others." : "."));

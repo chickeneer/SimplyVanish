@@ -87,7 +87,7 @@ public final class HookUtil {
                 HookListener listener = hook.getListener();
                 if (listener != null) {
                     PluginManager pm = Bukkit.getServer().getPluginManager();
-                    pm.registerEvents(listener, SimplyVanish.getPluginInstance());
+                    pm.registerEvents(listener, SimplyVanish.getInstance());
                     usedHookListeners.put(hookName, listener);
                 }
             }
@@ -141,7 +141,7 @@ public final class HookUtil {
      * @param purpose
      * @return
      */
-    public final @NotNull List<Hook> getUsedHooks(@NotNull HookPurpose purpose) {
+    public @NotNull List<Hook> getUsedHooks(@NotNull HookPurpose purpose) {
         List<Hook> hooks = usedHooks.get(purpose);
         //TODO: Shouldn't this be added to the usedHooks map?
         return Objects.requireNonNullElseGet(hooks, LinkedList::new);
@@ -176,7 +176,7 @@ public final class HookUtil {
         }
     }
 
-    public final void callBeforeVanish(@NotNull String name, @Nullable UUID uuid) {
+    public void callBeforeVanish(@NotNull String name, @Nullable UUID uuid) {
         final HookPurpose sup = HookPurpose.BEFORE_VANISH;
         for (final Hook hook : getUsedHooks(sup)) {
             try {
@@ -187,7 +187,7 @@ public final class HookUtil {
         }
     }
 
-    public final void callAfterVanish(@NotNull String name, @Nullable UUID uuid) {
+    public void callAfterVanish(@NotNull String name, @Nullable UUID uuid) {
         final HookPurpose sup = HookPurpose.AFTER_VANISH;
         for (final Hook hook : getUsedHooks(sup)) {
             try {

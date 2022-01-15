@@ -31,6 +31,10 @@ import java.util.Map.Entry;
  */
 public class SimplyVanishCore {
 
+    SimplyVanishCore(@NotNull SimplyVanish plugin) {
+        this.plugin = plugin;
+    }
+
     /**
      * Vanished players.
      */
@@ -79,10 +83,6 @@ public class SimplyVanishCore {
     @Nullable
     public SimplyVanish getPlugin() {
         return plugin;
-    }
-
-    public void setPlugin(@Nullable SimplyVanish plugin) {
-        this.plugin = plugin;
     }
 
 

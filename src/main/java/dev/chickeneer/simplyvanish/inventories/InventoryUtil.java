@@ -24,9 +24,9 @@ public class InventoryUtil {
      * @param settings
      */
     public static void showInventory(@NotNull CommandSender viewer, @Nullable VanishConfig cfg, @NotNull Player other, @NotNull Settings settings) {
-        if (settings.allowRealPeek && viewer instanceof Player && SimplyVanish.hasPermission(viewer, "simplyvanish.inventories.peek.real")) {
+        if (settings.allowRealPeek && viewer instanceof Player && SimplyVanish.getInstance().hasPermission(viewer, "simplyvanish.inventories.peek.real")) {
             Player player = (Player) viewer;
-            Bukkit.getScheduler().scheduleSyncDelayedTask(SimplyVanish.getPluginInstance(), () -> {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SimplyVanish.getInstance(), () -> {
                 player.closeInventory();
                 final Inventory inv = other.getInventory();
                 prepareInventoryOpen(player, inv, cfg); // TODO
@@ -51,7 +51,7 @@ public class InventoryUtil {
      */
     public static void prepareInventoryOpen(@NotNull Player player, @NotNull Inventory inventory, @Nullable VanishConfig cfg) {
         if (cfg != null) {
-            if (SimplyVanish.hasPermission(player, "simplyvanish.inventories.manipulate")) {
+            if (SimplyVanish.getInstance().hasPermission(player, "simplyvanish.inventories.manipulate")) {
                 cfg.preventInventoryAction = false;
             } else {
                 cfg.preventInventoryAction = inventory != player.getInventory();

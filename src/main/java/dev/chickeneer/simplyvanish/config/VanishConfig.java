@@ -166,7 +166,7 @@ public class VanishConfig implements Cloneable {
     public void readFromArray(String[] parts, int startIndex, boolean allowAll) {
         for (int i = startIndex; i < parts.length; i++) {
             String s = parts[i].trim().toLowerCase();
-            if (s.isEmpty() || s.length() < 2) {
+            if (s.length() < 2) {
                 continue;
             }
             boolean state;

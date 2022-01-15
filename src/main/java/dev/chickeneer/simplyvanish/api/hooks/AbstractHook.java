@@ -13,7 +13,7 @@ import java.util.UUID;
  */
 public abstract class AbstractHook implements Hook {
 
-    protected final int hookId = SimplyVanish.getNewHookId();
+    protected final int hookId = SimplyVanish.getInstance().getNewHookId();
 
     @Override
     public abstract @NotNull String getHookName();
