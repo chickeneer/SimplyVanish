@@ -80,7 +80,7 @@ public class SimplyVanishCore {
         this.settings = settings;
     }
 
-    @Nullable
+    @NotNull
     public SimplyVanish getPlugin() {
         return plugin;
     }
