@@ -249,7 +249,11 @@ public class SimplyVanish extends JavaPlugin {
      * @return
      */
     public boolean isVanished(@NotNull Player player) {
-        return isVanished(player.getUniqueId());
+        if (!core.isEnabled()) {
+            return false;
+        } else {
+            return core.isVanished(player.getName(), player.getUniqueId());
+        }
     }
 
     /**

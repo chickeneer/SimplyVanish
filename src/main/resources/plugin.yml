@@ -1,6 +1,6 @@
 name: SimplyVanish
 main: dev.chickeneer.simplyvanish.SimplyVanish
-version: 2.0.0
+version: 2.1.0
 api-version: 1.16
 authors: [ asofold, jeikobu__ ]
 softdepend:
