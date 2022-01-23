@@ -56,7 +56,7 @@ public class SimplyVanishCore {
      */
     private File vanishedFile = null;
 
-    private SimplyVanish plugin;
+    private final SimplyVanish plugin;
 
     /**
      * Only has relevance for static access by Plugin.
@@ -895,6 +895,9 @@ public class SimplyVanishCore {
         PlayerVanishConfig config = uuidVanishConfigs.get(uuid);
         if (config == null) {
             config = nameVanishConfigs.get(name);
+            if (config != null) { //uuid is not null, need to update
+                config = setVanishConfig(name, uuid, config, false, false);
+            }
         } else {
             // Name validation
             if (!config.getLowerCaseName().equals(lowerCaseName)) {
