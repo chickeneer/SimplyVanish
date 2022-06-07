@@ -3,11 +3,9 @@ package dev.chickeneer.simplyvanish.util;
 import dev.chickeneer.simplyvanish.SimplyVanish;
 import dev.chickeneer.simplyvanish.config.Settings;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
 
 public class Panic {
 
@@ -31,7 +29,7 @@ public class Panic {
             return true;
         } else if (inconsistent) {
             try {
-                player1.sendMessage(SimplyVanish.msgLabel + ChatColor.RED + "Warning: Could not use " + tag + " to player: " + player2.getName());
+                Utils.sendMsg(player1, SimplyVanish.MSG_LABEL + Formatting.ERROR + "Warning: Could not use " + tag + " to player: " + player2.getName());
             } catch (Exception t) {
             }
         }
@@ -43,7 +41,7 @@ public class Panic {
         if (settings.panicKickAll) {
             for (Player player : server.getOnlinePlayers()) {
                 try {
-                    player.kickPlayer(settings.panicKickMessage);
+                    player.kick(Utils.deserializeMessage(settings.panicKickMessage));
                 } catch (Exception t) {
                     // ignore
                 }
@@ -51,7 +49,7 @@ public class Panic {
         } else if (settings.panicKickInvolved) {
             for (Player player : involved) {
                 try {
-                    player.kickPlayer(settings.panicKickMessage);
+                    player.kick(Utils.deserializeMessage(settings.panicKickMessage));
                 } catch (Exception t) {
                     // ignore
                 }

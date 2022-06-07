@@ -3,6 +3,7 @@ package dev.chickeneer.simplyvanish.config;
 import dev.chickeneer.simplyvanish.config.compatlayer.CompatConfig;
 import dev.chickeneer.simplyvanish.config.compatlayer.CompatConfigFactory;
 import dev.chickeneer.simplyvanish.config.compatlayer.ConfigUtil;
+import dev.chickeneer.simplyvanish.util.Formatting;
 import dev.chickeneer.simplyvanish.util.Utils;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -12,7 +13,7 @@ import java.util.*;
 public class Settings {
 
     // static
-    public static final String[][] presetPermSets = new String[][]{
+    public static final String[][] PRESET_PERM_SETS = new String[][]{
             {"all"},
             {"vanish.self", "reappear.self", "flags.display.self", "flags.set.self.drop"},
     };
@@ -20,7 +21,7 @@ public class Settings {
     /**
      * Some bypass blocks typical for inspection and use:
      */
-    public static final Material[] presetBypassBlocks = new Material[]{
+    public static final Material[] PRESET_BYPASS_BLOCKS = new Material[]{
             Material.DISPENSER,
             Material.CHEST,
             Material.TRAPPED_CHEST,
@@ -31,11 +32,11 @@ public class Settings {
             Material.CAULDRON,
     };
 
-    public static final EntityType[] presetBypassEntities = new EntityType[]{
+    public static final EntityType[] PRESET_BYPASS_ENTITIES = new EntityType[]{
             EntityType.MINECART,
     };
 
-    public static final String[] defaultFLagCmds = new String[]{
+    public static final String[] DEFAULT_FLAG_CMDS = new String[]{
             "me", "tell", "vantell", "tellvan",
     };
 
@@ -76,8 +77,8 @@ public class Settings {
     public boolean suppressQuitMessage = false;
 
     public boolean sendFakeMessages = false;
-    public String fakeJoinMessage = "&e%name joined the game.";
-    public String fakeQuitMessage = "&e%name left the game.";
+    public String fakeJoinMessage = Formatting.YELLOW + "<name> joined the game.";
+    public String fakeQuitMessage = Formatting.YELLOW + "<name> left the game.";
 
     public boolean notifyState = false;
     public String notifyStatePerm = "simplyvanish.see-all";
@@ -85,7 +86,7 @@ public class Settings {
     public boolean panicKickAll = false;
     public boolean panicKickInvolved = false;
     public String panicKickMessage = "[ERROR] Please log in again, contact staff.";
-    public String panicMessage = "§a[SimplyVanish] §eAdmin notice: check the logs.";
+    public String panicMessage = Formatting.GREEN + "[SimplyVanish] " + Formatting.YELLOW + "Admin notice: check the logs.";
     public String panicMessageTargets = "ops";
     public boolean panicRunCommand = false;
     public String panicCommand = "";
@@ -166,8 +167,8 @@ public class Settings {
         suppressQuitMessage = config.getBoolean(path.suppressQuitMessage, ref.suppressQuitMessage);
         // fake messages:
         sendFakeMessages = config.getBoolean(path.sendFakeMessages, ref.sendFakeMessages);
-        fakeJoinMessage = Utils.withChatColors(config.getString(path.fakeJoinMessage, ref.fakeJoinMessage));
-        fakeQuitMessage = Utils.withChatColors(config.getString(path.fakeQuitMessage, ref.fakeQuitMessage));
+        fakeJoinMessage = config.getString(path.fakeJoinMessage, ref.fakeJoinMessage);
+        fakeQuitMessage = config.getString(path.fakeQuitMessage, ref.fakeQuitMessage);
         // notify changing vanish stats
         notifyState = config.getBoolean(path.notifyStateEnabled, ref.notifyState);
         notifyStatePerm = config.getString(path.notifyStatePerm, ref.notifyStatePerm);
@@ -359,7 +360,7 @@ public class Settings {
         defaults.set(path.flagsBypassIgnorePermissions, ref.bypassIgnorePermissions);
 
         defaults.set(path.flagsCmdWhitelist, ref.cmdWhitelist);
-        List<String> cmds = new LinkedList<>(Arrays.asList(defaultFLagCmds));
+        List<String> cmds = new LinkedList<>(Arrays.asList(DEFAULT_FLAG_CMDS));
         defaults.set(path.flagsCmdCommands, cmds);
 
         defaults.set(path.loadPlugins, ref.loadPlugins);
@@ -378,10 +379,10 @@ public class Settings {
         boolean changed = false;
         // Add more complex defaults:
         if (!config.contains(path.flagsBypass)) {
-            List<Material> blocks = new LinkedList<>(Arrays.asList(presetBypassBlocks));
+            List<Material> blocks = new LinkedList<>(Arrays.asList(PRESET_BYPASS_BLOCKS));
             config.set(path.flagsBypassBlocks, blocks);
             List<String> entities = new LinkedList<>();
-            for (EntityType entity : presetBypassEntities) {
+            for (EntityType entity : PRESET_BYPASS_ENTITIES) {
                 entities.add(entity.toString());
             }
             config.set(path.flagsBypassEntities, entities);
@@ -411,7 +412,7 @@ public class Settings {
         if (!config.contains(path.permSets)) {
             final String base = path.permSets + path.sep + "set";
             int i = 0;
-            for (String[] perms : presetPermSets) {
+            for (String[] perms : PRESET_PERM_SETS) {
                 i++;
                 List<String> entries = new LinkedList<>(Arrays.asList(perms));
                 final String prefix = base + i + path.sep;

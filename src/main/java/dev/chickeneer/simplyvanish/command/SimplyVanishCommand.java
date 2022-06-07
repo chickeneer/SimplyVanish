@@ -6,8 +6,8 @@ import dev.chickeneer.simplyvanish.SimplyVanishCore;
 import dev.chickeneer.simplyvanish.config.Flag;
 import dev.chickeneer.simplyvanish.config.VanishConfig;
 import dev.chickeneer.simplyvanish.inventories.InventoryUtil;
+import dev.chickeneer.simplyvanish.util.Formatting;
 import dev.chickeneer.simplyvanish.util.Utils;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -23,27 +23,27 @@ public class SimplyVanishCommand extends SimplyVanishBaseCommand {
     @CommandPermission("simplyvanish.reload")
     public void onReload(CommandSender sender) {
         core.getPlugin().reloadSettings();
-        Utils.send(sender, SimplyVanish.msgLabel + ChatColor.YELLOW + "Settings reloaded.");
+        Utils.sendMsg(sender, SimplyVanish.MSG_LABEL + Formatting.YELLOW + "Settings reloaded.");
     }
 
     @Subcommand("save")
     @CommandPermission("simplyvanish.save")
     public void onSave(CommandSender sender) {
         core.doSaveVanished();
-        sender.sendMessage(SimplyVanish.msgLabel + "Saved vanished configs.");
+        Utils.sendMsg(sender, SimplyVanish.MSG_LABEL + "Saved vanished configs.");
     }
 
     @Subcommand("stats")
     @CommandPermission("simplyvanish.stats.display")
     public void onStats(CommandSender sender, @Optional String arg) {
-        Utils.send(sender, SimplyVanish.stats.getStatsStr(true));
+        Utils.sendMsg(sender, SimplyVanish.STATS.getStatsStr(true));
     }
 
     @Subcommand("stats reset")
     @CommandPermission("simplyvanish.stats.reset")
     public void onStatsReset(CommandSender sender) {
-        SimplyVanish.stats.clear();
-        Utils.send(sender, SimplyVanish.msgLabel + "Stats reset.");
+        SimplyVanish.STATS.clear();
+        Utils.sendMsg(sender, SimplyVanish.MSG_LABEL + "Stats reset.");
     }
 
     @Subcommand("flags")
@@ -59,7 +59,7 @@ public class SimplyVanishCommand extends SimplyVanishBaseCommand {
         for (Flag flag : new VanishConfig().getAllFlags()) {
             b.append(" ").append(Flag.fs(flag.preset)).append(flag.name);
         }
-        Utils.send(sender, SimplyVanish.msgLabel + ChatColor.GRAY + "All default flags: " + ChatColor.YELLOW + b);
+        Utils.sendMsg(sender, SimplyVanish.MSG_LABEL + "All default flags: " + Formatting.YELLOW + b);
     }
 
     @Subcommand("drop")
@@ -73,7 +73,7 @@ public class SimplyVanishCommand extends SimplyVanishBaseCommand {
     @CommandPermission("simplyvanish.vanished")
     @Description("Show a list of vanished players.")
     public void onList(CommandSender sender) {
-        Utils.send(sender, core.getVanishedMessage());
+        Utils.sendMsg(sender, core.getVanishedMessage());
     }
 
     @CommandAlias("vanpeek")

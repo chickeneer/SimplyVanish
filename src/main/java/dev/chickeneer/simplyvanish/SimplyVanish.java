@@ -12,8 +12,8 @@ import dev.chickeneer.simplyvanish.config.compatlayer.CompatConfig;
 import dev.chickeneer.simplyvanish.config.compatlayer.CompatConfigFactory;
 import dev.chickeneer.simplyvanish.listeners.*;
 import dev.chickeneer.simplyvanish.stats.Stats;
+import dev.chickeneer.simplyvanish.util.Formatting;
 import dev.chickeneer.simplyvanish.util.Utils;
-import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -40,21 +40,18 @@ public class SimplyVanish extends JavaPlugin {
     SimplyVanishCore core;
     SimplyVanishCommandManager commandManager;
 
-    public static final String msgLabel = ChatColor.GOLD + "[SimplyVanish]" + ChatColor.GRAY + " ";
-    public static final String msgStillInvisible =
-            SimplyVanish.msgLabel + ChatColor.GRAY + "You are still " + ChatColor.GREEN + "invisible" + ChatColor.GRAY + " to normal players.";
-    public static final String msgNowInvisible =
-            SimplyVanish.msgLabel + ChatColor.GRAY + "You are now " + ChatColor.GREEN + "invisible" + ChatColor.GRAY + " to normal players.";
-    public static final String msgNotifyPing =
-            SimplyVanish.msgLabel + ChatColor.GRAY + "You are " + ChatColor.GREEN + "invisible" + ChatColor.GRAY + ", right now.";
-    public static final String msgDefaultFlags = SimplyVanish.msgLabel + ChatColor.GRAY + "Flags are at default values.";
+    public static final String MSG_LABEL = Formatting.GOLD + "[SimplyVanish] " + Formatting.GRAY;
+    public static final String MSG_STILL_INVISIBLE = MSG_LABEL + "You are still " + Formatting.GREEN + "invisible" + Formatting.GRAY + " to normal players.";
+    public static final String MSG_NOW_INVISIBLE = MSG_LABEL + "You are now " + Formatting.GREEN + "invisible" + Formatting.GRAY + " to normal players.";
+    public static final String MSG_NOTIFY_PING = MSG_LABEL + "You are " + Formatting.GREEN + "invisible" + Formatting.GRAY + ", right now.";
+    public static final String MSG_DEFAULT_FLAGS = MSG_LABEL + "Flags are at default values.";
 
-    public static final Stats stats = new Stats(msgLabel.trim() + "[STATS]");
-    public static final int statsUpdateVanishState = stats.getNewId("UpdateVanishState");
-    public static final int statsVanish = stats.getNewId("Vanish");
-    public static final int statsReappear = stats.getNewId("Reappear");
-    public static final int statsSetFlags = stats.getNewId("SetFlags");
-    public static final int statsSave = stats.getNewId("SaveData");
+    public static final Stats STATS = new Stats(MSG_LABEL.trim() + "[STATS]");
+    public static final int STATS_UPDATE_VANISH_STATE = STATS.getNewId("UpdateVanishState");
+    public static final int STATS_VANISH = STATS.getNewId("Vanish");
+    public static final int STATS_REAPPEAR = STATS.getNewId("Reappear");
+    public static final int STATS_SET_FLAGS = STATS.getNewId("SetFlags");
+    public static final int STATS_SAVE = STATS.getNewId("SaveData");
 
     private static TaskChainFactory taskChainFactory;
 
@@ -67,7 +64,7 @@ public class SimplyVanish extends JavaPlugin {
     }
 
     static {
-        stats.setLogStats(false);
+        STATS.setLogStats(false);
     }
 
     /**

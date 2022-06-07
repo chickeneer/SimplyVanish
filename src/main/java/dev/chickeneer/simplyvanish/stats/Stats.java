@@ -1,6 +1,6 @@
 package dev.chickeneer.simplyvanish.stats;
 
-import org.bukkit.ChatColor;
+import dev.chickeneer.simplyvanish.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -100,9 +100,9 @@ public class Stats {
             String key = getKey(id);
             String n = f.format(entry.n);
             if (colors) {
-                key = ChatColor.GREEN + key + ChatColor.WHITE;
-                n = ChatColor.AQUA + n + ChatColor.WHITE;
-                av = ChatColor.YELLOW + av + ChatColor.WHITE;
+                key = Formatting.GREEN + key + Formatting.WHITE;
+                n = Formatting.AQUA + n + Formatting.WHITE;
+                av = Formatting.YELLOW + av + Formatting.WHITE;
             }
             b.append(key).append(" av=").append(av).append(" n=").append(n);
             if (showRange) {

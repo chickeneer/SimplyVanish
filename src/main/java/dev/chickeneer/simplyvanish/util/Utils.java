@@ -2,8 +2,10 @@ package dev.chickeneer.simplyvanish.util;
 
 import dev.chickeneer.simplyvanish.SimplyVanish;
 import dev.chickeneer.simplyvanish.config.compatlayer.CompatConfig;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
@@ -13,6 +15,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -37,7 +39,7 @@ public class Utils {
      */
     public static boolean checkPerm(@NotNull CommandSender sender, @NotNull String perm) {
         if (!SimplyVanish.getInstance().hasPermission(sender, perm)) {
-            noPerm(sender);
+            Utils.noPerm(sender);
             return false;
         }
         return true;
@@ -49,7 +51,7 @@ public class Utils {
      * @param sender
      */
     public static void noPerm(@NotNull CommandSender sender) {
-        sender.sendMessage(ChatColor.DARK_RED + "[SimplyVanish] No permission.");
+        Utils.sendMsg(sender, Formatting.SEVERE + "[SimplyVanish] No permission.");
     }
 
     /**
@@ -62,7 +64,7 @@ public class Utils {
         if (sender instanceof Player) {
             return true;
         }
-        sender.sendMessage("[SimplyVanish] This is only available for players!");
+        Utils.sendMsg(sender, "[SimplyVanish] This is only available for players!");
         return false;
     }
 
@@ -76,23 +78,6 @@ public class Utils {
             }
         }
         return changed;
-    }
-
-    /**
-     * Compatibility method.
-     *
-     * @param input
-     * @return
-     */
-    public static @NotNull String withChatColors(@NotNull String input) {
-        char[] chars = input.toCharArray();
-        for (int i = 0; i < chars.length - 1; i++) {
-            if ((chars[i] == '&' || chars[i] == '\u00a7') && ("0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(chars[i + 1]) >= 0)) {
-                chars[i] = ChatColor.COLOR_CHAR;
-                chars[i + 1] = Character.toLowerCase(chars[i + 1]);
-            }
-        }
-        return new String(chars);
     }
 
     public static boolean checkOnline(@NotNull Player player) {
@@ -181,7 +166,7 @@ public class Utils {
             }
         }
         for (Player player : players) {
-            player.sendMessage(msg);
+            Utils.sendMsg(player, msg);
         }
     }
 
@@ -198,12 +183,16 @@ public class Utils {
         }
     }
 
-    public static void send(@NotNull CommandSender sender, @NotNull String message) {
-        if (sender instanceof Player) {
-            sender.sendMessage(message);
-        } else {
-            sender.sendMessage(ChatColor.stripColor(message));
-        }
+    public static void sendMsg(@NotNull CommandSender sender, @NotNull String miniMessage, @NotNull TagResolver @NotNull ... tagResolver) {
+        Utils.sendMsg(sender, deserializeMessage(miniMessage, tagResolver));
+    }
+
+    public static void sendMsg(@NotNull CommandSender sender, @NotNull Component message) {
+        sender.sendMessage(message);
+    }
+
+    public static Component deserializeMessage(@NotNull String message, @NotNull TagResolver @NotNull ... tagResolver) {
+        return MiniMessage.miniMessage().deserialize(message, tagResolver);
     }
 
     /**
@@ -238,7 +227,7 @@ public class Utils {
         if (player == null) {
             return;
         }
-        player.sendMessage(msg);
+        Utils.sendMsg(player, msg);
     }
 
     /**
@@ -248,26 +237,10 @@ public class Utils {
      * @return
      */
     public static @Nullable Entity getShooterEntity(@NotNull Projectile projectile) {
-        return getEntity(projectile, "getShooter");
-    }
-
-    /**
-     * Get an entity by reflection from a method without arguments (fail-safe).
-     *
-     * @param object
-     * @return
-     */
-    public static @Nullable Entity getEntity(@NotNull Object object, String methodName) {
-        Object entity = null;
-        try {
-            entity = object.getClass().getMethod(methodName).invoke(object);
-        } catch (IllegalArgumentException | NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
+        ProjectileSource source = projectile.getShooter();
+        if (source instanceof Entity) {
+            return (Entity) source;
         }
-        if (entity instanceof Entity) {
-            return (Entity) entity;
-        } else {
-            return null;
-        }
+        return null;
     }
-
 }

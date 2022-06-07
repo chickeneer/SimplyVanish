@@ -1,11 +1,12 @@
 package dev.chickeneer.simplyvanish.listeners;
 
+import dev.chickeneer.simplyvanish.util.Formatting;
+import dev.chickeneer.simplyvanish.util.Utils;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import dev.chickeneer.simplyvanish.SimplyVanish;
 import dev.chickeneer.simplyvanish.SimplyVanishCore;
 import dev.chickeneer.simplyvanish.config.Settings;
 import dev.chickeneer.simplyvanish.config.VanishConfig;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -47,7 +48,7 @@ public final class ChatListener implements Listener {
         if (shouldCancelChat(vConfig)) {
             event.setCancelled(true);
             if (vConfig.notify.state) {
-                player.sendMessage(SimplyVanish.msgLabel + ChatColor.RED + "Disabled! (/vanflag +chat or /reappear)");
+                Utils.sendMsg(player, SimplyVanish.MSG_LABEL + Formatting.ERROR + "Disabled! (/vanflag +chat or /reappear)");
             }
         }
     }
@@ -90,7 +91,7 @@ public final class ChatListener implements Listener {
         if (shouldCancelCmd(vConfig, cmd)) {
             event.setCancelled(true);
             if (vConfig.notify.state) {
-                player.sendMessage(SimplyVanish.msgLabel + ChatColor.RED + "Disabled! (/vanflag +cmd or /reappear)");
+                Utils.sendMsg(player, SimplyVanish.MSG_LABEL + Formatting.ERROR + "Disabled! (/vanflag +cmd or /reappear)");
             }
         }
     }

@@ -6,10 +6,11 @@ import dev.chickeneer.simplyvanish.SimplyVanishCore;
 import dev.chickeneer.simplyvanish.api.events.SimplyVanishAtLoginEvent;
 import dev.chickeneer.simplyvanish.config.Settings;
 import dev.chickeneer.simplyvanish.config.VanishConfig;
+import dev.chickeneer.simplyvanish.util.Formatting;
 import dev.chickeneer.simplyvanish.util.HookUtil;
+import dev.chickeneer.simplyvanish.util.Utils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -55,10 +56,10 @@ public final class CoreListener implements Listener {
             boolean online = core.getVanishConfig(player, true).online.state;
             // TODO: Not sure about the notify flag here.
             if (settings.notifyState && !online) {
-                String msg = SimplyVanish.msgLabel + ChatColor.GREEN + player.getName() + ChatColor.GRAY + action;
+                String msg = SimplyVanish.MSG_LABEL + Formatting.GREEN + player.getName() + Formatting.GRAY + action;
                 for (Player other : Bukkit.getServer().getOnlinePlayers()) {
                     if (core.hasPermission(other, settings.notifyStatePerm)) {
-                        other.sendMessage(msg);
+                        Utils.sendMsg(other, msg);
                     }
                 }
             }

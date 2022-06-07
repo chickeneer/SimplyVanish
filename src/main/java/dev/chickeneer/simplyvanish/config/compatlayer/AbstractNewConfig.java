@@ -193,9 +193,9 @@ public abstract class AbstractNewConfig extends AbstractConfig {
         }
         Double res = super.getDouble(path, null);
         if (res == null) {
-            res = config.getDouble(path, ConfigUtil.canaryDouble);
+            res = config.getDouble(path, ConfigUtil.CANARY_DOUBLE);
         }
-        if (res == ConfigUtil.canaryDouble) {
+        if (res == ConfigUtil.CANARY_DOUBLE) {
             return defaultValue;
         }
         return res;
@@ -209,9 +209,9 @@ public abstract class AbstractNewConfig extends AbstractConfig {
         }
         Long res = super.getLong(path, null);
         if (res == null) {
-            res = config.getLong(path, ConfigUtil.canaryLong);
+            res = config.getLong(path, ConfigUtil.CANARY_LONG);
         }
-        if (res == ConfigUtil.canaryLong) {
+        if (res == ConfigUtil.CANARY_LONG) {
             return defaultValue;
         }
         return res;
@@ -225,9 +225,9 @@ public abstract class AbstractNewConfig extends AbstractConfig {
         }
         Integer res = super.getInt(path, null);
         if (res == null) {
-            res = config.getInt(path, ConfigUtil.canaryInt);
+            res = config.getInt(path, ConfigUtil.CANARY_INT);
         }
-        if (res == ConfigUtil.canaryInt) {
+        if (res == ConfigUtil.CANARY_INT) {
             return defaultValue;
         }
         return res;

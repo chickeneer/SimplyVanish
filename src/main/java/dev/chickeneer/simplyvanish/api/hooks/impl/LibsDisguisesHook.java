@@ -7,12 +7,13 @@ import dev.chickeneer.simplyvanish.api.hooks.AbstractHook;
 import dev.chickeneer.simplyvanish.api.hooks.HookListener;
 import dev.chickeneer.simplyvanish.api.hooks.HookPurpose;
 import dev.chickeneer.simplyvanish.config.VanishConfig;
+import dev.chickeneer.simplyvanish.util.Formatting;
+import dev.chickeneer.simplyvanish.util.Utils;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.LibsDisguises;
 import me.libraryaddict.disguise.events.DisguiseEvent;
 import me.libraryaddict.disguise.events.UndisguiseEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -46,7 +47,7 @@ public class LibsDisguisesHook extends AbstractHook {
                     event.setCancelled(true);
                     // TODO: Consider suppressing if notify=false.
                     if (shouldNotify(player)) {
-                        player.sendMessage(SimplyVanish.msgLabel + ChatColor.GRAY + "Use " + ChatColor.YELLOW + "/undis" + ChatColor.GRAY + "guise !");
+                        Utils.sendMsg(player, SimplyVanish.MSG_LABEL + "Use " + Formatting.YELLOW + "/undis" + Formatting.GRAY + "guise !");
                     }
                 }
             }
@@ -66,7 +67,7 @@ public class LibsDisguisesHook extends AbstractHook {
                     event.setCancelled(true); // TODO: something
                     // TODO: Consider suppressing if notify=false.
                     if (shouldNotify(player)) {
-                        player.sendMessage(SimplyVanish.msgLabel + ChatColor.RED + "Can not disguise (something prevents reappear).");
+                        Utils.sendMsg(player, SimplyVanish.MSG_LABEL + Formatting.ERROR + "Can not disguise (something prevents reappear).");
                     }
                 }
             }

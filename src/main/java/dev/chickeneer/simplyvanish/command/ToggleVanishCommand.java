@@ -7,9 +7,9 @@ import co.aikar.commands.annotation.Description;
 import dev.chickeneer.simplyvanish.SimplyVanish;
 import dev.chickeneer.simplyvanish.SimplyVanishCore;
 import dev.chickeneer.simplyvanish.config.PlayerVanishConfig;
+import dev.chickeneer.simplyvanish.util.Formatting;
 import dev.chickeneer.simplyvanish.util.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -60,7 +60,7 @@ public class ToggleVanishCommand extends SimplyVanishBaseCommand {
                         .asyncFirst(() -> Bukkit.getServer().getOfflinePlayer(name))
                         .syncLast(player -> {
                             if (player.getName() == null) {
-                                Utils.send(sender, SimplyVanish.msgLabel + "Unknown player: " + name);
+                                Utils.sendMsg(sender, SimplyVanish.MSG_LABEL + "Unknown player: " + name);
                                 return;
                             }
                             doToggle(sender, args, player.getName(), player.hasPlayedBefore() ? player.getUniqueId() : null, finalLen, finalHasFlags);
@@ -82,13 +82,13 @@ public class ToggleVanishCommand extends SimplyVanishBaseCommand {
         if (core.setVanished(name, uuid, doVanish)) {
             if (other) {
                 if (doVanish) {
-                    Utils.send(sender, SimplyVanish.msgLabel + "Vanish player: " + name);
+                    Utils.sendMsg(sender, SimplyVanish.MSG_LABEL + "Vanish player: " + name);
                 } else {
-                    Utils.send(sender, SimplyVanish.msgLabel + "Show player: " + name);
+                    Utils.sendMsg(sender, SimplyVanish.MSG_LABEL + "Show player: " + name);
                 }
             }
         } else {
-            Utils.send(sender, SimplyVanish.msgLabel + ChatColor.RED + "Action was prevented by hooks.");
+            Utils.sendMsg(sender, SimplyVanish.MSG_LABEL + Formatting.ERROR + "Action was prevented by hooks.");
         }
         String displayPerm = "simplyvanish.display." + (other ? "other" : "self");
         if (hasFlags && core.hasPermission(sender, displayPerm)) {

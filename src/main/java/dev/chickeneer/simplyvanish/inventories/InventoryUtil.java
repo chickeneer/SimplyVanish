@@ -3,6 +3,7 @@ package dev.chickeneer.simplyvanish.inventories;
 import dev.chickeneer.simplyvanish.SimplyVanish;
 import dev.chickeneer.simplyvanish.config.Settings;
 import dev.chickeneer.simplyvanish.config.VanishConfig;
+import dev.chickeneer.simplyvanish.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -37,7 +38,7 @@ public class InventoryUtil {
             StringBuilder b = new StringBuilder();
             b.append("Inventory(").append(other.getName()).append("): ");
             addItemDescription(items, b);
-            viewer.sendMessage(b.toString());
+            Utils.sendMsg(viewer, b.toString());
         }
     }
 

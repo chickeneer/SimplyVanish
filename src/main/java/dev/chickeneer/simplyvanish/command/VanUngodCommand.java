@@ -35,7 +35,7 @@ public class VanUngodCommand extends SimplyVanishBaseCommand {
                         .asyncFirst(() -> Bukkit.getServer().getOfflinePlayer(name))
                         .syncLast(player -> {
                             if (player.getName() == null) {
-                                Utils.send(sender, SimplyVanish.msgLabel + "Unknown player: " + name);
+                                Utils.sendMsg(sender, SimplyVanish.MSG_LABEL + "Unknown player: " + name);
                                 return;
                             }
                             doUngod(sender, player.getName(), player.hasPlayedBefore() ? player.getUniqueId() : null);

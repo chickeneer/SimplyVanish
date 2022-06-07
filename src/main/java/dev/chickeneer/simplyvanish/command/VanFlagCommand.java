@@ -7,9 +7,9 @@ import co.aikar.commands.annotation.Description;
 import dev.chickeneer.simplyvanish.SimplyVanish;
 import dev.chickeneer.simplyvanish.SimplyVanishCore;
 import dev.chickeneer.simplyvanish.config.PlayerVanishConfig;
+import dev.chickeneer.simplyvanish.util.Formatting;
 import dev.chickeneer.simplyvanish.util.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -57,7 +57,7 @@ public class VanFlagCommand extends SimplyVanishBaseCommand {
                         .asyncFirst(() -> Bukkit.getServer().getOfflinePlayer(name))
                         .syncLast(player -> {
                             if (player.getName() == null) {
-                                Utils.send(sender, SimplyVanish.msgLabel + "Unknown player: " + name);
+                                Utils.sendMsg(sender, SimplyVanish.MSG_LABEL + "Unknown player: " + name);
                                 return;
                             }
                             doVanFlag(sender, args, finalLen, finalHasFlags, player.getName(), player.hasPlayedBefore() ? player.getUniqueId() : null);
@@ -75,7 +75,7 @@ public class VanFlagCommand extends SimplyVanishBaseCommand {
         if (core.hasPermission(sender, "simplyvanish.flags.display." + (other ? "other" : "self"))) {
             core.onShowFlags(sender, name, uuid);
         } else if (!hasFlags) {
-            sender.sendMessage(SimplyVanish.msgLabel + ChatColor.RED + "You do not have permission to display flags" + (other ? " of others." : "."));
+            Utils.sendMsg(sender, SimplyVanish.MSG_LABEL + Formatting.ERROR + "You do not have permission to display flags" + (other ? " of others." : "."));
         }
     }
 }

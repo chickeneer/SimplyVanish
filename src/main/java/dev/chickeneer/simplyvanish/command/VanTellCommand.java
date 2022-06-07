@@ -4,9 +4,8 @@ import co.aikar.commands.annotation.*;
 import dev.chickeneer.simplyvanish.SimplyVanishCore;
 import dev.chickeneer.simplyvanish.config.Settings;
 import dev.chickeneer.simplyvanish.config.VanishConfig;
+import dev.chickeneer.simplyvanish.util.Formatting;
 import dev.chickeneer.simplyvanish.util.Utils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -29,14 +28,14 @@ public class VanTellCommand extends SimplyVanishBaseCommand {
                 VanishConfig cfg = core.getVanishConfig(player, false);
                 if (cfg == null) {
                     //TODO: Need matching error message as "other" player.
-                    sender.sendMessage(ChatColor.RED + player.getName() + " is not available.");
+                    Utils.sendMsg(sender,  Formatting.ERROR + player.getName() + " is not available.");
                     return;
                 } else {
                     if (!cfg.tell.state) {
                         // check permissions (global bypass, individual bypass)
                         if (!core.hasPermission(sender, "simplyvanish.vantell.bypass") &&
                             !core.hasPermission(sender, "simplyvanish.vantell.bypass.player." + player.getName().toLowerCase())) {
-                            sender.sendMessage(ChatColor.RED + player.getName() + " is not available.");
+                            Utils.sendMsg(sender, Formatting.ERROR + player.getName() + " is not available.");
                             return;
                         }
                     }
@@ -45,15 +44,15 @@ public class VanTellCommand extends SimplyVanishBaseCommand {
         }
 
         // Message:
-        player.sendMessage(ChatColor.GRAY + sender.getName() + " whispers:" + message);
+        Utils.sendMsg(player, Formatting.GRAY + sender.getName() + " whispers:" + message);
         // Log if desired
         // TODO: check settings for log and probably log.
         Settings settings = core.getSettings();
         if (settings.logVantell) {
-            Bukkit.getServer().getLogger().info("[vantell] (" + sender.getName() + " -> " + player.getName() + ")" + message);
+            Utils.info("[vantell] (" + sender.getName() + " -> " + player.getName() + ")" + message);
         }
         if (settings.mirrorVantell) {
-            Utils.send(sender, ChatColor.DARK_GRAY + "(-> " + player.getName() + ")" + message);
+            Utils.sendMsg(sender, Formatting.DARK_GRAY + "(-> " + player.getName() + ")" + message);
         }
     }
 

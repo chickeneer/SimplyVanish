@@ -9,11 +9,12 @@ import dev.chickeneer.simplyvanish.api.hooks.impl.LibsDisguisesHook;
 import dev.chickeneer.simplyvanish.config.PlayerVanishConfig;
 import dev.chickeneer.simplyvanish.config.Settings;
 import dev.chickeneer.simplyvanish.config.VanishConfig;
+import dev.chickeneer.simplyvanish.util.Formatting;
 import dev.chickeneer.simplyvanish.util.HookUtil;
 import dev.chickeneer.simplyvanish.util.Panic;
 import dev.chickeneer.simplyvanish.util.Utils;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -162,7 +163,7 @@ public class SimplyVanishCore {
             Utils.warn("Can not save vanished players: " + e.getMessage());
         }
 
-        SimplyVanish.stats.addStats(SimplyVanish.statsSave, System.nanoTime() - ns);
+        SimplyVanish.STATS.addStats(SimplyVanish.STATS_SAVE, System.nanoTime() - ns);
     }
 
     /**
@@ -188,13 +189,12 @@ public class SimplyVanishCore {
             return;
         }
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            JsonParser parser = new JsonParser();
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 line = line.trim().toLowerCase();
                 if (!line.isEmpty()) {
                     if (line.startsWith("{")) {
                         try {
-                            PlayerVanishConfig cfg = PlayerVanishConfig.load((JsonObject) parser.parse(line));
+                            PlayerVanishConfig cfg = PlayerVanishConfig.load((JsonObject) JsonParser.parseString(line));
                             putVanishConfig(cfg);
                         } catch (JsonSyntaxException e) {
                             Utils.severe("Json Parse exception: " + line, e);
@@ -278,13 +278,8 @@ public class SimplyVanishCore {
         final long ns = System.nanoTime();
         final String name = player.getName();
         boolean was = !addVanished(player.getName(), player.getUniqueId());
-        String fakeQuit = null;
         final PlayerVanishConfig vcfg = getVanishConfig(player.getName(), player.getUniqueId(), true);
-        if (settings.sendFakeMessages && !settings.fakeQuitMessage.isEmpty() && !vcfg.online.state) {
-            fakeQuit = settings.fakeQuitMessage.replaceAll("%name", name);
-            fakeQuit = fakeQuit.replaceAll("%displayname", player.getDisplayName());
-        }
-        String msgNotify = SimplyVanish.msgLabel + ChatColor.GREEN + name + ChatColor.GRAY + " vanished.";
+        String msgNotify = SimplyVanish.MSG_LABEL + Formatting.GREEN + name + Formatting.GRAY + " vanished.";
         for (Player other : Bukkit.getServer().getOnlinePlayers()) {
             if (other.equals(player)) {
                 continue;
@@ -298,12 +293,18 @@ public class SimplyVanishCore {
                 if (notify) {
                     if (!was) {
                         if (message) {
-                            other.sendMessage(msgNotify);
+                            Utils.sendMsg(other, msgNotify);
                         }
                     }
                 } else if (!shouldSee) {
+                    String fakeQuit = null;
+                    if (settings.sendFakeMessages && !settings.fakeQuitMessage.isEmpty() && !vcfg.online.state) {
+                        fakeQuit = settings.fakeQuitMessage;
+                    }
                     if (fakeQuit != null) {
-                        other.sendMessage(fakeQuit);
+                        Utils.sendMsg(other, fakeQuit,
+                                Placeholder.unparsed("name", name),
+                                Placeholder.component("displayname", player.displayName()));
                     }
                 }
             } else {
@@ -312,15 +313,15 @@ public class SimplyVanishCore {
                 }
                 if (!was && notify) {
                     if (message) {
-                        other.sendMessage(msgNotify);
+                        Utils.sendMsg(other, msgNotify);
                     }
                 }
             }
         }
         if (message && vcfg.notify.state) {
-            player.sendMessage(was ? SimplyVanish.msgStillInvisible : SimplyVanish.msgNowInvisible);
+            Utils.sendMsg(player, was ? SimplyVanish.MSG_STILL_INVISIBLE : SimplyVanish.MSG_NOW_INVISIBLE);
         }
-        SimplyVanish.stats.addStats(SimplyVanish.statsVanish, System.nanoTime() - ns);
+        SimplyVanish.STATS.addStats(SimplyVanish.STATS_VANISH, System.nanoTime() - ns);
     }
 
     /**
@@ -330,16 +331,10 @@ public class SimplyVanishCore {
      * @param message If to send messages.
      */
     public void doReappear(@NotNull Player player, final boolean message) {
-        final long ns = System.nanoTime();
         final String name = player.getName();
         final boolean was = removeVanished(player.getName(), player.getUniqueId());
-        String fakeJoin = null;
         final VanishConfig vcfg = getVanishConfig(player, true);
-        if (settings.sendFakeMessages && !settings.fakeJoinMessage.isEmpty() && !vcfg.online.state) {
-            fakeJoin = settings.fakeJoinMessage.replaceAll("%name", name);
-            fakeJoin = fakeJoin.replaceAll("%displayname", player.getDisplayName());
-        }
-        final String msgNotify = SimplyVanish.msgLabel + ChatColor.RED + name + ChatColor.GRAY + " reappeared.";
+        final String msgNotify = SimplyVanish.MSG_LABEL + Formatting.ERROR + name + Formatting.GRAY + " reappeared.";
         for (final Player other : Bukkit.getServer().getOnlinePlayers()) {
             if (other.equals(player)) {
                 continue;
@@ -349,28 +344,33 @@ public class SimplyVanishCore {
                 showPlayer(player, other);
                 if (notify) {
                     if (message) {
-                        other.sendMessage(msgNotify);
+                        Utils.sendMsg(other, msgNotify);
                     }
                 } else if (!shouldSeeVanished(other)) {
+                    String fakeJoin = null;
+                    if (settings.sendFakeMessages && !settings.fakeJoinMessage.isEmpty() && !vcfg.online.state) {
+                        fakeJoin = settings.fakeJoinMessage;
+                    }
                     if (fakeJoin != null) {
-                        other.sendMessage(fakeJoin);
+                        Utils.sendMsg(other, fakeJoin,
+                                Placeholder.unparsed("name", name),
+                                Placeholder.component("displayname", player.displayName()));
                     }
                 }
             } else {
                 // No need to adjust visibility.
                 if (was && notify) {
                     if (message) {
-                        other.sendMessage(msgNotify);
+                        Utils.sendMsg(other, msgNotify);
                     }
                 }
             }
         }
         if (message && vcfg.notify.state) {
-            player.sendMessage(
-                    SimplyVanish.msgLabel + ChatColor.GRAY + "You are " + (was ? "now" : "still") + " " + ChatColor.RED + "visible" + ChatColor.GRAY +
-                    " to everyone!");
+            Utils.sendMsg(player, SimplyVanish.MSG_LABEL + "You are " + (was ? "now" : "still") + " " + Formatting.ERROR + "visible" +
+                                  Formatting.GRAY + " to everyone!");
         }
-        SimplyVanish.stats.addStats(SimplyVanish.statsReappear, System.nanoTime() - ns);
+        SimplyVanish.STATS.addStats(SimplyVanish.STATS_REAPPEAR, System.nanoTime() - System.nanoTime());
     }
 
     /**
@@ -465,7 +465,7 @@ public class SimplyVanishCore {
             } else {
                 removeVanished(player.getName(), player.getUniqueId());
             }
-            SimplyVanish.stats.addStats(SimplyVanish.statsUpdateVanishState, System.nanoTime() - ns);
+            SimplyVanish.STATS.addStats(SimplyVanish.STATS_UPDATE_VANISH_STATE, System.nanoTime() - ns);
             return false;
         }
         final Server server = Bukkit.getServer();
@@ -490,7 +490,7 @@ public class SimplyVanishCore {
         } else {
             removeVanished(player.getName(), player.getUniqueId());
         }
-        SimplyVanish.stats.addStats(SimplyVanish.statsUpdateVanishState, System.nanoTime() - ns);
+        SimplyVanish.STATS.addStats(SimplyVanish.STATS_UPDATE_VANISH_STATE, System.nanoTime() - ns);
         return true;
     }
 
@@ -571,13 +571,13 @@ public class SimplyVanishCore {
         }
 
         if (!missing.isEmpty()) {
-            Utils.send(sender, SimplyVanish.msgLabel + ChatColor.RED + "Missing permission for flags: " + Utils.join(missing, ", "));
+            Utils.sendMsg(sender, SimplyVanish.MSG_LABEL + Formatting.ERROR + "Missing permission for flags: " + Utils.join(missing, ", "));
         }
         if (!hasSomePerm) {
             // Difficult: might be a player without ANY permission.
             // TODO: maybe check permissions for all flags
-            Utils.send(sender, SimplyVanish.msgLabel + ChatColor.DARK_RED + "You can not set these flags.");
-            SimplyVanish.stats.addStats(SimplyVanish.statsSetFlags, System.nanoTime() - ns);
+            Utils.sendMsg(sender, SimplyVanish.MSG_LABEL + Formatting.SEVERE + "You can not set these flags.");
+            SimplyVanish.STATS.addStats(SimplyVanish.STATS_SET_FLAGS, System.nanoTime() - ns);
             return;
         }
         // if pass:
@@ -604,7 +604,7 @@ public class SimplyVanishCore {
             removeVanished(name, uuid);
         }
         hookUtil.callAfterSetFlags(name, uuid);
-        SimplyVanish.stats.addStats(SimplyVanish.statsSetFlags, System.nanoTime() - ns);
+        SimplyVanish.STATS.addStats(SimplyVanish.STATS_SET_FLAGS, System.nanoTime() - ns);
     }
 
     /**
@@ -617,12 +617,12 @@ public class SimplyVanishCore {
         PlayerVanishConfig cfg = getVanishConfig(name, uuid);
         if (cfg != null) {
             if (!cfg.needsSave()) {
-                sender.sendMessage(SimplyVanish.msgDefaultFlags);
+                Utils.sendMsg(sender, SimplyVanish.MSG_DEFAULT_FLAGS);
             } else {
-                sender.sendMessage(SimplyVanish.msgLabel + ChatColor.GRAY + "Flags(" + cfg.getName() + "): " + cfg.toLine());
+                Utils.sendMsg(sender, SimplyVanish.MSG_LABEL + "Flags(" + cfg.getName() + "): " + cfg.toLine());
             }
         } else {
-            sender.sendMessage(SimplyVanish.msgDefaultFlags);
+            Utils.sendMsg(sender, SimplyVanish.MSG_DEFAULT_FLAGS);
         }
     }
 
@@ -770,7 +770,7 @@ public class SimplyVanishCore {
     public @NotNull String getVanishedMessage() {
         List<String> sorted = getSortedVanished();
         StringBuilder builder = new StringBuilder();
-        builder.append(ChatColor.GOLD).append("[VANISHED]");
+        builder.append("<gold>").append("[VANISHED]");
         Server server = Bukkit.getServer();
         boolean found = false;
         for (String n : sorted) {
@@ -782,21 +782,21 @@ public class SimplyVanishCore {
             found = true;
             boolean isNosee = !cfg.see.state; // is lower case
             if (player == null) {
-                builder.append(" ").append(ChatColor.GRAY).append("(").append(n).append(")");
+                builder.append(" ").append(Formatting.GRAY).append("(").append(n).append(")");
                 if (isNosee) {
-                    builder.append(ChatColor.DARK_RED).append("[NOSEE]");
+                    builder.append(Formatting.SEVERE).append("[NOSEE]");
                 }
             } else {
-                builder.append(" ").append(ChatColor.GREEN).append(player.getName());
+                builder.append(" ").append(Formatting.GREEN).append(player.getName());
                 if (!hasPermission(player, "simplyvanish.see-all")) {
-                    builder.append(ChatColor.DARK_RED).append("[CANTSEE]");
+                    builder.append(Formatting.SEVERE).append("[CANTSEE]");
                 } else if (isNosee) {
-                    builder.append(ChatColor.RED).append("[NOSEE]");
+                    builder.append(Formatting.ERROR).append("[NOSEE]");
                 }
             }
         }
         if (!found) {
-            builder.append(" ").append(ChatColor.DARK_GRAY).append("<none>");
+            builder.append(" ").append(Formatting.DARK_GRAY).append("<none>");
         }
         return builder.toString();
     }
@@ -837,7 +837,7 @@ public class SimplyVanishCore {
             if (!cfg.ping.state || !cfg.notify.state) {
                 continue;
             }
-            player.sendMessage(SimplyVanish.msgNotifyPing);
+            Utils.sendMsg(player, SimplyVanish.MSG_NOTIFY_PING);
         }
     }
     /**
@@ -1033,8 +1033,8 @@ public class SimplyVanishCore {
         PlayerVanishConfig cfg = getVanishConfig(name, uuid, true);
         if (god == cfg.god.state) {
             if (notify != null) {
-                Utils.send(notify, SimplyVanish.msgLabel + ChatColor.GRAY + (notify.getName().equalsIgnoreCase(name) ? " You were " : (name + " was ")) +
-                                   (god ? "already" : "not") + " in " + (god ? ChatColor.GREEN : ChatColor.RED) + "god-mode.");
+                Utils.sendMsg(notify, SimplyVanish.MSG_LABEL + (notify.getName().equalsIgnoreCase(name) ? " You were " : (name + " was ")) +
+                                      (god ? "already" : "not") + " in " + (god ? Formatting.GREEN : Formatting.ERROR) + "god-mode.");
             }
         } else {
             cfg.set("god", god);
@@ -1042,11 +1042,11 @@ public class SimplyVanishCore {
                 onSaveVanished();
             }
             Utils.tryMessage(uuid,
-                    SimplyVanish.msgLabel + ChatColor.GRAY + "You are " + (god ? "now" : "no longer") +
-                    " in " + (god ? ChatColor.GREEN : ChatColor.RED) + "god-mode.");
+                    SimplyVanish.MSG_LABEL + "You are " + (god ? "now" : "no longer") +
+                    " in " + (god ? Formatting.GREEN : Formatting.ERROR ) + "god-mode.");
             if (notify != null && !notify.getName().equalsIgnoreCase(name)) {
-                Utils.send(notify, SimplyVanish.msgLabel + ChatColor.GRAY + name + " is " + (god ? "now" : "no longer") + " in " +
-                                   (god ? ChatColor.GREEN : ChatColor.RED) + "god-mode.");
+                Utils.sendMsg(notify, SimplyVanish.MSG_LABEL + name + " is " + (god ? "now" : "no longer") + " in " +
+                                      (god ? Formatting.GREEN : Formatting.ERROR) + "god-mode.");
             }
         }
         if (!cfg.needsSave()) {

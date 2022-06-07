@@ -3,8 +3,8 @@ package dev.chickeneer.simplyvanish.command;
 import co.aikar.commands.BaseCommand;
 import dev.chickeneer.simplyvanish.SimplyVanish;
 import dev.chickeneer.simplyvanish.SimplyVanishCore;
+import dev.chickeneer.simplyvanish.util.Formatting;
 import dev.chickeneer.simplyvanish.util.Utils;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,6 +21,6 @@ public abstract class SimplyVanishBaseCommand extends BaseCommand {
     }
 
     public static void unrecognized(@NotNull CommandSender sender) {
-        Utils.send(sender, SimplyVanish.msgLabel + ChatColor.DARK_RED + "Unrecognized command or number of arguments.");
+        Utils.sendMsg(sender, SimplyVanish.MSG_LABEL + Formatting.SEVERE + "Unrecognized command or number of arguments.");
     }
 }
