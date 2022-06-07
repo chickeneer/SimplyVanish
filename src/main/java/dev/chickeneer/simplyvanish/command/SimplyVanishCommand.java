@@ -22,10 +22,8 @@ public class SimplyVanishCommand extends SimplyVanishBaseCommand {
     @Subcommand("reload")
     @CommandPermission("simplyvanish.reload")
     public void onReload(CommandSender sender) {
-        if (core.getPlugin() != null) {
-            core.getPlugin().reloadSettings();
-            Utils.send(sender, SimplyVanish.msgLabel + ChatColor.YELLOW + "Settings reloaded.");
-        }
+        core.getPlugin().reloadSettings();
+        Utils.send(sender, SimplyVanish.msgLabel + ChatColor.YELLOW + "Settings reloaded.");
     }
 
     @Subcommand("save")

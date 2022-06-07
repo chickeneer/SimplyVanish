@@ -34,10 +34,9 @@ public final class DamageListener implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     void onFoodLevel(FoodLevelChangeEvent event) {
         LivingEntity entity = event.getEntity();
-        if (!(entity instanceof Player)) {
+        if (!(entity instanceof Player player)) {
             return;
         }
-        Player player = (Player) entity;
         if (event.getFoodLevel() - player.getFoodLevel() >= 0) {
             return;
         }

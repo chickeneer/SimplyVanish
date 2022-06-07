@@ -24,8 +24,7 @@ public class InventoryUtil {
      * @param settings
      */
     public static void showInventory(@NotNull CommandSender viewer, @Nullable VanishConfig cfg, @NotNull Player other, @NotNull Settings settings) {
-        if (settings.allowRealPeek && viewer instanceof Player && SimplyVanish.getInstance().hasPermission(viewer, "simplyvanish.inventories.peek.real")) {
-            Player player = (Player) viewer;
+        if (settings.allowRealPeek && viewer instanceof Player player && SimplyVanish.getInstance().hasPermission(viewer, "simplyvanish.inventories.peek.real")) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(SimplyVanish.getInstance(), () -> {
                 player.closeInventory();
                 final Inventory inv = other.getInventory();

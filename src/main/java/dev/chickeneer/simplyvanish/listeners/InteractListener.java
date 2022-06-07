@@ -208,10 +208,9 @@ public final class InteractListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     void onInventoryOpen(InventoryOpenEvent event) {
         LivingEntity entity = event.getPlayer();
-        if (!(entity instanceof Player)) {
+        if (!(entity instanceof Player player)) {
             return;
         }
-        Player player = (Player) entity;
         VanishConfig cfg = core.getVanishConfig(player, false);
         if (cfg == null) {
             return;
