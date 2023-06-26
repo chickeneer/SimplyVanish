@@ -78,7 +78,7 @@ public class Stats {
             if (ts > tsStats + periodStats) {
                 tsStats = ts;
                 // print out stats !
-                System.out.println(getStatsStr());
+                //System.out.println(getStatsStr());
             }
         }
     }
