@@ -1,7 +1,7 @@
 name: SimplyVanish
 version: '${project.version}'
 main: dev.chickeneer.simplyvanish.SimplyVanish
-api-version: '1.16'
+api-version: '1.20'
 description: This plugin is for hiding the online status of a joined user.
 website: https://github.com/chickeneer/SimplyVanish
 authors: [ chickeneer, asofold, jeikobu__ ]
