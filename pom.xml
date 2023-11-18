@@ -64,10 +64,10 @@
   		</dependency-->
         <!--Lib's Disguises-->
         <dependency>
-   			<groupId>LibsDisguises</groupId>
-   			<artifactId>LibsDisguises</artifactId>
-   			<version>10.0.24</version>
-		</dependency>
+            <groupId>LibsDisguises</groupId>
+            <artifactId>LibsDisguises</artifactId>
+            <version>10.0.24</version>
+        </dependency>
     </dependencies>
 
     <build>
