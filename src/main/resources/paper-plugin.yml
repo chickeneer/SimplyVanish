@@ -10,12 +10,12 @@ dependencies:
     LibsDisguises:
       load: BEFORE
       required: false
-      join-classpath: false
+      join-classpath: true
     dynmap:
       load: BEFORE
       required: false
-      join-classpath: false
+      join-classpath: true
     ProtocolLib:
       load: BEFORE
       required: false
-      join-classpath: false
+      join-classpath: true

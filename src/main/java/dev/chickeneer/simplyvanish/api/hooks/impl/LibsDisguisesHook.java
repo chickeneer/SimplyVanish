@@ -137,7 +137,7 @@ public class LibsDisguisesHook extends AbstractHook {
 
     @Override
     public @NotNull String getHookName() {
-        return "DisguiseCraft";
+        return "LibsDisguise";
     }
 
     @Override
